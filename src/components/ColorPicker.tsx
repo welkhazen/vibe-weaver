@@ -41,24 +41,24 @@ const ColorPicker = ({ onColorChange }: ColorPickerProps) => {
         ))}
       </div>
 
-      {/* Custom color slider */}
+      {/* Custom brightness slider - grayscale only */}
       <div className="space-y-2">
-        <label className="text-xs text-muted-foreground">Custom Color</label>
+        <label className="text-xs text-muted-foreground">Custom Brightness</label>
         <div className="relative">
           <input
             type="range"
-            min="0"
-            max="360"
-            value={currentColor.h}
-            onChange={handleCustomHue}
+            min="30"
+            max="95"
+            value={parseInt(currentColor.l)}
+            onChange={(e) => setCustomColor(0, '0%', `${e.target.value}%`)}
             className="w-full h-3 rounded-full appearance-none cursor-pointer"
             style={{
-              background: 'linear-gradient(to right, hsl(0, 80%, 55%), hsl(60, 80%, 55%), hsl(120, 80%, 55%), hsl(180, 80%, 55%), hsl(240, 80%, 55%), hsl(300, 80%, 55%), hsl(360, 80%, 55%))',
+              background: 'linear-gradient(to right, hsl(0, 0%, 30%), hsl(0, 0%, 50%), hsl(0, 0%, 70%), hsl(0, 0%, 95%))',
             }}
           />
         </div>
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span>Hue: {currentColor.h}°</span>
+          <span>Brightness: {parseInt(currentColor.l)}%</span>
           <div 
             className="w-6 h-6 rounded-full border border-white/20"
             style={{ backgroundColor: `hsl(${currentColor.h}, ${currentColor.s}, ${currentColor.l})` }}
