@@ -75,7 +75,7 @@ const HomePage = () => {
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{selectedCategoryData?.icon}</span>
+          {selectedCategoryData && <selectedCategoryData.icon className="w-6 h-6 text-foreground" strokeWidth={1.5} />}
           <h2 className="text-lg font-bold text-foreground">{selectedCategoryData?.label}</h2>
         </div>
       </div>
