@@ -1,11 +1,56 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useEffect } from 'react';
+import MatrixBackground from '@/components/MatrixBackground';
+import Header from '@/components/Header';
+import BottomNav from '@/components/BottomNav';
+import HomePage from '@/pages/HomePage';
+import ExplorePage from '@/pages/ExplorePage';
+import SchedulePage from '@/pages/SchedulePage';
+import ProfilePage from '@/pages/ProfilePage';
+import SettingsPage from '@/pages/SettingsPage';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 const Index = () => {
+  const [activeTab, setActiveTab] = useState('home');
+  
+  // Initialize theme color from localStorage on mount
+  useThemeColor();
+
+  const getPageTitle = () => {
+    switch (activeTab) {
+      case 'home': return 'The Art of Raw';
+      case 'search': return 'Explore';
+      case 'calendar': return 'Schedule';
+      case 'profile': return 'Profile';
+      case 'settings': return 'Settings';
+      default: return 'The Art of Raw';
+    }
+  };
+
+  const renderPage = () => {
+    switch (activeTab) {
+      case 'home': return <HomePage />;
+      case 'search': return <ExplorePage />;
+      case 'calendar': return <SchedulePage />;
+      case 'profile': return <ProfilePage />;
+      case 'settings': return <SettingsPage />;
+      default: return <HomePage />;
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-background text-foreground relative">
+      {/* Matrix falling code background */}
+      <MatrixBackground />
+      
+      {/* Main app container */}
+      <div className="relative z-10 max-w-lg mx-auto min-h-screen flex flex-col">
+        <Header title={getPageTitle()} />
+        
+        <main className="flex-1 overflow-y-auto">
+          {renderPage()}
+        </main>
+        
+        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     </div>
   );
