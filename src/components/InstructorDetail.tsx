@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { ArrowLeft, Star, MapPin, Clock, Calendar, MessageCircle, Flower2, Brain, Swords, Mountain, Palette, GraduationCap, LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import BookingModal from '@/components/BookingModal';
 
 const categoryIcons: Record<string, LucideIcon> = {
   yoga: Flower2,
@@ -68,9 +70,11 @@ interface InstructorDetailProps {
 }
 
 const InstructorDetail = ({ instructor, onBack }: InstructorDetailProps) => {
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
   const IconComponent = categoryIcons[instructor.category] || Flower2;
   const photos = categoryPhotos[instructor.category] || categoryPhotos.yoga;
   const randomPhoto = photos[instructor.id % photos.length];
+
 
   return (
     <div className="animate-fade-in pb-24">
@@ -127,13 +131,20 @@ const InstructorDetail = ({ instructor, onBack }: InstructorDetailProps) => {
               <span className="text-2xl font-bold text-foreground">{instructor.price}</span>
               <span className="text-muted-foreground"> / session</span>
             </div>
-            <Button className="gap-2">
+            <Button className="gap-2" onClick={() => setIsBookingOpen(true)}>
               <Calendar className="w-4 h-4" />
               Book Now
             </Button>
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal 
+        isOpen={isBookingOpen} 
+        onClose={() => setIsBookingOpen(false)} 
+        instructor={instructor}
+      />
 
       {/* About Section */}
       <div className="px-4 py-2">
