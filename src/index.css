@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,7 +11,7 @@
     --primary-h: 0;
     --primary-s: 0%;
     --primary-l: 85%;
-    
+
     --background: 0 0% 3%;
     --foreground: 0 0% 92%;
 
@@ -21,10 +22,10 @@
     --popover-foreground: 0 0% 92%;
 
     --primary: var(--primary-h) var(--primary-s) var(--primary-l);
-    --primary-foreground: 217 32.5843% 17.451%;
+    --primary-foreground: 0 0% 5%;
 
     --secondary: 0 0% 14%;
-    --secondary-foreground: 217 32.5843% 17.451%;
+    --secondary-foreground: 0 0% 92%;
 
     --muted: 0 0% 12%;
     --muted-foreground: 0 0% 55%;
@@ -39,7 +40,7 @@
     --input: 0 0% 14%;
     --ring: var(--primary-h) var(--primary-s) var(--primary-l);
 
-    --radius: 0.75rem;
+    --radius: 2.25rem;
 
     --sidebar-background: 0 0% 5%;
     --sidebar-foreground: 0 0% 92%;
@@ -54,9 +55,14 @@
     --metallic-light: 0 0% 88%;
     --metallic-mid: 0 0% 65%;
     --metallic-dark: 0 0% 28%;
-    
+
     /* Matrix effect color - silver/white */
     --matrix-color: hsl(0 0% 75%);
+    --font-sans: Roboto, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  }
+  .dark {
+    --font-sans: Roboto, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    --radius: 2.25rem;
   }
 }
 
