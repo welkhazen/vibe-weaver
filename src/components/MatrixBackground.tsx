@@ -27,11 +27,11 @@ const MatrixBackground = () => {
     // Array to track y position of each column
     const drops: number[] = Array(columns).fill(1);
 
-    // Get primary color from CSS variable
+    // Get primary color from CSS variable - silver/grayscale
     const getMatrixColor = () => {
       const root = document.documentElement;
-      const h = getComputedStyle(root).getPropertyValue('--primary-h').trim() || '180';
-      return `hsl(${h}, 100%, 60%)`;
+      const l = getComputedStyle(root).getPropertyValue('--primary-l').trim() || '75%';
+      return `hsl(0, 0%, ${l})`;
     };
 
     const draw = () => {

@@ -2,61 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dark Metallic Tech Theme - Customizable Primary Color */
+/* Dark Metallic Tech Theme - Black, White, Silver Monochrome */
 
 @layer base {
   :root {
-    /* Default primary is cyan/teal - can be customized */
-    --primary-h: 180;
-    --primary-s: 100%;
-    --primary-l: 50%;
+    /* Primary is silver/white - customizable hue with low saturation */
+    --primary-h: 0;
+    --primary-s: 0%;
+    --primary-l: 85%;
     
-    --background: 220 20% 4%;
-    --foreground: 220 10% 90%;
+    --background: 0 0% 3%;
+    --foreground: 0 0% 92%;
 
-    --card: 220 15% 8%;
-    --card-foreground: 220 10% 90%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 92%;
 
-    --popover: 220 15% 8%;
-    --popover-foreground: 220 10% 90%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 92%;
 
     --primary: var(--primary-h) var(--primary-s) var(--primary-l);
-    --primary-foreground: 220 20% 4%;
+    --primary-foreground: 0 0% 5%;
 
-    --secondary: 220 15% 15%;
-    --secondary-foreground: 220 10% 90%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 92%;
 
-    --muted: 220 15% 12%;
-    --muted-foreground: 220 10% 55%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
 
-    --accent: 220 15% 18%;
-    --accent-foreground: 220 10% 90%;
+    --accent: 0 0% 18%;
+    --accent-foreground: 0 0% 92%;
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 220 10% 90%;
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 0 0% 92%;
 
-    --border: 220 15% 20%;
-    --input: 220 15% 15%;
+    --border: 0 0% 20%;
+    --input: 0 0% 14%;
     --ring: var(--primary-h) var(--primary-s) var(--primary-l);
 
     --radius: 0.75rem;
 
-    --sidebar-background: 220 20% 6%;
-    --sidebar-foreground: 220 10% 90%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 92%;
     --sidebar-primary: var(--primary-h) var(--primary-s) var(--primary-l);
-    --sidebar-primary-foreground: 220 20% 4%;
-    --sidebar-accent: 220 15% 15%;
-    --sidebar-accent-foreground: 220 10% 90%;
-    --sidebar-border: 220 15% 18%;
+    --sidebar-primary-foreground: 0 0% 5%;
+    --sidebar-accent: 0 0% 14%;
+    --sidebar-accent-foreground: 0 0% 92%;
+    --sidebar-border: 0 0% 18%;
     --sidebar-ring: var(--primary-h) var(--primary-s) var(--primary-l);
 
-    /* Metallic gradients */
-    --metallic-light: 220 10% 85%;
-    --metallic-mid: 220 10% 60%;
-    --metallic-dark: 220 15% 25%;
+    /* Metallic silver gradients */
+    --metallic-light: 0 0% 88%;
+    --metallic-mid: 0 0% 65%;
+    --metallic-dark: 0 0% 28%;
     
-    /* Matrix effect color - follows primary */
-    --matrix-color: hsl(var(--primary-h) var(--primary-s) 60%);
+    /* Matrix effect color - silver/white */
+    --matrix-color: hsl(0 0% 75%);
   }
 }
 

@@ -8,14 +8,14 @@ export interface ThemeColor {
 }
 
 export const themeColors: ThemeColor[] = [
-  { name: 'Cyan', h: 180, s: '100%', l: '50%' },
-  { name: 'Purple', h: 270, s: '80%', l: '60%' },
-  { name: 'Blue', h: 220, s: '90%', l: '55%' },
-  { name: 'Green', h: 140, s: '70%', l: '45%' },
-  { name: 'Orange', h: 25, s: '95%', l: '55%' },
-  { name: 'Pink', h: 330, s: '85%', l: '60%' },
-  { name: 'Red', h: 0, s: '80%', l: '55%' },
-  { name: 'Gold', h: 45, s: '90%', l: '50%' },
+  { name: 'White', h: 0, s: '0%', l: '95%' },
+  { name: 'Silver', h: 0, s: '0%', l: '75%' },
+  { name: 'Steel', h: 210, s: '5%', l: '65%' },
+  { name: 'Platinum', h: 0, s: '0%', l: '85%' },
+  { name: 'Ash', h: 0, s: '0%', l: '55%' },
+  { name: 'Chrome', h: 220, s: '3%', l: '70%' },
+  { name: 'Pearl', h: 30, s: '5%', l: '88%' },
+  { name: 'Graphite', h: 0, s: '0%', l: '40%' },
 ];
 
 const STORAGE_KEY = 'theme-primary-color';
