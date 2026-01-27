@@ -40,7 +40,7 @@
     --input: 0 0% 14%;
     --ring: var(--primary-h) var(--primary-s) var(--primary-l);
 
-    --radius: 2.25rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 5%;
     --sidebar-foreground: 0 0% 92%;
@@ -59,10 +59,18 @@
     /* Matrix effect color - silver/white */
     --matrix-color: hsl(0 0% 75%);
     --font-sans: Roboto, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    --shadow-sm: 0px 1px 11.25px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow: 0px 1px 22.5px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow-md: 0px 1px 33.75px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow-lg: 0px 1px 56.25px 0px hsla(0, 0%, 0%, 0.1);
   }
   .dark {
     --font-sans: Roboto, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     --radius: 2.25rem;
+    --shadow-sm: 0px 1px 11.25px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow: 0px 1px 22.5px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow-md: 0px 1px 33.75px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow-lg: 0px 1px 56.25px 0px hsla(0, 0%, 0%, 0.1);
   }
 }
 
