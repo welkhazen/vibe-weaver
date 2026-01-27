@@ -10,6 +10,7 @@ const categoryIcons: Record<string, LucideIcon> = {
 };
 
 interface ServiceCardProps {
+  id: number;
   title: string;
   provider: string;
   category: string;
@@ -19,6 +20,7 @@ interface ServiceCardProps {
   location: string;
   duration: string;
   image?: string;
+  onClick?: () => void;
 }
 
 const ServiceCard = ({
@@ -30,11 +32,15 @@ const ServiceCard = ({
   price,
   location,
   duration,
+  onClick,
 }: ServiceCardProps) => {
   const IconComponent = categoryIcons[category] || Flower2;
   
   return (
-    <div className="metallic-card p-4 animate-fade-in hover:scale-[1.02] transition-transform cursor-pointer">
+    <div 
+      className="metallic-card p-4 animate-fade-in hover:scale-[1.02] transition-transform cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex gap-4">
         {/* Avatar/Icon */}
         <div className="w-16 h-16 rounded-xl bg-accent/50 flex items-center justify-center chrome-ring shrink-0">
