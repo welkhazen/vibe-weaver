@@ -1,4 +1,4 @@
-import { Star, MapPin, Clock, Flower2, Brain, Swords, Mountain, Palette, GraduationCap, Sparkles, LucideIcon } from 'lucide-react';
+import { Star, MapPin, Clock, Flower2, Brain, Swords, Mountain, Palette, GraduationCap, LucideIcon } from 'lucide-react';
 
 const categoryIcons: Record<string, LucideIcon> = {
   yoga: Flower2,
@@ -7,7 +7,6 @@ const categoryIcons: Record<string, LucideIcon> = {
   outdoor: Mountain,
   arts: Palette,
   tutoring: GraduationCap,
-  other: Sparkles,
 };
 
 interface ServiceCardProps {
@@ -32,7 +31,7 @@ const ServiceCard = ({
   location,
   duration,
 }: ServiceCardProps) => {
-  const IconComponent = categoryIcons[category] || Sparkles;
+  const IconComponent = categoryIcons[category] || Flower2;
   
   return (
     <div className="metallic-card p-4 animate-fade-in hover:scale-[1.02] transition-transform cursor-pointer">

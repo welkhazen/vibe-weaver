@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Flower2, Brain, Swords, Mountain, Palette, GraduationCap, Sparkles } from 'lucide-react';
+import { Flower2, Brain, Swords, Mountain, Palette, GraduationCap } from 'lucide-react';
 
 export const categories = [
   { id: 'yoga', label: 'Yoga / Pilates', icon: Flower2 },
@@ -8,7 +8,6 @@ export const categories = [
   { id: 'outdoor', label: 'Outdoor Activities', icon: Mountain },
   { id: 'arts', label: 'Arts / Music / Dance', icon: Palette },
   { id: 'tutoring', label: 'Tutoring / Education', icon: GraduationCap },
-  { id: 'other', label: 'Other', icon: Sparkles },
 ];
 
 interface CategoryGridProps {
