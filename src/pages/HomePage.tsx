@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react';
-import CategoryFilter, { categories } from '@/components/CategoryFilter';
+import CategoryGrid, { categories } from '@/components/CategoryGrid';
 import ServiceCard from '@/components/ServiceCard';
-import { Search } from 'lucide-react';
+import { Search, ArrowLeft } from 'lucide-react';
 
-// Mock data for services
+// Mock data for services/instructors
 const mockServices = [
   { id: 1, title: 'Vinyasa Flow Yoga', provider: 'Sarah Chen', category: 'yoga', rating: 4.9, reviews: 128, price: '$45', location: 'Downtown', duration: '60 min' },
   { id: 2, title: 'CBT Therapy Session', provider: 'Dr. Michael Ross', category: 'therapy', rating: 4.8, reviews: 89, price: '$120', location: 'Online', duration: '50 min' },
@@ -13,30 +13,80 @@ const mockServices = [
   { id: 6, title: 'Math Tutoring', provider: 'David Kim', category: 'tutoring', rating: 4.8, reviews: 93, price: '$40', location: 'Online', duration: '60 min' },
   { id: 7, title: 'Pilates Reformer', provider: 'Lisa Park', category: 'yoga', rating: 4.9, reviews: 78, price: '$50', location: 'Westside', duration: '55 min' },
   { id: 8, title: 'Life Coaching', provider: 'James Wilson', category: 'other', rating: 4.6, reviews: 34, price: '$95', location: 'Online', duration: '60 min' },
+  { id: 9, title: 'Kickboxing Training', provider: 'Mike Johnson', category: 'sports', rating: 4.8, reviews: 112, price: '$40', location: 'Downtown', duration: '60 min' },
+  { id: 10, title: 'Anxiety Counseling', provider: 'Dr. Sarah Lee', category: 'therapy', rating: 4.9, reviews: 156, price: '$110', location: 'Online', duration: '50 min' },
+  { id: 11, title: 'Rock Climbing Guide', provider: 'Jake Miller', category: 'outdoor', rating: 4.8, reviews: 89, price: '$75', location: 'Boulder Park', duration: '3 hrs' },
+  { id: 12, title: 'Guitar Lessons', provider: 'Tom Garcia', category: 'arts', rating: 4.7, reviews: 67, price: '$50', location: 'Midtown', duration: '45 min' },
 ];
 
 const HomePage = () => {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredServices = useMemo(() => {
+    if (!selectedCategory) return [];
     return mockServices.filter((service) => {
-      const matchesCategory = selectedCategory === 'all' || service.category === selectedCategory;
+      const matchesCategory = service.category === selectedCategory;
       const matchesSearch = service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           service.provider.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [selectedCategory, searchQuery]);
 
+  const selectedCategoryData = categories.find(c => c.id === selectedCategory);
+
+  // Category selection view
+  if (!selectedCategory) {
+    return (
+      <div className="animate-fade-in pb-24">
+        {/* Hero section */}
+        <div className="px-4 py-6">
+          <div className="metallic-card p-5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
+            <div className="relative z-10">
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Welcome</span>
+              <h2 className="text-xl font-bold text-foreground mt-1">Find Your Perfect Coach</h2>
+              <p className="text-sm text-muted-foreground mt-1">Explore 500+ verified professionals</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Category title */}
+        <div className="px-4 pb-4">
+          <h3 className="text-lg font-semibold text-foreground">Browse Categories</h3>
+          <p className="text-sm text-muted-foreground">Select a category to view instructors</p>
+        </div>
+
+        {/* Category grid - 2 columns */}
+        <CategoryGrid onSelectCategory={setSelectedCategory} />
+      </div>
+    );
+  }
+
+  // Instructors list view (after category selection)
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in pb-24">
+      {/* Back button and category header */}
+      <div className="px-4 py-3 flex items-center gap-3">
+        <button
+          onClick={() => setSelectedCategory(null)}
+          className="p-2 rounded-xl bg-accent hover:bg-accent/80 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5 text-foreground" />
+        </button>
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">{selectedCategoryData?.icon}</span>
+          <h2 className="text-lg font-bold text-foreground">{selectedCategoryData?.label}</h2>
+        </div>
+      </div>
+
       {/* Search bar */}
-      <div className="px-4 py-3">
+      <div className="px-4 py-2">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search services..."
+            placeholder="Search instructors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full h-12 pl-12 pr-4 rounded-xl bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
@@ -44,47 +94,23 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Category filters */}
-      <CategoryFilter
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-      />
-
-      {/* Featured section */}
-      <div className="px-4 mt-4">
-        <div className="metallic-card p-4 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent" />
-          <div className="relative z-10">
-            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Featured</span>
-            <h2 className="text-xl font-bold text-foreground mt-1">Find Your Perfect Coach</h2>
-            <p className="text-sm text-muted-foreground mt-1">Explore 500+ verified professionals</p>
-          </div>
-        </div>
+      {/* Instructors count */}
+      <div className="px-4 py-3">
+        <span className="text-sm text-muted-foreground">{filteredServices.length} instructors available</span>
       </div>
 
-      {/* Services list */}
-      <div className="px-4 py-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-foreground">
-            {selectedCategory === 'all' 
-              ? 'All Services' 
-              : categories.find(c => c.id === selectedCategory)?.label}
-          </h3>
-          <span className="text-sm text-muted-foreground">{filteredServices.length} available</span>
-        </div>
+      {/* Instructors list */}
+      <div className="px-4 space-y-3">
+        {filteredServices.map((service) => (
+          <ServiceCard key={service.id} {...service} />
+        ))}
 
-        <div className="space-y-3 pb-20">
-          {filteredServices.map((service) => (
-            <ServiceCard key={service.id} {...service} />
-          ))}
-
-          {filteredServices.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground">
-              <p>No services found</p>
-              <p className="text-sm mt-1">Try adjusting your filters</p>
-            </div>
-          )}
-        </div>
+        {filteredServices.length === 0 && (
+          <div className="text-center py-12 text-muted-foreground">
+            <p>No instructors found</p>
+            <p className="text-sm mt-1">Try adjusting your search</p>
+          </div>
+        )}
       </div>
     </div>
   );
