@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import CategoryGrid, { categories } from '@/components/CategoryGrid';
 import ServiceCard from '@/components/ServiceCard';
+import InstructorDetail from '@/components/InstructorDetail';
 import { Search, ArrowLeft } from 'lucide-react';
 
 // Mock data for services/instructors
@@ -19,8 +20,11 @@ const mockServices = [
   { id: 12, title: 'Guitar Lessons', provider: 'Tom Garcia', category: 'arts', rating: 4.7, reviews: 67, price: '$50', location: 'Midtown', duration: '45 min' },
 ];
 
+type Instructor = typeof mockServices[0];
+
 const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredServices = useMemo(() => {
@@ -34,6 +38,16 @@ const HomePage = () => {
   }, [selectedCategory, searchQuery]);
 
   const selectedCategoryData = categories.find(c => c.id === selectedCategory);
+
+  // Instructor detail view
+  if (selectedInstructor) {
+    return (
+      <InstructorDetail 
+        instructor={selectedInstructor} 
+        onBack={() => setSelectedInstructor(null)} 
+      />
+    );
+  }
 
   // Category selection view
   if (!selectedCategory) {
@@ -102,7 +116,11 @@ const HomePage = () => {
       {/* Instructors list */}
       <div className="px-4 space-y-3">
         {filteredServices.map((service) => (
-          <ServiceCard key={service.id} {...service} />
+          <ServiceCard 
+            key={service.id} 
+            {...service} 
+            onClick={() => setSelectedInstructor(service)}
+          />
         ))}
 
         {filteredServices.length === 0 && (
