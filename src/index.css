@@ -21,10 +21,10 @@
     --popover-foreground: 0 0% 92%;
 
     --primary: var(--primary-h) var(--primary-s) var(--primary-l);
-    --primary-foreground: 0 0% 5%;
+    --primary-foreground: 217 32.5843% 17.451%;
 
     --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 92%;
+    --secondary-foreground: 217 32.5843% 17.451%;
 
     --muted: 0 0% 12%;
     --muted-foreground: 0 0% 55%;
