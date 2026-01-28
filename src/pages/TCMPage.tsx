@@ -1,4 +1,5 @@
 import { Leaf, Heart, Brain, Zap, Droplets, Wind } from 'lucide-react';
+import QASection from '@/components/QASection';
 
 const TCMPage = () => {
   const principles = [
@@ -43,24 +44,33 @@ const TCMPage = () => {
         </p>
       </div>
 
-      <div className="grid gap-4">
-        {principles.map((principle) => (
-          <div
-            key={principle.title}
-            className="metallic-card p-4 flex items-start gap-4 hover:bg-accent/30 transition-colors"
-          >
-            <div className="p-3 rounded-xl bg-gold/20 text-gold">
-              {principle.icon}
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-foreground mb-1">{principle.title}</h3>
-              <p className="text-sm text-muted-foreground">{principle.description}</p>
-            </div>
-          </div>
-        ))}
+      {/* Q&A Section from @thecumulativemind */}
+      <div className="mb-6">
+        <QASection />
       </div>
 
-      <div className="mt-6 metallic-card p-4">
+      {/* Principles Grid */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-foreground mb-3">Core Principles</h3>
+        <div className="grid gap-3">
+          {principles.map((principle) => (
+            <div
+              key={principle.title}
+              className="metallic-card p-4 flex items-start gap-4 hover:bg-accent/30 transition-colors"
+            >
+              <div className="p-3 rounded-xl bg-gold/20 text-gold">
+                {principle.icon}
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-foreground mb-1">{principle.title}</h4>
+                <p className="text-sm text-muted-foreground">{principle.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="metallic-card p-4">
         <h3 className="font-semibold text-foreground mb-3">Our TCM Services</h3>
         <ul className="space-y-2 text-sm text-muted-foreground">
           <li className="flex items-center gap-2">
