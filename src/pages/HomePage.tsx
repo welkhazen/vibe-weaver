@@ -55,10 +55,10 @@ const HomePage = () => {
       <div className="animate-fade-in pb-24">
         {/* Hero section */}
         <div className="px-4 py-6">
-          <div className="gold-accent-card p-5 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-gold/10 via-transparent to-gold-dark/5" />
+          <div className="metallic-card p-5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
             <div className="relative z-10">
-              <span className="text-xs font-semibold text-gold uppercase tracking-wider drop-shadow-[0_0_8px_hsl(var(--gold)_/_0.5)]">Welcome</span>
+              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Welcome</span>
               <h2 className="text-xl font-bold text-foreground mt-1">Find Your Perfect Coach</h2>
               <p className="text-sm text-muted-foreground mt-1">Explore 500+ verified professionals</p>
             </div>
@@ -103,7 +103,7 @@ const HomePage = () => {
             placeholder="Search instructors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 pl-12 pr-4 rounded-xl bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold/50 transition-all"
+            className="w-full h-12 pl-12 pr-4 rounded-xl bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
           />
         </div>
       </div>

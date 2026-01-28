@@ -13,13 +13,12 @@ const Header = ({ title = 'The Art of Raw' }: HeaderProps) => {
         </button>
         
         <h1 className="text-lg font-bold text-foreground tracking-tight">
-          <span className="text-gold drop-shadow-[0_0_8px_hsl(var(--gold)_/_0.5)]">The Art</span>
-          <span className="text-foreground"> of Raw</span>
+          {title}
         </h1>
 
         <button className="p-2 rounded-xl hover:bg-accent transition-colors relative">
           <Bell className="w-5 h-5 text-foreground" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-gold rounded-full shadow-[0_0_8px_hsl(var(--gold))]" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full" />
         </button>
       </div>
     </header>

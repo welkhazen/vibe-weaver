@@ -91,10 +91,10 @@ const BookingModal = ({ isOpen, onClose, instructor }: BookingModalProps) => {
                     onClick={() => setSelectedTime(time)}
                     className={cn(
                       "px-3 py-2 rounded-lg text-sm font-medium transition-all",
-                      "border hover:border-gold/50",
+                      "border border-border hover:border-primary/50",
                       selectedTime === time
-                        ? "bg-gradient-to-r from-gold to-gold-dark text-primary-foreground border-gold shadow-[0_0_12px_hsl(var(--gold)_/_0.3)]"
-                        : "bg-accent/50 text-foreground border-border"
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-accent/50 text-foreground"
                     )}
                   >
                     {time}
@@ -106,14 +106,14 @@ const BookingModal = ({ isOpen, onClose, instructor }: BookingModalProps) => {
 
           {/* Summary */}
           {selectedDate && selectedTime && (
-            <div className="animate-fade-in p-4 rounded-lg bg-gold/5 border border-gold/30">
-              <h4 className="text-sm font-semibold text-gold mb-2">Booking Summary</h4>
+            <div className="animate-fade-in p-4 rounded-lg bg-accent/30 border border-border">
+              <h4 className="text-sm font-semibold text-foreground mb-2">Booking Summary</h4>
               <div className="space-y-1 text-sm text-muted-foreground">
                 <p><span className="text-foreground">Service:</span> {instructor.title}</p>
                 <p><span className="text-foreground">Date:</span> {format(selectedDate, 'EEEE, MMMM d, yyyy')}</p>
                 <p><span className="text-foreground">Time:</span> {selectedTime}</p>
                 <p><span className="text-foreground">Duration:</span> {instructor.duration}</p>
-                <p className="pt-2 text-lg font-bold text-gold drop-shadow-[0_0_8px_hsl(var(--gold)_/_0.4)]">{instructor.price}</p>
+                <p className="pt-2 text-lg font-bold text-foreground">{instructor.price}</p>
               </div>
             </div>
           )}
@@ -121,13 +121,13 @@ const BookingModal = ({ isOpen, onClose, instructor }: BookingModalProps) => {
 
         {/* Actions */}
         <div className="flex gap-3">
-          <Button variant="outline" onClick={onClose} className="flex-1 border-border hover:border-gold/50">
+          <Button variant="outline" onClick={onClose} className="flex-1">
             Cancel
           </Button>
           <Button 
             onClick={handleBooking} 
             disabled={!selectedDate || !selectedTime}
-            className="flex-1 gap-2 bg-gradient-to-r from-gold to-gold-dark hover:from-gold-light hover:to-gold text-primary-foreground shadow-[0_0_15px_hsl(var(--gold)_/_0.3)] disabled:opacity-50 disabled:shadow-none"
+            className="flex-1 gap-2"
           >
             <Check className="w-4 h-4" />
             Confirm Booking

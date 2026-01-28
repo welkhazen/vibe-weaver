@@ -1,40 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 const GoldenGlowBackground = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [intensity, setIntensity] = useState(0.6);
-
-  // Listen for intensity changes from CSS variable
-  useEffect(() => {
-    const updateIntensity = () => {
-      const saved = localStorage.getItem('glow-intensity');
-      if (saved) {
-        setIntensity(parseFloat(saved));
-      }
-    };
-
-    updateIntensity();
-    
-    // Listen for storage changes
-    window.addEventListener('storage', updateIntensity);
-    
-    // Also poll for changes (for same-tab updates)
-    const interval = setInterval(updateIntensity, 100);
-
-    return () => {
-      window.removeEventListener('storage', updateIntensity);
-      clearInterval(interval);
-    };
-  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-
-    // Clear existing orbs
-    container.querySelectorAll('.golden-orb').forEach(el => el.remove());
-
-    if (intensity <= 0) return;
 
     // Create floating golden orbs
     const createOrb = () => {
@@ -53,13 +24,13 @@ const GoldenGlowBackground = () => {
         left: ${x}%;
         top: ${y}%;
         background: radial-gradient(circle at center, 
-          hsla(45, 90%, 55%, ${0.3 * intensity}) 0%, 
-          hsla(45, 85%, 50%, ${0.15 * intensity}) 30%,
-          hsla(40, 80%, 45%, ${0.05 * intensity}) 60%,
+          hsla(45, 90%, 55%, 0.3) 0%, 
+          hsla(45, 85%, 50%, 0.15) 30%,
+          hsla(40, 80%, 45%, 0.05) 60%,
           transparent 70%
         );
         border-radius: 50%;
-        filter: blur(${40 * intensity}px);
+        filter: blur(40px);
         animation: floatOrb ${duration}s ease-in-out ${delay}s infinite;
         pointer-events: none;
       `;
@@ -68,19 +39,16 @@ const GoldenGlowBackground = () => {
       return orb;
     };
 
-    // Create orbs based on intensity
-    const orbCount = Math.max(1, Math.floor(5 * intensity));
+    // Create multiple orbs
     const orbs: HTMLDivElement[] = [];
-    for (let i = 0; i < orbCount; i++) {
+    for (let i = 0; i < 5; i++) {
       orbs.push(createOrb());
     }
 
     return () => {
       orbs.forEach(orb => orb.remove());
     };
-  }, [intensity]);
-
-  if (intensity <= 0) return null;
+  }, []);
 
   return (
     <>
@@ -88,20 +56,31 @@ const GoldenGlowBackground = () => {
         @keyframes floatOrb {
           0%, 100% {
             transform: translate(0, 0) scale(1);
-            opacity: ${0.6 * intensity};
+            opacity: 0.6;
           }
           25% {
             transform: translate(30px, -40px) scale(1.1);
-            opacity: ${0.8 * intensity};
+            opacity: 0.8;
           }
           50% {
             transform: translate(-20px, 20px) scale(0.9);
-            opacity: ${0.5 * intensity};
+            opacity: 0.5;
           }
           75% {
             transform: translate(40px, 30px) scale(1.05);
-            opacity: ${0.7 * intensity};
+            opacity: 0.7;
           }
+        }
+
+        .golden-highlight {
+          position: absolute;
+          background: radial-gradient(ellipse at center,
+            hsla(45, 90%, 60%, 0.15) 0%,
+            hsla(45, 85%, 55%, 0.08) 40%,
+            transparent 70%
+          );
+          filter: blur(60px);
+          pointer-events: none;
         }
       `}</style>
       
@@ -111,56 +90,35 @@ const GoldenGlowBackground = () => {
       >
         {/* Top-left golden highlight */}
         <div 
-          className="absolute"
+          className="golden-highlight"
           style={{
             width: '60vw',
             height: '50vh',
             top: '-10%',
             left: '-15%',
-            background: `radial-gradient(ellipse at center,
-              hsla(45, 90%, 60%, ${0.15 * intensity}) 0%,
-              hsla(45, 85%, 55%, ${0.08 * intensity}) 40%,
-              transparent 70%
-            )`,
-            filter: `blur(${60 * intensity}px)`,
-            pointerEvents: 'none',
           }}
         />
         
         {/* Bottom-right golden highlight */}
         <div 
-          className="absolute"
+          className="golden-highlight"
           style={{
             width: '50vw',
             height: '40vh',
             bottom: '-5%',
             right: '-10%',
-            background: `radial-gradient(ellipse at center,
-              hsla(45, 90%, 60%, ${0.15 * intensity}) 0%,
-              hsla(45, 85%, 55%, ${0.08 * intensity}) 40%,
-              transparent 70%
-            )`,
-            filter: `blur(${60 * intensity}px)`,
-            pointerEvents: 'none',
           }}
         />
         
         {/* Center accent */}
         <div 
-          className="absolute"
+          className="golden-highlight"
           style={{
             width: '40vw',
             height: '30vh',
             top: '40%',
             left: '30%',
-            opacity: 0.5 * intensity,
-            background: `radial-gradient(ellipse at center,
-              hsla(45, 90%, 60%, ${0.15 * intensity}) 0%,
-              hsla(45, 85%, 55%, ${0.08 * intensity}) 40%,
-              transparent 70%
-            )`,
-            filter: `blur(${60 * intensity}px)`,
-            pointerEvents: 'none',
+            opacity: 0.5,
           }}
         />
       </div>

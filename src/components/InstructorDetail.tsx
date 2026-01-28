@@ -91,12 +91,12 @@ const InstructorDetail = ({ instructor, onBack }: InstructorDetailProps) => {
 
       {/* Profile Card */}
       <div className="px-4 py-2">
-        <div className="gold-accent-card p-6">
+        <div className="metallic-card p-6">
           <div className="flex flex-col items-center text-center">
-            <Avatar className="w-24 h-24 ring-2 ring-gold/50 shadow-[0_0_20px_hsl(var(--gold)_/_0.3)]">
+            <Avatar className="w-24 h-24 chrome-ring">
               <AvatarImage src={randomPhoto} alt={instructor.provider} />
               <AvatarFallback className="bg-accent">
-                <IconComponent className="w-10 h-10 text-gold" strokeWidth={1.5} />
+                <IconComponent className="w-10 h-10 text-foreground" strokeWidth={1.5} />
               </AvatarFallback>
             </Avatar>
             
@@ -104,18 +104,18 @@ const InstructorDetail = ({ instructor, onBack }: InstructorDetailProps) => {
             <p className="text-sm text-muted-foreground">{instructor.title}</p>
             
             <div className="flex items-center gap-1 mt-2">
-              <Star className="w-5 h-5 fill-gold text-gold" />
+              <Star className="w-5 h-5 fill-foreground text-foreground" />
               <span className="font-semibold text-foreground">{instructor.rating}</span>
               <span className="text-muted-foreground">({instructor.reviews} reviews)</span>
             </div>
 
             <div className="flex items-center gap-4 mt-4">
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <MapPin className="w-4 h-4 text-gold/70" />
+                <MapPin className="w-4 h-4" />
                 <span>{instructor.location}</span>
               </div>
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Clock className="w-4 h-4 text-gold/70" />
+                <Clock className="w-4 h-4" />
                 <span>{instructor.duration}</span>
               </div>
             </div>
@@ -125,16 +125,13 @@ const InstructorDetail = ({ instructor, onBack }: InstructorDetailProps) => {
 
       {/* Price & Booking */}
       <div className="px-4 py-2">
-        <div className="gold-accent-card p-4">
+        <div className="metallic-card p-4">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-2xl font-bold text-gold drop-shadow-[0_0_10px_hsl(var(--gold)_/_0.4)]">{instructor.price}</span>
+              <span className="text-2xl font-bold text-foreground">{instructor.price}</span>
               <span className="text-muted-foreground"> / session</span>
             </div>
-            <Button 
-              className="gap-2 bg-gradient-to-r from-gold to-gold-dark hover:from-gold-light hover:to-gold text-primary-foreground shadow-[0_0_15px_hsl(var(--gold)_/_0.3)]" 
-              onClick={() => setIsBookingOpen(true)}
-            >
+            <Button className="gap-2" onClick={() => setIsBookingOpen(true)}>
               <Calendar className="w-4 h-4" />
               Book Now
             </Button>
@@ -168,7 +165,7 @@ const InstructorDetail = ({ instructor, onBack }: InstructorDetailProps) => {
             {['Beginner Friendly', 'Advanced Techniques', 'One-on-One', 'Group Sessions'].map((specialty) => (
               <span 
                 key={specialty}
-                className="px-3 py-1 rounded-full bg-gold/10 text-xs text-gold border border-gold/30"
+                className="px-3 py-1 rounded-full bg-accent text-xs text-foreground border border-border"
               >
                 {specialty}
               </span>
@@ -199,7 +196,7 @@ const InstructorDetail = ({ instructor, onBack }: InstructorDetailProps) => {
                 </div>
                 <div className="flex items-center gap-0.5 mb-2">
                   {Array.from({ length: review.rating }).map((_, i) => (
-                    <Star key={i} className="w-3 h-3 fill-gold text-gold" />
+                    <Star key={i} className="w-3 h-3 fill-foreground text-foreground" />
                   ))}
                 </div>
                 <p className="text-sm text-muted-foreground">{review.comment}</p>
