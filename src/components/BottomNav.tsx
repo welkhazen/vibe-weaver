@@ -29,7 +29,7 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
             key={item.id}
             onClick={() => onTabChange(item.id)}
             className={cn(
-              'flex flex-col items-center justify-center w-16 h-full transition-all',
+              'flex flex-col items-center justify-center w-16 h-full transition-all duration-300 ease-out',
               activeTab === item.id
                 ? 'text-primary'
                 : 'text-muted-foreground hover:text-foreground'
@@ -37,8 +37,10 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
           >
             <div
               className={cn(
-                'p-2 rounded-xl transition-all',
-                activeTab === item.id && 'bg-primary/20 glow-primary'
+                'p-2 rounded-xl transition-all duration-300 ease-out',
+                activeTab === item.id 
+                  ? 'bg-primary/20 glow-primary scale-110' 
+                  : 'hover:scale-105 active:scale-95'
               )}
             >
               {item.icon}
