@@ -31,14 +31,14 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
             className={cn(
               'flex flex-col items-center justify-center w-16 h-full transition-all',
               activeTab === item.id
-                ? 'text-primary'
+                ? 'text-gold'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
             <div
               className={cn(
                 'p-2 rounded-xl transition-all',
-                activeTab === item.id && 'bg-primary/20 glow-primary'
+                activeTab === item.id && 'bg-gold/20 shadow-[0_0_15px_hsl(var(--gold)_/_0.3)]'
               )}
             >
               {item.icon}

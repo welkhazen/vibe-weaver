@@ -27,8 +27,8 @@ const CategoryFilter = ({ selectedCategory, onSelectCategory }: CategoryFilterPr
             className={cn(
               'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap',
               selectedCategory === category.id
-                ? 'bg-primary text-primary-foreground glow-primary'
-                : 'metallic-button text-foreground hover:text-primary'
+                ? 'bg-gradient-to-r from-gold to-gold-dark text-primary-foreground glow-gold-soft'
+                : 'metallic-button text-foreground hover:border-gold/40 hover:text-gold'
             )}
           >
             <span>{category.icon}</span>
