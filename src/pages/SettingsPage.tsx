@@ -1,12 +1,14 @@
 import ColorPicker from '@/components/ColorPicker';
-import { ChevronRight, Bell, Lock, Eye, HelpCircle, LogOut, Palette, User, Shield } from 'lucide-react';
+import GlowIntensitySlider from '@/components/GlowIntensitySlider';
+import { ChevronRight, Bell, Lock, Eye, HelpCircle, LogOut, Palette, User, Shield, Sparkles } from 'lucide-react';
 
 const SettingsPage = () => {
   const settingsGroups = [
     {
       title: 'Appearance',
       items: [
-        { icon: <Palette className="w-5 h-5" />, label: 'Theme Color', custom: true },
+        { icon: <Palette className="w-5 h-5" />, label: 'Theme Color', custom: 'color' },
+        { icon: <Sparkles className="w-5 h-5" />, label: 'Glow Intensity', custom: 'glow' },
       ],
     },
     {
@@ -45,13 +47,21 @@ const SettingsPage = () => {
             <div className="metallic-card overflow-hidden">
               {group.items.map((item, index) => (
                 <div key={item.label}>
-                  {item.custom ? (
+                  {item.custom === 'color' ? (
                     <div className="p-4 space-y-4">
                       <div className="flex items-center gap-3 text-foreground">
-                        <div className="text-primary">{item.icon}</div>
+                        <div className="text-gold">{item.icon}</div>
                         <span className="font-medium">{item.label}</span>
                       </div>
                       <ColorPicker />
+                    </div>
+                  ) : item.custom === 'glow' ? (
+                    <div className="p-4 space-y-4">
+                      <div className="flex items-center gap-3 text-foreground">
+                        <div className="text-gold">{item.icon}</div>
+                        <span className="font-medium">{item.label}</span>
+                      </div>
+                      <GlowIntensitySlider />
                     </div>
                   ) : (
                     <button
