@@ -24,11 +24,14 @@ const CategoryGrid = ({ onSelectCategory }: CategoryGridProps) => {
             key={category.id}
             onClick={() => onSelectCategory(category.id)}
             className={cn(
-              'metallic-card p-5 flex flex-col items-center gap-3 transition-all',
-              'hover:scale-[1.02] hover:border-primary/30 active:scale-[0.98]'
+              'gold-accent-card p-5 flex flex-col items-center gap-3 transition-all',
+              'hover:scale-[1.02] active:scale-[0.98]',
+              'hover:shadow-[0_0_25px_hsl(var(--gold)_/_0.2)]'
             )}
           >
-            <IconComponent className="w-10 h-10 text-foreground" strokeWidth={1.5} />
+            <div className="p-3 rounded-full bg-gradient-to-br from-gold/20 to-gold-dark/10 border border-gold/30">
+              <IconComponent className="w-8 h-8 text-gold" strokeWidth={1.5} />
+            </div>
             <span className="text-sm font-medium text-foreground text-center leading-tight">
               {category.label}
             </span>
