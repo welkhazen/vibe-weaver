@@ -7,7 +7,7 @@ import HomePage from '@/pages/HomePage';
 import ExplorePage from '@/pages/ExplorePage';
 import SchedulePage from '@/pages/SchedulePage';
 import ProfilePage from '@/pages/ProfilePage';
-import SettingsPage from '@/pages/SettingsPage';
+import TCMPage from '@/pages/TCMPage';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 const Index = () => {
@@ -22,7 +22,7 @@ const Index = () => {
       case 'search': return 'Explore';
       case 'calendar': return 'Schedule';
       case 'profile': return 'Profile';
-      case 'settings': return 'Settings';
+      case 'tcm': return 'TCM';
       default: return 'The Art of Raw';
     }
   };
@@ -33,7 +33,7 @@ const Index = () => {
       case 'search': return <ExplorePage />;
       case 'calendar': return <SchedulePage />;
       case 'profile': return <ProfilePage />;
-      case 'settings': return <SettingsPage />;
+      case 'tcm': return <TCMPage />;
       default: return <HomePage />;
     }
   };
