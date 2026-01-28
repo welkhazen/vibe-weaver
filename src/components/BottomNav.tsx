@@ -1,4 +1,4 @@
-import { Home, Search, Calendar, User, Settings } from 'lucide-react';
+import { Home, Search, Calendar, User, Leaf } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
@@ -12,7 +12,7 @@ const navItems: NavItem[] = [
   { id: 'search', label: 'Explore', icon: <Search className="w-5 h-5" /> },
   { id: 'calendar', label: 'Schedule', icon: <Calendar className="w-5 h-5" /> },
   { id: 'profile', label: 'Profile', icon: <User className="w-5 h-5" /> },
-  { id: 'settings', label: 'Settings', icon: <Settings className="w-5 h-5" /> },
+  { id: 'tcm', label: 'TCM', icon: <Leaf className="w-5 h-5" /> },
 ];
 
 interface BottomNavProps {
