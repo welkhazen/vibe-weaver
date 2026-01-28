@@ -108,7 +108,7 @@
       inset 0 1px 0 0 hsl(220 10% 50% / 0.3),
       inset 0 -1px 0 0 hsl(220 15% 10% / 0.5),
       0 4px 12px hsl(220 20% 5% / 0.5);
-    @apply rounded-full border border-white/10;
+    @apply rounded-full border border-white/10 transition-all duration-300 ease-out;
   }
 
   .metallic-button:hover {
@@ -120,6 +120,11 @@
       hsl(220 10% 30%) 75%,
       hsl(220 10% 40%) 100%
     );
+    @apply scale-[1.02];
+  }
+
+  .metallic-button:active {
+    @apply scale-[0.98] duration-150;
   }
 
   /* Metallic card */
@@ -132,7 +137,13 @@
     box-shadow: 
       inset 0 1px 0 0 hsl(220 10% 25% / 0.3),
       0 8px 32px hsl(220 20% 3% / 0.6);
-    @apply border border-white/5 rounded-2xl;
+    @apply border border-white/5 rounded-2xl transition-all duration-300 ease-out;
+  }
+
+  .metallic-card:hover {
+    box-shadow: 
+      inset 0 1px 0 0 hsl(220 10% 30% / 0.4),
+      0 12px 40px hsl(220 20% 3% / 0.7);
   }
 
   /* Glow effect for primary elements */
