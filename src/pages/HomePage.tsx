@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 
 // Subcategories for Mental Health
 const mentalHealthSubcategories = [
+  { id: 'therapy-sub', label: 'Therapy', icon: Brain },
   { id: 'meditation', label: 'Meditation', icon: Sparkles },
   { id: 'stress', label: 'Stress Management', icon: Brain },
   { id: 'coaching', label: 'Life Coaching', icon: Heart },
@@ -18,7 +19,7 @@ const mentalHealthSubcategories = [
 // Mock data for services/instructors
 const mockServices = [
   { id: 1, title: 'Vinyasa Flow Yoga', provider: 'Sarah Chen', category: 'yoga', subcategory: null, rating: 4.9, reviews: 128, price: '$45', location: 'Downtown', duration: '60 min' },
-  { id: 2, title: 'CBT Therapy Session', provider: 'Dr. Michael Ross', category: 'therapy', subcategory: 'anxiety', rating: 4.8, reviews: 89, price: '$120', location: 'Online', duration: '50 min' },
+  { id: 2, title: 'CBT Therapy Session', provider: 'Dr. Michael Ross', category: 'therapy', subcategory: 'therapy-sub', rating: 4.8, reviews: 89, price: '$120', location: 'Online', duration: '50 min' },
   { id: 3, title: 'Brazilian Jiu-Jitsu', provider: 'Carlos Silva', category: 'sports', subcategory: null, rating: 4.9, reviews: 256, price: '$35', location: 'Midtown', duration: '90 min' },
   { id: 4, title: 'Mountain Hiking Guide', provider: 'Alex Turner', category: 'outdoor', subcategory: null, rating: 4.7, reviews: 67, price: '$80', location: 'Various', duration: '4 hrs' },
   { id: 5, title: 'Piano Lessons', provider: 'Emma Williams', category: 'arts', subcategory: null, rating: 5.0, reviews: 42, price: '$55', location: 'East Side', duration: '45 min' },
