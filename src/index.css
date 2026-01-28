@@ -12,8 +12,8 @@
     --primary-s: 0%;
     --primary-l: 85%;
 
-    --background: 0 0% 32%;
-    --foreground: 210 40% 98.0392%;
+    --background: 0 0% 3%;
+    --foreground: 0 0% 92%;
 
     --card: 0 0% 7%;
     --card-foreground: 0 0% 92%;
@@ -24,14 +24,14 @@
     --primary: var(--primary-h) var(--primary-s) var(--primary-l);
     --primary-foreground: 0 0% 5%;
 
-    --secondary: 210 40% 98.0392%;
+    --secondary: 0 0% 14%;
     --secondary-foreground: 0 0% 92%;
 
     --muted: 0 0% 12%;
     --muted-foreground: 0 0% 55%;
 
     --accent: 0 0% 18%;
-    --accent-foreground: 215 20.2247% 65.098%;
+    --accent-foreground: 0 0% 92%;
 
     --destructive: 0 60% 45%;
     --destructive-foreground: 0 0% 92%;
@@ -59,18 +59,18 @@
     /* Matrix effect color - silver/white */
     --matrix-color: hsl(0 0% 75%);
     --font-sans: Roboto, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-    --shadow-sm: 0px 1px 11.25px 0px hsla(0, 0%, 0%, 0.1);
-    --shadow: 0px 1px 22.5px 0px hsla(0, 0%, 0%, 0.1);
-    --shadow-md: 0px 1px 33.75px 0px hsla(0, 0%, 0%, 0.1);
-    --shadow-lg: 0px 1px 56.25px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow-sm: 0px 1px 1.5px 0px hsla(210, 40%, 98%, 0.1);
+    --shadow: 0px 1px 3px 0px hsla(210, 40%, 98%, 0.1);
+    --shadow-md: 0px 1px 4.5px 0px hsla(210, 40%, 98%, 0.1);
+    --shadow-lg: 0px 1px 7.5px 0px hsla(210, 40%, 98%, 0.1);
   }
   .dark {
     --font-sans: Roboto, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     --radius: 2.25rem;
-    --shadow-sm: 0px 1px 11.25px 0px hsla(0, 0%, 0%, 0.1);
-    --shadow: 0px 1px 22.5px 0px hsla(0, 0%, 0%, 0.1);
-    --shadow-md: 0px 1px 33.75px 0px hsla(0, 0%, 0%, 0.1);
-    --shadow-lg: 0px 1px 56.25px 0px hsla(0, 0%, 0%, 0.1);
+    --shadow-sm: 0px 1px 1.5px 0px hsla(210, 40%, 98%, 0.1);
+    --shadow: 0px 1px 3px 0px hsla(210, 40%, 98%, 0.1);
+    --shadow-md: 0px 1px 4.5px 0px hsla(210, 40%, 98%, 0.1);
+    --shadow-lg: 0px 1px 7.5px 0px hsla(210, 40%, 98%, 0.1);
   }
 }
 
