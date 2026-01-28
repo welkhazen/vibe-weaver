@@ -1,14 +1,7 @@
-import ColorPicker from '@/components/ColorPicker';
-import { ChevronRight, Bell, Lock, Eye, HelpCircle, LogOut, Palette, User, Shield } from 'lucide-react';
+import { ChevronRight, Bell, Lock, Eye, HelpCircle, LogOut, User, Shield } from 'lucide-react';
 
 const SettingsPage = () => {
   const settingsGroups = [
-    {
-      title: 'Appearance',
-      items: [
-        { icon: <Palette className="w-5 h-5" />, label: 'Theme Color', custom: true },
-      ],
-    },
     {
       title: 'Account',
       items: [
@@ -45,25 +38,15 @@ const SettingsPage = () => {
             <div className="metallic-card overflow-hidden">
               {group.items.map((item, index) => (
                 <div key={item.label}>
-                  {item.custom ? (
-                    <div className="p-4 space-y-4">
-                      <div className="flex items-center gap-3 text-foreground">
-                        <div className="text-primary">{item.icon}</div>
-                        <span className="font-medium">{item.label}</span>
-                      </div>
-                      <ColorPicker />
+                  <button
+                    className="w-full flex items-center justify-between p-4 hover:bg-accent/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 text-foreground">
+                      <div className="text-muted-foreground">{item.icon}</div>
+                      <span className="font-medium">{item.label}</span>
                     </div>
-                  ) : (
-                    <button
-                      className="w-full flex items-center justify-between p-4 hover:bg-accent/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3 text-foreground">
-                        <div className="text-muted-foreground">{item.icon}</div>
-                        <span className="font-medium">{item.label}</span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                    </button>
-                  )}
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  </button>
                   {index < group.items.length - 1 && (
                     <div className="border-b border-border/50 mx-4" />
                   )}
