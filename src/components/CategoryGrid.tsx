@@ -2,8 +2,8 @@ import { cn } from '@/lib/utils';
 import { Flower2, Brain, Swords, Mountain, Palette, GraduationCap } from 'lucide-react';
 
 export const categories = [
-  { id: 'yoga', label: 'Yoga / Pilates', icon: Flower2 },
   { id: 'therapy', label: 'Therapy / Mental Health', icon: Brain },
+  { id: 'yoga', label: 'Yoga / Pilates', icon: Flower2 },
   { id: 'sports', label: 'Sports / Martial Arts', icon: Swords },
   { id: 'outdoor', label: 'Outdoor Activities', icon: Mountain },
   { id: 'arts', label: 'Arts / Music / Dance', icon: Palette },
