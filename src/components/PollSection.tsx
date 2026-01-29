@@ -13,49 +13,43 @@ const pollData: PollItem[] = [
   {
     question: "Do you believe your thoughts shape your reality?",
     options: [
-      { text: "Absolutely", percentage: 72 },
-      { text: "Sometimes", percentage: 23 },
-      { text: "Not really", percentage: 5 },
+      { text: "Yes", percentage: 78 },
+      { text: "No", percentage: 22 },
     ],
   },
   {
-    question: "How often do you practice self-reflection?",
+    question: "Do you practice self-reflection regularly?",
     options: [
-      { text: "Daily", percentage: 34 },
-      { text: "Weekly", percentage: 41 },
-      { text: "Rarely", percentage: 25 },
+      { text: "Yes", percentage: 64 },
+      { text: "No", percentage: 36 },
     ],
   },
   {
-    question: "What helps you most with mental clarity?",
+    question: "Is vulnerability a strength?",
     options: [
-      { text: "Meditation", percentage: 45 },
-      { text: "Exercise", percentage: 32 },
-      { text: "Journaling", percentage: 23 },
+      { text: "Yes", percentage: 81 },
+      { text: "No", percentage: 19 },
     ],
   },
   {
     question: "Do you set intentions for your day?",
     options: [
-      { text: "Every morning", percentage: 28 },
-      { text: "Sometimes", percentage: 47 },
-      { text: "Never tried", percentage: 25 },
+      { text: "Yes", percentage: 52 },
+      { text: "No", percentage: 48 },
     ],
   },
   {
-    question: "Is vulnerability a strength or weakness?",
+    question: "Can you control your emotions?",
     options: [
-      { text: "Strength", percentage: 81 },
-      { text: "Weakness", percentage: 7 },
-      { text: "Depends", percentage: 12 },
+      { text: "Yes", percentage: 43 },
+      { text: "No", percentage: 57 },
     ],
   },
   {
-    question: "How do you handle negative self-talk?",
+    question: "Do you believe in growth mindset?",
     options: [
-      { text: "Reframe it", percentage: 38 },
-      { text: "Let it pass", percentage: 35 },
-      { text: "Still learning", percentage: 27 },
+      { text: "Yes", percentage: 89 },
+      { text: "No", percentage: 11 },
     ],
   },
 ];
