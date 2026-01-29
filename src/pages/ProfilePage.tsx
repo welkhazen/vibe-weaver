@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp } from 'lucide-react';
+import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const upcomingSessions = [
@@ -105,6 +105,48 @@ const ProfilePage = () => {
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-foreground">Upcoming Bookings</h3>
           <span className="text-xs text-primary font-medium">{upcomingSessions.length} scheduled</span>
+        </div>
+
+        {/* Calendar Preview */}
+        <div className="metallic-card p-4 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-medium text-foreground">January 2026</h4>
+            <div className="flex gap-1">
+              <button className="p-1.5 rounded-lg hover:bg-accent transition-colors text-muted-foreground">
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button className="p-1.5 rounded-lg hover:bg-accent transition-colors text-muted-foreground">
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-7 gap-1 text-center text-xs">
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+              <div key={i} className="py-1.5 text-muted-foreground font-medium">
+                {day}
+              </div>
+            ))}
+            {Array.from({ length: 31 }, (_, i) => {
+              const dayNum = i + 1;
+              const isToday = dayNum === 29;
+              const hasSession = dayNum === 29 || dayNum === 30;
+              return (
+                <button
+                  key={i}
+                  className={cn(
+                    'py-1.5 rounded-lg text-xs transition-all duration-200',
+                    isToday
+                      ? 'bg-primary text-primary-foreground font-bold'
+                      : hasSession
+                      ? 'bg-primary/20 text-primary font-medium'
+                      : 'hover:bg-accent text-foreground'
+                  )}
+                >
+                  {dayNum}
+                </button>
+              );
+            })}
+          </div>
         </div>
         
         <div className="space-y-3">
