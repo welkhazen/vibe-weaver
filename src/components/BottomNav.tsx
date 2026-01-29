@@ -27,10 +27,10 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
       <style>{`
         @keyframes brainGlow {
           0%, 100% {
-            box-shadow: 0 0 8px 2px hsla(var(--gold-h, 45), var(--gold-s, 90)%, var(--gold-l, 55)%, 0.3);
+            box-shadow: 0 0 6px 1px hsla(var(--gold-h, 45), var(--gold-s, 90)%, var(--gold-l, 55)%, 0.2);
           }
           50% {
-            box-shadow: 0 0 16px 4px hsla(var(--gold-h, 45), var(--gold-s, 90)%, var(--gold-l, 55)%, 0.6);
+            box-shadow: 0 0 12px 3px hsla(var(--gold-h, 45), var(--gold-s, 90)%, var(--gold-l, 55)%, 0.4);
           }
         }
       `}</style>
@@ -56,7 +56,7 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
                 )}
                 style={item.useThemeColor ? { 
                   color: `hsl(var(--gold-h, 45) var(--gold-s, 90)% var(--gold-l, 55)%)`,
-                  animation: 'brainGlow 3s ease-in-out infinite',
+                  animation: 'brainGlow 5s ease-in-out infinite',
                   borderRadius: '12px',
                 } : undefined}
               >
