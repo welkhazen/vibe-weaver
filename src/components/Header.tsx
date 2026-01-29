@@ -1,4 +1,5 @@
-import { Bell, Menu, User, Lock, Shield, Eye, HelpCircle, LogOut } from 'lucide-react';
+import { useState } from 'react';
+import { Bell, Menu, User, Lock, Shield, Eye, HelpCircle, LogOut, Palette } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,7 +8,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import ThemeColorPicker from './ThemeColorPicker';
+import { cn } from '@/lib/utils';
+
+const colorPresets = [
+  { name: 'Gold', hue: 45, saturation: 90, lightness: 55 },
+  { name: 'Rose', hue: 350, saturation: 80, lightness: 60 },
+  { name: 'Violet', hue: 270, saturation: 70, lightness: 60 },
+  { name: 'Blue', hue: 210, saturation: 80, lightness: 55 },
+  { name: 'Cyan', hue: 180, saturation: 70, lightness: 50 },
+  { name: 'Emerald', hue: 150, saturation: 70, lightness: 45 },
+  { name: 'Orange', hue: 25, saturation: 90, lightness: 55 },
+  { name: 'Pink', hue: 320, saturation: 75, lightness: 60 },
+  { name: 'Silver', hue: 0, saturation: 0, lightness: 70 },
+];
 
 interface HeaderProps {
   title?: string;
@@ -15,6 +28,34 @@ interface HeaderProps {
 }
 
 const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
+  const [selectedHue, setSelectedHue] = useState(() => {
+    const savedHue = localStorage.getItem('theme-hue');
+    return savedHue ? parseInt(savedHue) : 45;
+  });
+  const [showColorPicker, setShowColorPicker] = useState(false);
+
+  const applyThemeColor = (hue: number) => {
+    const root = document.documentElement;
+    const preset = colorPresets.find(p => p.hue === hue);
+    const saturation = preset?.saturation ?? 80;
+    const lightness = preset?.lightness ?? 55;
+    
+    root.style.setProperty('--gold-h', hue.toString());
+    root.style.setProperty('--gold-s', `${saturation}%`);
+    root.style.setProperty('--gold-l', `${lightness}%`);
+    
+    root.style.setProperty('--primary-h', hue.toString());
+    root.style.setProperty('--primary-s', `${Math.min(saturation, 60)}%`);
+    root.style.setProperty('--primary-l', `${lightness + 20}%`);
+  };
+
+  const handleColorSelect = (hue: number) => {
+    setSelectedHue(hue);
+    applyThemeColor(hue);
+    localStorage.setItem('theme-hue', hue.toString());
+    setShowColorPicker(false);
+  };
+
   const menuItems = [
     { icon: <User className="w-4 h-4" />, label: 'Edit Profile', action: 'profile' },
     { icon: <Lock className="w-4 h-4" />, label: 'Change Password', action: 'password' },
@@ -28,9 +69,6 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
     <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 safe-area-top">
       <div className="flex items-center justify-between px-4 h-14 max-w-lg mx-auto">
         <div className="flex items-center gap-1">
-          {/* Color Picker */}
-          <ThemeColorPicker />
-          
           {/* Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -38,8 +76,57 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
                 <Menu className="w-5 h-5 text-foreground" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 metallic-card border-border/50">
+            <DropdownMenuContent align="start" className="w-64 metallic-card border-border/50">
               <DropdownMenuLabel className="text-foreground font-semibold">Settings</DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-border/50" />
+              
+              {/* Theme Color Picker - First Item */}
+              <div className="px-2 py-2">
+                <button
+                  onClick={() => setShowColorPicker(!showColorPicker)}
+                  className="flex items-center gap-3 w-full px-2 py-1.5 rounded-sm hover:bg-accent/50 text-foreground text-sm"
+                >
+                  <Palette className="w-4 h-4 text-muted-foreground" />
+                  <span>Theme Color</span>
+                  <div 
+                    className="w-4 h-4 rounded-full border border-border/50 ml-auto"
+                    style={{ 
+                      backgroundColor: `hsl(${colorPresets.find(p => p.hue === selectedHue)?.hue ?? 45}, ${colorPresets.find(p => p.hue === selectedHue)?.saturation ?? 90}%, ${colorPresets.find(p => p.hue === selectedHue)?.lightness ?? 55}%)`
+                    }}
+                  />
+                </button>
+                
+                {showColorPicker && (
+                  <div className="grid grid-cols-3 gap-2 mt-2 p-2 bg-accent/30 rounded-lg">
+                    {colorPresets.map((preset) => (
+                      <button
+                        key={preset.name}
+                        onClick={() => handleColorSelect(preset.hue)}
+                        className={cn(
+                          "flex flex-col items-center gap-1 p-1.5 rounded-lg transition-all duration-200",
+                          "hover:bg-accent/50 active:scale-95",
+                          selectedHue === preset.hue && "bg-accent ring-1 ring-primary/50"
+                        )}
+                      >
+                        <div 
+                          className="w-6 h-6 rounded-full border transition-all duration-300"
+                          style={{ 
+                            backgroundColor: `hsl(${preset.hue}, ${preset.saturation}%, ${preset.lightness}%)`,
+                            borderColor: selectedHue === preset.hue 
+                              ? `hsl(${preset.hue}, ${preset.saturation}%, ${preset.lightness}%)` 
+                              : 'hsl(var(--border))',
+                            boxShadow: selectedHue === preset.hue 
+                              ? `0 0 8px hsl(${preset.hue}, ${preset.saturation}%, ${preset.lightness}%, 0.6)` 
+                              : 'none'
+                          }}
+                        />
+                        <span className="text-[10px] text-muted-foreground">{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
               <DropdownMenuSeparator className="bg-border/50" />
               
               {menuItems.map((item) => (
