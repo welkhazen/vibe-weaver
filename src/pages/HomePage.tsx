@@ -20,24 +20,27 @@ const mentalHealthSubcategories = [
 
 // Mock data for services/instructors
 const mockServices = [
-  { id: 1, title: 'Vinyasa Flow Yoga', provider: 'Sarah Chen', category: 'yoga', subcategory: null, rating: 4.9, reviews: 128, price: '$45', location: 'Downtown', duration: '60 min' },
-  { id: 2, title: 'CBT Therapy Session', provider: 'Dr. Michael Ross', category: 'therapy', subcategory: 'therapy-sub', rating: 4.8, reviews: 89, price: '$120', location: 'Online', duration: '50 min' },
-  { id: 3, title: 'Brazilian Jiu-Jitsu', provider: 'Carlos Silva', category: 'sports', subcategory: null, rating: 4.9, reviews: 256, price: '$35', location: 'Midtown', duration: '90 min' },
-  { id: 4, title: 'Mountain Hiking Guide', provider: 'Alex Turner', category: 'outdoor', subcategory: null, rating: 4.7, reviews: 67, price: '$80', location: 'Various', duration: '4 hrs' },
-  { id: 5, title: 'Piano Lessons', provider: 'Emma Williams', category: 'arts', subcategory: null, rating: 5.0, reviews: 42, price: '$55', location: 'East Side', duration: '45 min' },
-  { id: 6, title: 'Math Tutoring', provider: 'David Kim', category: 'tutoring', subcategory: null, rating: 4.8, reviews: 93, price: '$40', location: 'Online', duration: '60 min' },
-  { id: 7, title: 'Pilates Reformer', provider: 'Lisa Park', category: 'yoga', subcategory: null, rating: 4.9, reviews: 78, price: '$50', location: 'Westside', duration: '55 min' },
-  { id: 8, title: 'Life Coaching Session', provider: 'James Wilson', category: 'therapy', subcategory: 'coaching', rating: 4.6, reviews: 34, price: '$95', location: 'Online', duration: '60 min' },
-  { id: 9, title: 'Kickboxing Training', provider: 'Mike Johnson', category: 'sports', subcategory: null, rating: 4.8, reviews: 112, price: '$40', location: 'Downtown', duration: '60 min' },
-  { id: 10, title: 'Anxiety Counseling', provider: 'Dr. Sarah Lee', category: 'therapy', subcategory: 'anxiety', rating: 4.9, reviews: 156, price: '$110', location: 'Online', duration: '50 min' },
-  { id: 11, title: 'Rock Climbing Guide', provider: 'Jake Miller', category: 'outdoor', subcategory: null, rating: 4.8, reviews: 89, price: '$75', location: 'Boulder Park', duration: '3 hrs' },
-  { id: 12, title: 'Guitar Lessons', provider: 'Tom Garcia', category: 'arts', subcategory: null, rating: 4.7, reviews: 67, price: '$50', location: 'Midtown', duration: '45 min' },
-  { id: 13, title: 'Guided Meditation', provider: 'Maya Johnson', category: 'therapy', subcategory: 'meditation', rating: 4.9, reviews: 203, price: '$35', location: 'Online', duration: '30 min' },
-  { id: 14, title: 'Stress Relief Workshop', provider: 'Dr. Emily Chen', category: 'therapy', subcategory: 'stress', rating: 4.8, reviews: 87, price: '$65', location: 'Midtown', duration: '90 min' },
-  { id: 15, title: 'Mindfulness Training', provider: 'Zen Master Liu', category: 'therapy', subcategory: 'mindfulness', rating: 5.0, reviews: 142, price: '$50', location: 'Downtown', duration: '45 min' },
-  { id: 16, title: 'Couples Counseling', provider: 'Dr. Robert Hayes', category: 'therapy', subcategory: 'relationship', rating: 4.7, reviews: 68, price: '$150', location: 'Online', duration: '60 min' },
-  { id: 17, title: 'Family Therapy', provider: 'Dr. Anna Martinez', category: 'therapy', subcategory: 'relationship', rating: 4.8, reviews: 95, price: '$140', location: 'Westside', duration: '75 min' },
-  { id: 18, title: 'Executive Coaching', provider: 'Mark Stevens', category: 'therapy', subcategory: 'coaching', rating: 4.9, reviews: 56, price: '$200', location: 'Online', duration: '60 min' },
+  { id: 1, title: 'CBT Therapy Session', provider: 'Dr. Michael Ross', category: 'mental-health', subcategory: 'therapy-sub', rating: 4.8, reviews: 89, price: '$120', location: 'Online', duration: '50 min' },
+  { id: 2, title: 'Anxiety Counseling', provider: 'Dr. Sarah Lee', category: 'mental-health', subcategory: 'anxiety', rating: 4.9, reviews: 156, price: '$110', location: 'Online', duration: '50 min' },
+  { id: 3, title: 'Guided Meditation', provider: 'Maya Johnson', category: 'mental-health', subcategory: 'meditation', rating: 4.9, reviews: 203, price: '$35', location: 'Online', duration: '30 min' },
+  { id: 4, title: 'Life Coaching Session', provider: 'James Wilson', category: 'mental-health', subcategory: 'coaching', rating: 4.6, reviews: 34, price: '$95', location: 'Online', duration: '60 min' },
+  { id: 5, title: 'Mindfulness Training', provider: 'Zen Master Liu', category: 'mental-health', subcategory: 'mindfulness', rating: 5.0, reviews: 142, price: '$50', location: 'Downtown', duration: '45 min' },
+  { id: 6, title: 'Personal Training', provider: 'Mike Johnson', category: 'physical', subcategory: null, rating: 4.8, reviews: 112, price: '$40', location: 'Downtown', duration: '60 min' },
+  { id: 7, title: 'Yoga Flow', provider: 'Sarah Chen', category: 'physical', subcategory: null, rating: 4.9, reviews: 128, price: '$45', location: 'Downtown', duration: '60 min' },
+  { id: 8, title: 'Pilates Reformer', provider: 'Lisa Park', category: 'physical', subcategory: null, rating: 4.9, reviews: 78, price: '$50', location: 'Westside', duration: '55 min' },
+  { id: 9, title: 'Rock Climbing', provider: 'Jake Miller', category: 'physical', subcategory: null, rating: 4.8, reviews: 89, price: '$75', location: 'Boulder Park', duration: '3 hrs' },
+  { id: 10, title: 'Pottery Workshop', provider: 'Claire Adams', category: 'arts-crafts', subcategory: null, rating: 4.7, reviews: 54, price: '$60', location: 'Art District', duration: '2 hrs' },
+  { id: 11, title: 'Painting Class', provider: 'Marcus Lee', category: 'arts-crafts', subcategory: null, rating: 4.8, reviews: 67, price: '$55', location: 'Downtown', duration: '90 min' },
+  { id: 12, title: 'Jewelry Making', provider: 'Sofia Rivera', category: 'arts-crafts', subcategory: null, rating: 4.9, reviews: 42, price: '$70', location: 'Midtown', duration: '2 hrs' },
+  { id: 13, title: 'Ballet Fundamentals', provider: 'Anna Petrov', category: 'dance', subcategory: null, rating: 4.9, reviews: 89, price: '$45', location: 'Dance Studio', duration: '60 min' },
+  { id: 14, title: 'Hip Hop Dance', provider: 'Jordan Blake', category: 'dance', subcategory: null, rating: 4.8, reviews: 156, price: '$35', location: 'Downtown', duration: '60 min' },
+  { id: 15, title: 'Salsa Classes', provider: 'Carlos Mendez', category: 'dance', subcategory: null, rating: 4.7, reviews: 98, price: '$40', location: 'Latin Quarter', duration: '75 min' },
+  { id: 16, title: 'Piano Lessons', provider: 'Emma Williams', category: 'music', subcategory: null, rating: 5.0, reviews: 42, price: '$55', location: 'East Side', duration: '45 min' },
+  { id: 17, title: 'Guitar Lessons', provider: 'Tom Garcia', category: 'music', subcategory: null, rating: 4.7, reviews: 67, price: '$50', location: 'Midtown', duration: '45 min' },
+  { id: 18, title: 'Voice Training', provider: 'Maria Santos', category: 'music', subcategory: null, rating: 4.8, reviews: 73, price: '$60', location: 'Music Hall', duration: '50 min' },
+  { id: 19, title: 'Math Tutoring', provider: 'David Kim', category: 'education', subcategory: null, rating: 4.8, reviews: 93, price: '$40', location: 'Online', duration: '60 min' },
+  { id: 20, title: 'Language Learning', provider: 'Sophie Martin', category: 'education', subcategory: null, rating: 4.9, reviews: 112, price: '$45', location: 'Online', duration: '60 min' },
+  { id: 21, title: 'SAT Prep', provider: 'Dr. James Chen', category: 'education', subcategory: null, rating: 4.8, reviews: 87, price: '$80', location: 'Library', duration: '90 min' },
 ];
 
 type Instructor = typeof mockServices[0];
@@ -55,8 +58,8 @@ const HomePage = () => {
 
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
-    // If it's therapy/mental health, don't auto-select subcategory
-    if (categoryId !== 'therapy') {
+    // If it's mental health, don't auto-select subcategory
+    if (categoryId !== 'mental-health') {
       setSelectedSubcategory(null);
     }
   };
@@ -67,7 +70,7 @@ const HomePage = () => {
   };
 
   const handleBackFromInstructors = () => {
-    if (selectedCategory === 'therapy') {
+    if (selectedCategory === 'mental-health') {
       setSelectedSubcategory(null);
     } else {
       setSelectedCategory(null);
@@ -77,7 +80,7 @@ const HomePage = () => {
     if (!selectedCategory) return [];
     return mockServices.filter((service) => {
       const matchesCategory = service.category === selectedCategory;
-      const matchesSubcategory = selectedCategory === 'therapy' 
+      const matchesSubcategory = selectedCategory === 'mental-health' 
         ? (selectedSubcategory ? service.subcategory === selectedSubcategory : true)
         : true;
       const matchesSearch = service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -134,7 +137,7 @@ const HomePage = () => {
   }
 
   // Subcategory selection for Mental Health
-  if (selectedCategory === 'therapy' && !selectedSubcategory) {
+  if (selectedCategory === 'mental-health' && !selectedSubcategory) {
     return (
       <div className="animate-fade-in pb-24">
         {/* Back button and category header */}
@@ -194,7 +197,7 @@ const HomePage = () => {
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
         <div className="flex items-center gap-2">
-          {selectedCategory === 'therapy' && selectedSubcategoryData ? (
+          {selectedCategory === 'mental-health' && selectedSubcategoryData ? (
             <>
               <selectedSubcategoryData.icon className="w-6 h-6 text-foreground" strokeWidth={1.5} />
               <h2 className="text-lg font-bold text-foreground">{selectedSubcategoryData.label}</h2>
