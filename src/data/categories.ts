@@ -24,7 +24,7 @@ export interface Subcategory {
 export const categories: Category[] = [
   { id: 'mental-health', label: 'Mental Health', icon: Brain },
   { id: 'physical', label: 'Physical Activities', icon: Dumbbell },
-  { id: 'arts-crafts', label: 'Arts and Crafts', icon: Scissors },
+  { id: 'arts-crafts', label: 'Creative Arts', icon: Scissors },
   { id: 'dance', label: 'Dance', icon: Drama },
   { id: 'music', label: 'Music', icon: Music2 },
   { id: 'education', label: 'Education', icon: GraduationCap },
