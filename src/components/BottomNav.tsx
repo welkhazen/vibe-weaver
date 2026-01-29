@@ -1,16 +1,17 @@
-import { Home, Search, User, Leaf, Trophy } from 'lucide-react';
+import { Home, Search, User, Brain, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
   id: string;
   label: string;
   icon: React.ReactNode;
+  useThemeColor?: boolean;
 }
 
 const navItems: NavItem[] = [
   { id: 'home', label: 'Home', icon: <Home className="w-5 h-5" /> },
   { id: 'search', label: 'Explore', icon: <Search className="w-5 h-5" /> },
-  { id: 'tcm', label: 'raW', icon: <Leaf className="w-5 h-5" /> },
+  { id: 'tcm', label: 'raW', icon: <Brain className="w-5 h-5" />, useThemeColor: true },
   { id: 'challenges', label: 'Challenges', icon: <Trophy className="w-5 h-5" /> },
   { id: 'profile', label: 'Profile', icon: <User className="w-5 h-5" /> },
 ];
@@ -42,10 +43,20 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
                   ? 'bg-primary/20 glow-primary scale-110' 
                   : 'hover:scale-105 active:scale-95'
               )}
+              style={item.useThemeColor ? { 
+                color: `hsl(var(--gold-h, 45) var(--gold-s, 90)% var(--gold-l, 55)%)` 
+              } : undefined}
             >
               {item.icon}
             </div>
-            <span className="text-[10px] mt-1 font-medium">{item.label}</span>
+            <span 
+              className="text-[10px] mt-1 font-medium"
+              style={item.useThemeColor ? { 
+                color: `hsl(var(--gold-h, 45) var(--gold-s, 90)% var(--gold-l, 55)%)` 
+              } : undefined}
+            >
+              {item.label}
+            </span>
           </button>
         ))}
       </div>
