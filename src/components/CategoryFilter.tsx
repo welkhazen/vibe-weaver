@@ -2,13 +2,12 @@ import { cn } from '@/lib/utils';
 
 export const categories = [
   { id: 'all', label: 'All', icon: '✦' },
-  { id: 'yoga', label: 'Yoga / Pilates', icon: '🧘' },
-  { id: 'therapy', label: 'Therapy / Mental Health', icon: '🧠' },
-  { id: 'sports', label: 'Sports / Martial Arts', icon: '🥋' },
-  { id: 'outdoor', label: 'Outdoor Activities', icon: '🏔️' },
-  { id: 'arts', label: 'Arts / Music / Dance', icon: '🎨' },
-  { id: 'tutoring', label: 'Tutoring / Education', icon: '📚' },
-  { id: 'other', label: 'Other', icon: '⚡' },
+  { id: 'mental-health', label: 'Mental Health', icon: '🧠' },
+  { id: 'physical', label: 'Physical Activities', icon: '💪' },
+  { id: 'arts-crafts', label: 'Arts and Crafts', icon: '✂️' },
+  { id: 'dance', label: 'Dance', icon: '💃' },
+  { id: 'music', label: 'Music', icon: '🎵' },
+  { id: 'education', label: 'Education', icon: '📚' },
 ];
 
 interface CategoryFilterProps {
