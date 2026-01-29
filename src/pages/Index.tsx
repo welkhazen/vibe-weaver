@@ -22,7 +22,7 @@ const Index = () => {
       case 'search': return 'Explore';
       case 'calendar': return 'Schedule';
       case 'profile': return 'Profile';
-      case 'tcm': return 'TCM';
+      case 'tcm': return 'The Cumulative Mind';
       default: return 'The Art of Raw';
     }
   };
