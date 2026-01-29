@@ -4,7 +4,7 @@ export const categories = [
   { id: 'all', label: 'All', icon: '✦' },
   { id: 'mental-health', label: 'Mental Health', icon: '🧠' },
   { id: 'physical', label: 'Physical', icon: '💪' },
-  { id: 'arts-crafts', label: 'Arts & Crafts', icon: '✂️' },
+  { id: 'arts-crafts', label: 'Creative Arts', icon: '✂️' },
   { id: 'dance', label: 'Dance', icon: '💃' },
   { id: 'music', label: 'Music', icon: '🎵' },
   { id: 'education', label: 'Education', icon: '📚' },
