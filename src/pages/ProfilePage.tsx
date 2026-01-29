@@ -1,6 +1,44 @@
-import { Camera, Edit, MapPin, Star, Award, Calendar } from 'lucide-react';
+import { useState } from 'react';
+import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const upcomingSessions = [
+  {
+    id: 1,
+    title: 'Vinyasa Flow Yoga',
+    instructor: 'Sarah Chen',
+    date: 'Today',
+    time: '10:00 AM',
+    duration: '60 min',
+    type: 'in-person',
+    location: 'Downtown Studio',
+  },
+  {
+    id: 2,
+    title: 'CBT Therapy Session',
+    instructor: 'Dr. Michael Ross',
+    date: 'Tomorrow',
+    time: '2:00 PM',
+    duration: '50 min',
+    type: 'online',
+    location: 'Video Call',
+  },
+  {
+    id: 3,
+    title: 'Piano Lesson',
+    instructor: 'Emma Williams',
+    date: 'Jan 30',
+    time: '4:30 PM',
+    duration: '45 min',
+    type: 'in-person',
+    location: 'East Side Music Hall',
+  },
+];
 
 const ProfilePage = () => {
+  const [showAllBookings, setShowAllBookings] = useState(false);
+  const displayedSessions = showAllBookings ? upcomingSessions : upcomingSessions.slice(0, 2);
+
   return (
     <div className="animate-fade-in pb-24">
       {/* Profile header */}
@@ -60,6 +98,75 @@ const ProfilePage = () => {
           <span className="text-2xl font-bold text-foreground">5</span>
           <p className="text-xs text-muted-foreground mt-1">Badges</p>
         </div>
+      </div>
+
+      {/* Upcoming Bookings Section */}
+      <div className="px-4 mt-6">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-foreground">Upcoming Bookings</h3>
+          <span className="text-xs text-primary font-medium">{upcomingSessions.length} scheduled</span>
+        </div>
+        
+        <div className="space-y-3">
+          {displayedSessions.map((session) => (
+            <div key={session.id} className="metallic-card p-4">
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h4 className="font-semibold text-foreground">{session.title}</h4>
+                  <p className="text-sm text-muted-foreground">{session.instructor}</p>
+                </div>
+                {session.type === 'online' ? (
+                  <div className="p-2 rounded-lg bg-primary/20">
+                    <Video className="w-4 h-4 text-primary" />
+                  </div>
+                ) : (
+                  <div className="p-2 rounded-lg bg-accent">
+                    <MapPin className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3" />
+                  <span>{session.date}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  <span>{session.time} ({session.duration})</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-3 h-3" />
+                  <span>{session.location}</span>
+                </div>
+              </div>
+              <div className="flex gap-2 mt-3">
+                <button className="flex-1 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium transition-all duration-300 hover:bg-primary/90 active:scale-[0.98]">
+                  {session.type === 'online' ? 'Join Call' : 'Get Directions'}
+                </button>
+                <button className="py-2 px-4 rounded-lg border border-border text-sm font-medium text-foreground hover:bg-accent transition-all duration-300 active:scale-[0.98]">
+                  Reschedule
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {upcomingSessions.length > 2 && (
+          <button
+            onClick={() => setShowAllBookings(!showAllBookings)}
+            className="w-full mt-3 py-2 flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {showAllBookings ? (
+              <>
+                Show Less <ChevronUp className="w-4 h-4" />
+              </>
+            ) : (
+              <>
+                View All ({upcomingSessions.length}) <ChevronDown className="w-4 h-4" />
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {/* Recent activity */}

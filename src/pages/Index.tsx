@@ -5,7 +5,6 @@ import Header from '@/components/Header';
 import BottomNav from '@/components/BottomNav';
 import HomePage from '@/pages/HomePage';
 import ExplorePage from '@/pages/ExplorePage';
-import SchedulePage from '@/pages/SchedulePage';
 import ProfilePage from '@/pages/ProfilePage';
 import TCMPage from '@/pages/TCMPage';
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -20,7 +19,6 @@ const Index = () => {
     switch (activeTab) {
       case 'home': return 'The Art of Raw';
       case 'search': return 'Explore';
-      case 'calendar': return 'Schedule';
       case 'profile': return 'Profile';
       case 'tcm': return 'The Cumulative Mind';
       default: return 'The Art of Raw';
@@ -31,7 +29,6 @@ const Index = () => {
     switch (activeTab) {
       case 'home': return <HomePage />;
       case 'search': return <ExplorePage />;
-      case 'calendar': return <SchedulePage />;
       case 'profile': return <ProfilePage />;
       case 'tcm': return <TCMPage />;
       default: return <HomePage />;
