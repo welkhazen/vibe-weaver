@@ -18,12 +18,12 @@ const Index = () => {
 
   const getPageTitle = () => {
     switch (activeTab) {
-      case 'home': return 'The Art of Raw';
+      case 'home': return 'The Art of raW';
       case 'search': return 'Explore';
       case 'challenges': return 'Challenges';
       case 'profile': return 'Profile';
       case 'tcm': return 'The Cumulative Mind';
-      default: return 'The Art of Raw';
+      default: return 'The Art of raW';
     }
   };
 

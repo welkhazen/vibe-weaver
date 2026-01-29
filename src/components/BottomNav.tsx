@@ -10,7 +10,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: 'home', label: 'Home', icon: <Home className="w-5 h-5" /> },
   { id: 'search', label: 'Explore', icon: <Search className="w-5 h-5" /> },
-  { id: 'tcm', label: 'Raw', icon: <Leaf className="w-5 h-5" /> },
+  { id: 'tcm', label: 'raW', icon: <Leaf className="w-5 h-5" /> },
   { id: 'challenges', label: 'Challenges', icon: <Trophy className="w-5 h-5" /> },
   { id: 'profile', label: 'Profile', icon: <User className="w-5 h-5" /> },
 ];
