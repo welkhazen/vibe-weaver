@@ -23,44 +23,58 @@ interface BottomNavProps {
 
 const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-xl border-t border-border safe-area-bottom">
-      <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => onTabChange(item.id)}
-            className={cn(
-              'flex flex-col items-center justify-center w-16 h-full transition-all duration-300 ease-out',
-              activeTab === item.id
-                ? 'text-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            <div
+    <>
+      <style>{`
+        @keyframes brainGlow {
+          0%, 100% {
+            box-shadow: 0 0 8px 2px hsla(var(--gold-h, 45), var(--gold-s, 90)%, var(--gold-l, 55)%, 0.3);
+          }
+          50% {
+            box-shadow: 0 0 16px 4px hsla(var(--gold-h, 45), var(--gold-s, 90)%, var(--gold-l, 55)%, 0.6);
+          }
+        }
+      `}</style>
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-xl border-t border-border safe-area-bottom">
+        <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => onTabChange(item.id)}
               className={cn(
-                'p-2 rounded-xl transition-all duration-300 ease-out',
-                activeTab === item.id 
-                  ? 'bg-primary/20 glow-primary scale-110' 
-                  : 'hover:scale-105 active:scale-95'
+                'flex flex-col items-center justify-center w-16 h-full transition-all duration-300 ease-out',
+                activeTab === item.id
+                  ? 'text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
               )}
-              style={item.useThemeColor ? { 
-                color: `hsl(var(--gold-h, 45) var(--gold-s, 90)% var(--gold-l, 55)%)` 
-              } : undefined}
             >
-              {item.icon}
-            </div>
-            <span 
-              className="text-[10px] mt-1 font-medium"
-              style={item.useThemeColor ? { 
-                color: `hsl(var(--gold-h, 45) var(--gold-s, 90)% var(--gold-l, 55)%)` 
-              } : undefined}
-            >
-              {item.label}
-            </span>
-          </button>
-        ))}
-      </div>
-    </nav>
+              <div
+                className={cn(
+                  'p-2 rounded-xl transition-all duration-300 ease-out',
+                  activeTab === item.id 
+                    ? 'bg-primary/20 glow-primary scale-110' 
+                    : 'hover:scale-105 active:scale-95'
+                )}
+                style={item.useThemeColor ? { 
+                  color: `hsl(var(--gold-h, 45) var(--gold-s, 90)% var(--gold-l, 55)%)`,
+                  animation: 'brainGlow 3s ease-in-out infinite',
+                  borderRadius: '12px',
+                } : undefined}
+              >
+                {item.icon}
+              </div>
+              <span 
+                className="text-[10px] mt-1 font-medium"
+                style={item.useThemeColor ? { 
+                  color: `hsl(var(--gold-h, 45) var(--gold-s, 90)% var(--gold-l, 55)%)` 
+                } : undefined}
+              >
+                {item.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      </nav>
+    </>
   );
 };
 
