@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon, Clock, Check } from 'lucide-react';
+import { CalendarIcon, Clock, Check, CreditCard, Coins, Banknote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -18,6 +18,12 @@ const timeSlots = [
   '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
 ];
 
+const paymentMethods = [
+  { id: 'card', label: 'Card', icon: CreditCard, description: 'Credit or Debit card' },
+  { id: 'token', label: 'Token', icon: Coins, description: 'Use your tokens' },
+  { id: 'cash', label: 'Cash', icon: Banknote, description: 'Pay at session' },
+];
+
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -32,16 +38,19 @@ interface BookingModalProps {
 const BookingModal = ({ isOpen, onClose, instructor }: BookingModalProps) => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
 
   const handleBooking = () => {
-    if (selectedDate && selectedTime) {
+    if (selectedDate && selectedTime && selectedPayment) {
+      const paymentMethod = paymentMethods.find(p => p.id === selectedPayment);
       toast({
         title: "Booking Confirmed!",
-        description: `Your session with ${instructor.provider} is scheduled for ${format(selectedDate, 'PPP')} at ${selectedTime}.`,
+        description: `Your session with ${instructor.provider} is scheduled for ${format(selectedDate, 'PPP')} at ${selectedTime}. Payment: ${paymentMethod?.label}.`,
       });
       onClose();
       setSelectedDate(undefined);
       setSelectedTime(null);
+      setSelectedPayment(null);
     }
   };
 
@@ -51,7 +60,7 @@ const BookingModal = ({ isOpen, onClose, instructor }: BookingModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md bg-background border-border">
+      <DialogContent className="max-w-md bg-background border-border max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-foreground">Book a Session</DialogTitle>
           <DialogDescription className="text-muted-foreground">
@@ -104,8 +113,44 @@ const BookingModal = ({ isOpen, onClose, instructor }: BookingModalProps) => {
             </div>
           )}
 
-          {/* Summary */}
+          {/* Payment Method Selection */}
           {selectedDate && selectedTime && (
+            <div className="animate-fade-in">
+              <div className="flex items-center gap-2 mb-3">
+                <CreditCard className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium text-foreground">Payment Method</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {paymentMethods.map((method) => {
+                  const IconComponent = method.icon;
+                  return (
+                    <button
+                      key={method.id}
+                      onClick={() => setSelectedPayment(method.id)}
+                      className={cn(
+                        "p-3 rounded-lg flex flex-col items-center gap-2 transition-all",
+                        "border border-border hover:border-primary/50",
+                        selectedPayment === method.id
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-accent/50 text-foreground"
+                      )}
+                    >
+                      <IconComponent className="w-5 h-5" />
+                      <span className="text-xs font-medium">{method.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              {selectedPayment && (
+                <p className="text-xs text-muted-foreground mt-2 text-center">
+                  {paymentMethods.find(p => p.id === selectedPayment)?.description}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Summary */}
+          {selectedDate && selectedTime && selectedPayment && (
             <div className="animate-fade-in p-4 rounded-lg bg-accent/30 border border-border">
               <h4 className="text-sm font-semibold text-foreground mb-2">Booking Summary</h4>
               <div className="space-y-1 text-sm text-muted-foreground">
@@ -113,6 +158,7 @@ const BookingModal = ({ isOpen, onClose, instructor }: BookingModalProps) => {
                 <p><span className="text-foreground">Date:</span> {format(selectedDate, 'EEEE, MMMM d, yyyy')}</p>
                 <p><span className="text-foreground">Time:</span> {selectedTime}</p>
                 <p><span className="text-foreground">Duration:</span> {instructor.duration}</p>
+                <p><span className="text-foreground">Payment:</span> {paymentMethods.find(p => p.id === selectedPayment)?.label}</p>
                 <p className="pt-2 text-lg font-bold text-foreground">{instructor.price}</p>
               </div>
             </div>
@@ -126,7 +172,7 @@ const BookingModal = ({ isOpen, onClose, instructor }: BookingModalProps) => {
           </Button>
           <Button 
             onClick={handleBooking} 
-            disabled={!selectedDate || !selectedTime}
+            disabled={!selectedDate || !selectedTime || !selectedPayment}
             className="flex-1 gap-2"
           >
             <Check className="w-4 h-4" />
