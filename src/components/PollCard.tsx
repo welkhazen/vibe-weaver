@@ -39,7 +39,10 @@ const PollCard = ({ question, options, index }: PollCardProps) => {
       </p>
 
       {/* Options */}
-      <div className="space-y-2">
+      <div className={cn(
+        'space-y-2',
+        options.length > 2 && 'max-h-32 overflow-y-auto pr-1'
+      )}>
         {options.map((option, optionIndex) => (
           <button
             key={optionIndex}
