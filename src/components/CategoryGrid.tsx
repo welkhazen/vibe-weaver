@@ -1,14 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Brain, Dumbbell, Scissors, Music2, Drama, GraduationCap } from 'lucide-react';
-
-export const categories = [
-  { id: 'mental-health', label: 'Mental Health', icon: Brain },
-  { id: 'physical', label: 'Physical Activities', icon: Dumbbell },
-  { id: 'arts-crafts', label: 'Arts and Crafts', icon: Scissors },
-  { id: 'dance', label: 'Dance', icon: Drama },
-  { id: 'music', label: 'Music', icon: Music2 },
-  { id: 'education', label: 'Education', icon: GraduationCap },
-];
+import { categories } from '@/data/categories';
 
 interface CategoryGridProps {
   onSelectCategory: (category: string) => void;

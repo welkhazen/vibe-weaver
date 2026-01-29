@@ -3,8 +3,8 @@ import { cn } from '@/lib/utils';
 export const categories = [
   { id: 'all', label: 'All', icon: '✦' },
   { id: 'mental-health', label: 'Mental Health', icon: '🧠' },
-  { id: 'physical', label: 'Physical Activities', icon: '💪' },
-  { id: 'arts-crafts', label: 'Arts and Crafts', icon: '✂️' },
+  { id: 'physical', label: 'Physical', icon: '💪' },
+  { id: 'arts-crafts', label: 'Arts & Crafts', icon: '✂️' },
   { id: 'dance', label: 'Dance', icon: '💃' },
   { id: 'music', label: 'Music', icon: '🎵' },
   { id: 'education', label: 'Education', icon: '📚' },
