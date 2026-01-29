@@ -118,6 +118,17 @@ const GoldenGlowBackground = () => {
             opacity: 0.7;
           }
         }
+        
+        @keyframes shimmerPulse {
+          0%, 100% {
+            opacity: 0.4;
+            filter: blur(60px) brightness(1);
+          }
+          50% {
+            opacity: 0.7;
+            filter: blur(55px) brightness(1.2);
+          }
+        }
       `}</style>
       
       <div 
@@ -137,7 +148,7 @@ const GoldenGlowBackground = () => {
               hsla(${themeHue}, ${themeSaturation - 5}%, ${themeLightness}%, 0.08) 40%,
               transparent 70%
             )`,
-            filter: 'blur(60px)',
+            animation: 'shimmerPulse 4s ease-in-out infinite',
           }}
         />
         
@@ -154,7 +165,7 @@ const GoldenGlowBackground = () => {
               hsla(${themeHue}, ${themeSaturation - 5}%, ${themeLightness}%, 0.08) 40%,
               transparent 70%
             )`,
-            filter: 'blur(60px)',
+            animation: 'shimmerPulse 5s ease-in-out 1s infinite',
           }}
         />
         
@@ -166,13 +177,12 @@ const GoldenGlowBackground = () => {
             height: '30vh',
             top: '40%',
             left: '30%',
-            opacity: 0.5,
             background: `radial-gradient(ellipse at center,
               hsla(${themeHue}, ${themeSaturation}%, ${themeLightness + 5}%, 0.15) 0%,
               hsla(${themeHue}, ${themeSaturation - 5}%, ${themeLightness}%, 0.08) 40%,
               transparent 70%
             )`,
-            filter: 'blur(60px)',
+            animation: 'shimmerPulse 6s ease-in-out 2s infinite',
           }}
         />
       </div>
