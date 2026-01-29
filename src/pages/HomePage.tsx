@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import CategoryGrid, { categories } from '@/components/CategoryGrid';
 import ServiceCard from '@/components/ServiceCard';
 import InstructorDetail from '@/components/InstructorDetail';
+import FilterSection, { FilterValues } from '@/components/FilterSection';
 import { Search, ArrowLeft, Brain, Heart, Sparkles, Leaf, MessageCircle, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -45,6 +46,11 @@ const HomePage = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
   const [selectedInstructor, setSelectedInstructor] = useState<Instructor | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState<FilterValues>({
+    location: 'all',
+    maxPrice: 200,
+    sessionType: 'all',
+  });
 
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategory(categoryId);
@@ -107,6 +113,9 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+
+        {/* Filter Section */}
+        <FilterSection filters={filters} onFiltersChange={setFilters} />
 
         {/* Category title */}
         <div className="px-4 pb-4">
