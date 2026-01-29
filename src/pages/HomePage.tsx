@@ -3,6 +3,7 @@ import CategoryGrid, { categories } from '@/components/CategoryGrid';
 import ServiceCard from '@/components/ServiceCard';
 import InstructorDetail from '@/components/InstructorDetail';
 import FilterSection, { FilterValues } from '@/components/FilterSection';
+import GuidedSearch from '@/components/GuidedSearch';
 import { Search, ArrowLeft, Brain, Heart, Sparkles, Leaf, MessageCircle, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -113,6 +114,9 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+
+        {/* AI Guided Search */}
+        <GuidedSearch />
 
         {/* Filter Section */}
         <FilterSection filters={filters} onFiltersChange={setFilters} />
