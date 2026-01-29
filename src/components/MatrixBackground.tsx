@@ -2,6 +2,10 @@ import { useEffect, useRef } from 'react';
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const speedRef = useRef(15); // Start fast (lower interval = faster)
+  const targetSpeedRef = useRef(50); // Final slow speed
+  const startTimeRef = useRef(Date.now());
+  const slowdownDuration = 8000; // 8 seconds to slow down
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -34,6 +38,18 @@ const MatrixBackground = () => {
       return `hsl(0, 0%, ${l})`;
     };
 
+    // Calculate current speed based on elapsed time
+    const getCurrentInterval = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const progress = Math.min(elapsed / slowdownDuration, 1);
+      
+      // Ease-out function for smooth deceleration
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      
+      // Interpolate from fast (15ms) to slow (50ms)
+      return speedRef.current + (targetSpeedRef.current - speedRef.current) * easeOut;
+    };
+
     const draw = () => {
       // Semi-transparent black to create fade effect
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
@@ -58,10 +74,19 @@ const MatrixBackground = () => {
       }
     };
 
-    const interval = setInterval(draw, 50);
+    // Use dynamic timing with setTimeout instead of setInterval
+    let timeoutId: number;
+    
+    const loop = () => {
+      draw();
+      const currentInterval = getCurrentInterval();
+      timeoutId = window.setTimeout(loop, currentInterval);
+    };
+    
+    loop();
 
     return () => {
-      clearInterval(interval);
+      clearTimeout(timeoutId);
       window.removeEventListener('resize', resizeCanvas);
     };
   }, []);

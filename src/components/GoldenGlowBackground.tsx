@@ -1,13 +1,60 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const GoldenGlowBackground = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [themeHue, setThemeHue] = useState(45);
+  const [themeSaturation, setThemeSaturation] = useState(90);
+  const [themeLightness, setThemeLightness] = useState(55);
+
+  // Listen for theme color changes
+  useEffect(() => {
+    const updateThemeColor = () => {
+      const root = document.documentElement;
+      const h = getComputedStyle(root).getPropertyValue('--gold-h').trim();
+      const s = getComputedStyle(root).getPropertyValue('--gold-s').trim();
+      const l = getComputedStyle(root).getPropertyValue('--gold-l').trim();
+      
+      if (h) setThemeHue(parseInt(h) || 45);
+      if (s) setThemeSaturation(parseInt(s) || 90);
+      if (l) setThemeLightness(parseInt(l) || 55);
+    };
+
+    // Initial read
+    updateThemeColor();
+
+    // Create a MutationObserver to watch for style changes on root
+    const observer = new MutationObserver(() => {
+      updateThemeColor();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['style']
+    });
+
+    // Also listen for storage changes (when color is saved)
+    const handleStorage = () => updateThemeColor();
+    window.addEventListener('storage', handleStorage);
+
+    // Poll for changes as a fallback (for same-tab updates)
+    const pollInterval = setInterval(updateThemeColor, 100);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('storage', handleStorage);
+      clearInterval(pollInterval);
+    };
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Create floating golden orbs
+    // Clear existing orbs
+    const existingOrbs = container.querySelectorAll('.golden-orb');
+    existingOrbs.forEach(orb => orb.remove());
+
+    // Create floating orbs with current theme color
     const createOrb = () => {
       const orb = document.createElement('div');
       const size = Math.random() * 200 + 100;
@@ -24,9 +71,9 @@ const GoldenGlowBackground = () => {
         left: ${x}%;
         top: ${y}%;
         background: radial-gradient(circle at center, 
-          hsla(45, 90%, 55%, 0.3) 0%, 
-          hsla(45, 85%, 50%, 0.15) 30%,
-          hsla(40, 80%, 45%, 0.05) 60%,
+          hsla(${themeHue}, ${themeSaturation}%, ${themeLightness}%, 0.3) 0%, 
+          hsla(${themeHue}, ${themeSaturation - 5}%, ${themeLightness - 5}%, 0.15) 30%,
+          hsla(${themeHue - 5}, ${themeSaturation - 10}%, ${themeLightness - 10}%, 0.05) 60%,
           transparent 70%
         );
         border-radius: 50%;
@@ -48,7 +95,7 @@ const GoldenGlowBackground = () => {
     return () => {
       orbs.forEach(orb => orb.remove());
     };
-  }, []);
+  }, [themeHue, themeSaturation, themeLightness]);
 
   return (
     <>
@@ -71,54 +118,61 @@ const GoldenGlowBackground = () => {
             opacity: 0.7;
           }
         }
-
-        .golden-highlight {
-          position: absolute;
-          background: radial-gradient(ellipse at center,
-            hsla(45, 90%, 60%, 0.15) 0%,
-            hsla(45, 85%, 55%, 0.08) 40%,
-            transparent 70%
-          );
-          filter: blur(60px);
-          pointer-events: none;
-        }
       `}</style>
       
       <div 
         ref={containerRef}
         className="fixed inset-0 pointer-events-none z-[1] overflow-hidden"
       >
-        {/* Top-left golden highlight */}
+        {/* Top-left highlight */}
         <div 
-          className="golden-highlight"
+          className="absolute pointer-events-none"
           style={{
             width: '60vw',
             height: '50vh',
             top: '-10%',
             left: '-15%',
+            background: `radial-gradient(ellipse at center,
+              hsla(${themeHue}, ${themeSaturation}%, ${themeLightness + 5}%, 0.15) 0%,
+              hsla(${themeHue}, ${themeSaturation - 5}%, ${themeLightness}%, 0.08) 40%,
+              transparent 70%
+            )`,
+            filter: 'blur(60px)',
           }}
         />
         
-        {/* Bottom-right golden highlight */}
+        {/* Bottom-right highlight */}
         <div 
-          className="golden-highlight"
+          className="absolute pointer-events-none"
           style={{
             width: '50vw',
             height: '40vh',
             bottom: '-5%',
             right: '-10%',
+            background: `radial-gradient(ellipse at center,
+              hsla(${themeHue}, ${themeSaturation}%, ${themeLightness + 5}%, 0.15) 0%,
+              hsla(${themeHue}, ${themeSaturation - 5}%, ${themeLightness}%, 0.08) 40%,
+              transparent 70%
+            )`,
+            filter: 'blur(60px)',
           }}
         />
         
         {/* Center accent */}
         <div 
-          className="golden-highlight"
+          className="absolute pointer-events-none"
           style={{
             width: '40vw',
             height: '30vh',
             top: '40%',
             left: '30%',
             opacity: 0.5,
+            background: `radial-gradient(ellipse at center,
+              hsla(${themeHue}, ${themeSaturation}%, ${themeLightness + 5}%, 0.15) 0%,
+              hsla(${themeHue}, ${themeSaturation - 5}%, ${themeLightness}%, 0.08) 40%,
+              transparent 70%
+            )`,
+            filter: 'blur(60px)',
           }}
         />
       </div>
