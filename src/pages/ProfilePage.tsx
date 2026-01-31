@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, TrendingUp, Percent, Zap } from 'lucide-react';
+import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, TrendingUp, Percent, Zap, Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import LevelUpCelebration from '@/components/LevelUpCelebration';
 
 const upcomingSessions = [
   {
@@ -51,6 +52,7 @@ const levelData = [
 
 const ProfilePage = () => {
   const [showAllBookings, setShowAllBookings] = useState(false);
+  const [showLevelUpCelebration, setShowLevelUpCelebration] = useState(false);
   const displayedSessions = showAllBookings ? upcomingSessions : upcomingSessions.slice(0, 2);
 
   // Mock user progress (will be fetched from database when auth is implemented)
@@ -73,6 +75,14 @@ const ProfilePage = () => {
 
   return (
     <div className="animate-fade-in pb-24">
+      {/* Level Up Celebration Modal */}
+      {showLevelUpCelebration && (
+        <LevelUpCelebration
+          newLevel={userProgress.level}
+          cashbackPercent={currentLevelData.cashback}
+          onClose={() => setShowLevelUpCelebration(false)}
+        />
+      )}
       {/* Profile header */}
       <div className="relative">
         {/* Banner */}
@@ -153,13 +163,21 @@ const ProfilePage = () => {
 
             {/* Level Benefits Preview */}
             {nextLevelData && (
-              <div className="mt-3 pt-3 border-t border-border/30">
+              <div className="mt-3 pt-3 border-t border-border/30 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs">
                   <Zap className="w-3.5 h-3.5 text-primary" />
                   <span className="text-muted-foreground">
                     Next: <span className="text-foreground font-medium">{nextLevelData.cashback}% cashback</span> at Level {nextLevelData.level}
                   </span>
                 </div>
+                {/* Demo button to preview level-up animation */}
+                <button
+                  onClick={() => setShowLevelUpCelebration(true)}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/20 text-primary text-[10px] font-medium hover:bg-primary/30 transition-colors active:scale-95"
+                >
+                  <Gift className="w-3 h-3" />
+                  Preview
+                </button>
               </div>
             )}
           </div>
