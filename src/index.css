@@ -172,6 +172,40 @@
     border-color: hsl(var(--gold) / 0.5);
   }
 
+  /* Theme-aware icon glow */
+  .icon-glow {
+    filter: drop-shadow(0 0 4px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.5));
+    transition: filter 0.3s ease;
+  }
+
+  .icon-glow:hover {
+    filter: drop-shadow(0 0 8px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.7));
+  }
+
+  /* Theme-aware box outline */
+  .theme-border {
+    border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.4);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .theme-border:hover {
+    border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.6);
+  }
+
+  /* Theme-aware box glow */
+  .theme-glow-box {
+    box-shadow: 0 0 8px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.15),
+                inset 0 1px 0 0 hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.1);
+    border: 1px solid hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.2);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .theme-glow-box:hover {
+    box-shadow: 0 0 16px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.25),
+                inset 0 1px 0 0 hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.15);
+    border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.35);
+  }
+
   /* Chrome/Silver ring effect */
   .chrome-ring {
     box-shadow: 
