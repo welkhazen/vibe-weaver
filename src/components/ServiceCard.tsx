@@ -38,13 +38,13 @@ const ServiceCard = ({
   
   return (
     <div 
-      className="metallic-card p-4 animate-fade-in hover:scale-[1.02] transition-transform cursor-pointer"
+      className="metallic-card theme-glow-box p-4 animate-fade-in hover:scale-[1.02] transition-transform cursor-pointer"
       onClick={onClick}
     >
       <div className="flex gap-4">
         {/* Avatar/Icon */}
         <div className="w-16 h-16 rounded-xl bg-accent/50 flex items-center justify-center chrome-ring shrink-0">
-          <IconComponent className="w-7 h-7 text-foreground" strokeWidth={1.5} />
+          <IconComponent className="w-7 h-7 text-foreground icon-glow" strokeWidth={1.5} />
         </div>
 
         <div className="flex-1 min-w-0">

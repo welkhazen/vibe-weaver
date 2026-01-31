@@ -75,7 +75,7 @@ const HomePage = () => {
       <div className="animate-fade-in pb-24">
         {/* Hero section */}
         <div className="px-4 py-6">
-          <div className="metallic-card p-5 relative overflow-hidden">
+          <div className="metallic-card theme-glow-box p-5 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
             <div className="relative z-10">
               <span className="text-xs font-semibold text-primary uppercase tracking-wider">Welcome</span>
@@ -136,13 +136,13 @@ const HomePage = () => {
                 key={sub.id}
                 onClick={() => handleSubcategorySelect(sub.id)}
                 className={cn(
-                  'metallic-card p-5 flex flex-col items-center gap-3 transition-all duration-300 ease-out',
-                  'hover:scale-[1.03] hover:border-primary/30 active:scale-[0.97]',
+                  'metallic-card theme-glow-box p-5 flex flex-col items-center gap-3 transition-all duration-300 ease-out',
+                  'hover:scale-[1.03] active:scale-[0.97]',
                   'group'
                 )}
               >
-                <IconComponent className="w-10 h-10 text-foreground transition-all duration-300 group-hover:scale-110 group-hover:text-primary" strokeWidth={1.5} />
-                <span className="text-sm font-medium text-foreground text-center leading-tight transition-colors duration-300 group-hover:text-primary">
+                <IconComponent className="w-10 h-10 text-foreground icon-glow transition-all duration-300 group-hover:scale-110" strokeWidth={1.5} />
+                <span className="text-sm font-medium text-foreground text-center leading-tight transition-colors duration-300">
                   {sub.label}
                 </span>
               </button>
