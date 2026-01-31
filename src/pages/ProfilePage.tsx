@@ -77,23 +77,23 @@ const ProfilePage = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3 px-4 mt-6">
-        <div className="metallic-card p-4 text-center">
+        <div className="metallic-card theme-glow-box p-4 text-center">
           <div className="flex justify-center mb-2">
-            <Calendar className="w-6 h-6 text-primary" />
+            <Calendar className="w-6 h-6 text-primary icon-glow" />
           </div>
           <span className="text-2xl font-bold text-foreground">24</span>
           <p className="text-xs text-muted-foreground mt-1">Sessions</p>
         </div>
-        <div className="metallic-card p-4 text-center">
+        <div className="metallic-card theme-glow-box p-4 text-center">
           <div className="flex justify-center mb-2">
-            <Star className="w-6 h-6 text-primary" />
+            <Star className="w-6 h-6 text-primary icon-glow" />
           </div>
           <span className="text-2xl font-bold text-foreground">4.9</span>
           <p className="text-xs text-muted-foreground mt-1">Rating</p>
         </div>
-        <div className="metallic-card p-4 text-center">
+        <div className="metallic-card theme-glow-box p-4 text-center">
           <div className="flex justify-center mb-2">
-            <Award className="w-6 h-6 text-primary" />
+            <Award className="w-6 h-6 text-primary icon-glow" />
           </div>
           <span className="text-2xl font-bold text-foreground">5</span>
           <p className="text-xs text-muted-foreground mt-1">Badges</p>
@@ -108,7 +108,7 @@ const ProfilePage = () => {
         </div>
 
         {/* Calendar Preview */}
-        <div className="metallic-card p-4 mb-4">
+        <div className="metallic-card theme-glow-box p-4 mb-4">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-medium text-foreground">January 2026</h4>
             <div className="flex gap-1">
@@ -151,7 +151,7 @@ const ProfilePage = () => {
         
         <div className="space-y-3">
           {displayedSessions.map((session) => (
-            <div key={session.id} className="metallic-card p-4">
+            <div key={session.id} className="metallic-card theme-glow-box p-4">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h4 className="font-semibold text-foreground">{session.title}</h4>
@@ -220,8 +220,8 @@ const ProfilePage = () => {
             { title: 'Left a 5-star review', date: 'Yesterday', icon: '⭐' },
             { title: 'Booked Piano Lesson', date: '2 days ago', icon: '🎹' },
           ].map((activity, i) => (
-            <div key={i} className="metallic-card p-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+            <div key={i} className="metallic-card theme-glow-box p-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center icon-glow">
                 <span>{activity.icon}</span>
               </div>
               <div className="flex-1">
