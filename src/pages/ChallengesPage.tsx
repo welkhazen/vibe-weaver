@@ -132,13 +132,13 @@ const ChallengesPage = () => {
     <div className="animate-fade-in pb-24">
       {/* Header Stats */}
       <div className="px-4 py-4">
-        <div className="metallic-card p-4 relative overflow-hidden">
+        <div className="metallic-card theme-glow-box p-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent" />
           <div className="relative z-10 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Your Balance</p>
               <div className="flex items-center gap-2 mt-1">
-                <Coins className="w-6 h-6 text-yellow-400" />
+                <Coins className="w-6 h-6 text-yellow-400 icon-glow" />
                 <span className="text-3xl font-bold text-foreground">{userTokens}</span>
                 <span className="text-sm text-muted-foreground">tokens</span>
               </div>
@@ -157,18 +157,18 @@ const ChallengesPage = () => {
       {/* Quick Actions */}
       <div className="px-4 pb-4">
         <div className="grid grid-cols-2 gap-3">
-          <button className="metallic-card p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]">
+          <button className="metallic-card theme-glow-box p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]">
             <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Gift className="w-5 h-5 text-primary" />
+              <Gift className="w-5 h-5 text-primary icon-glow" />
             </div>
             <div className="text-left">
               <p className="text-sm font-medium text-foreground">Redeem</p>
               <p className="text-xs text-muted-foreground">Use tokens</p>
             </div>
           </button>
-          <button className="metallic-card p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]">
+          <button className="metallic-card theme-glow-box p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]">
             <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Trophy className="w-5 h-5 text-primary" />
+              <Trophy className="w-5 h-5 text-primary icon-glow" />
             </div>
             <div className="text-left">
               <p className="text-sm font-medium text-foreground">Leaderboard</p>
@@ -208,7 +208,7 @@ const ChallengesPage = () => {
           <div
             key={challenge.id}
             className={cn(
-              'metallic-card p-4 relative overflow-hidden transition-all duration-300',
+              'metallic-card theme-glow-box p-4 relative overflow-hidden transition-all duration-300',
               challenge.completed && 'opacity-75'
             )}
           >

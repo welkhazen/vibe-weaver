@@ -87,9 +87,9 @@ const ExplorePage = () => {
 
       {/* AI Response */}
       {(response || isLoading) && (
-        <div className="mt-4 metallic-card p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles className="w-4 h-4 text-foreground" />
+        <div className="mt-4 metallic-card theme-glow-box p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Sparkles className="w-4 h-4 text-foreground icon-glow" />
             <span className="text-sm font-medium text-foreground">AI Assistant</span>
             {isLoading && <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" />}
           </div>
@@ -131,13 +131,13 @@ const ExplorePage = () => {
                   <button
                     key={item.title}
                     className={cn(
-                      'metallic-card p-4 text-left transition-all duration-300',
+                      'metallic-card theme-glow-box p-4 text-left transition-all duration-300',
                       'hover:scale-[1.02] hover:border-primary/30 active:scale-[0.98]',
                       'group'
                     )}
                   >
                     <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center mb-3 transition-all duration-300 group-hover:bg-primary/20">
-                      <IconComponent className="w-5 h-5 text-foreground transition-colors group-hover:text-primary" strokeWidth={1.5} />
+                      <IconComponent className="w-5 h-5 text-foreground transition-colors group-hover:text-primary icon-glow" strokeWidth={1.5} />
                     </div>
                     <p className="font-medium text-foreground text-sm">{item.title}</p>
                   </button>
@@ -156,11 +156,11 @@ const ExplorePage = () => {
                   <button
                     key={cat.name}
                     onClick={() => handleTrendingClick(cat.name)}
-                    className="w-full metallic-card p-4 flex items-center justify-between transition-all duration-300 hover:border-primary/30 active:scale-[0.98] group"
+                    className="w-full metallic-card theme-glow-box p-4 flex items-center justify-between transition-all duration-300 hover:border-primary/30 active:scale-[0.98] group"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center transition-all duration-300 group-hover:bg-primary/20">
-                        <IconComponent className="w-5 h-5 text-foreground transition-colors group-hover:text-primary" strokeWidth={1.5} />
+                        <IconComponent className="w-5 h-5 text-foreground transition-colors group-hover:text-primary icon-glow" strokeWidth={1.5} />
                       </div>
                       <span className="font-medium text-foreground">{cat.name}</span>
                     </div>
