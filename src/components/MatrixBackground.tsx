@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -6,6 +6,26 @@ const MatrixBackground = () => {
   const targetSpeedRef = useRef(50); // Final slow speed
   const startTimeRef = useRef(Date.now());
   const slowdownDuration = 8000; // 8 seconds to slow down
+  const [isDark, setIsDark] = useState(() => 
+    document.documentElement.classList.contains('dark') || 
+    !document.documentElement.classList.contains('light')
+  );
+
+  // Watch for theme changes
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const isNowDark = document.documentElement.classList.contains('dark') || 
+                        !document.documentElement.classList.contains('light');
+      setIsDark(isNowDark);
+    });
+    
+    observer.observe(document.documentElement, { 
+      attributes: true, 
+      attributeFilter: ['class'] 
+    });
+    
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -31,11 +51,24 @@ const MatrixBackground = () => {
     // Array to track y position of each column
     const drops: number[] = Array(columns).fill(1);
 
-    // Get primary color from CSS variable - silver/grayscale
+    // Get matrix color based on theme
     const getMatrixColor = () => {
-      const root = document.documentElement;
-      const l = getComputedStyle(root).getPropertyValue('--primary-l').trim() || '75%';
-      return `hsl(0, 0%, ${l})`;
+      if (isDark) {
+        // Light silver for dark mode
+        return 'hsl(0, 0%, 75%)';
+      } else {
+        // Soft gray for light mode
+        return 'hsl(0, 0%, 45%)';
+      }
+    };
+
+    // Get background fade color based on theme
+    const getFadeColor = () => {
+      if (isDark) {
+        return 'rgba(0, 0, 0, 0.05)';
+      } else {
+        return 'rgba(255, 255, 255, 0.08)';
+      }
     };
 
     // Calculate current speed based on elapsed time
@@ -51,8 +84,8 @@ const MatrixBackground = () => {
     };
 
     const draw = () => {
-      // Semi-transparent black to create fade effect
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      // Semi-transparent fade to create trail effect
+      ctx.fillStyle = getFadeColor();
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       const matrixColor = getMatrixColor();
@@ -89,13 +122,16 @@ const MatrixBackground = () => {
       clearTimeout(timeoutId);
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, []);
+  }, [isDark]);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none opacity-30 z-0"
-      style={{ background: 'transparent' }}
+      className="fixed inset-0 pointer-events-none z-0"
+      style={{ 
+        background: 'transparent',
+        opacity: isDark ? 0.3 : 0.2
+      }}
     />
   );
 };
