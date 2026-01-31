@@ -10,21 +10,41 @@ const MatrixBackground = () => {
     document.documentElement.classList.contains('dark') || 
     !document.documentElement.classList.contains('light')
   );
+  const [themeColor, setThemeColor] = useState({ h: 45, s: 90, l: 55 });
 
-  // Watch for theme changes
+  // Watch for theme and color changes
   useEffect(() => {
-    const observer = new MutationObserver(() => {
-      const isNowDark = document.documentElement.classList.contains('dark') || 
-                        !document.documentElement.classList.contains('light');
+    const updateTheme = () => {
+      const root = document.documentElement;
+      const isNowDark = root.classList.contains('dark') || !root.classList.contains('light');
       setIsDark(isNowDark);
-    });
+      
+      // Get theme accent color
+      const h = parseInt(getComputedStyle(root).getPropertyValue('--gold-h').trim()) || 45;
+      const s = parseInt(getComputedStyle(root).getPropertyValue('--gold-s').trim()) || 90;
+      const l = parseInt(getComputedStyle(root).getPropertyValue('--gold-l').trim()) || 55;
+      setThemeColor({ h, s, l });
+    };
+
+    updateTheme();
     
+    const observer = new MutationObserver(updateTheme);
     observer.observe(document.documentElement, { 
       attributes: true, 
-      attributeFilter: ['class'] 
+      attributeFilter: ['class', 'style'] 
     });
     
-    return () => observer.disconnect();
+    // Also listen for storage changes (theme color is saved there)
+    window.addEventListener('storage', updateTheme);
+    
+    // Poll for style changes since inline styles may not trigger mutation
+    const interval = setInterval(updateTheme, 500);
+    
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('storage', updateTheme);
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -51,14 +71,15 @@ const MatrixBackground = () => {
     // Array to track y position of each column
     const drops: number[] = Array(columns).fill(1);
 
-    // Get matrix color based on theme
+    // Get matrix color based on theme accent
     const getMatrixColor = () => {
+      const { h, s, l } = themeColor;
       if (isDark) {
-        // Light silver for dark mode
-        return 'hsl(0, 0%, 75%)';
+        // Slightly brighter for dark mode
+        return `hsl(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%)`;
       } else {
-        // Soft gray for light mode
-        return 'hsl(0, 0%, 45%)';
+        // Slightly darker for light mode
+        return `hsl(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%)`;
       }
     };
 
@@ -122,7 +143,7 @@ const MatrixBackground = () => {
       clearTimeout(timeoutId);
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, [isDark]);
+  }, [isDark, themeColor]);
 
   return (
     <canvas
