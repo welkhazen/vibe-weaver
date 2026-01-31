@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -6,46 +6,13 @@ const MatrixBackground = () => {
   const targetSpeedRef = useRef(50); // Final slow speed
   const startTimeRef = useRef(Date.now());
   const slowdownDuration = 8000; // 8 seconds to slow down
-  const [isDark, setIsDark] = useState(() => 
+  
+  // Use refs for theme to avoid re-running effect
+  const isDarkRef = useRef(
     document.documentElement.classList.contains('dark') || 
     !document.documentElement.classList.contains('light')
   );
-  const [themeColor, setThemeColor] = useState({ h: 45, s: 90, l: 55 });
-
-  // Watch for theme and color changes
-  useEffect(() => {
-    const updateTheme = () => {
-      const root = document.documentElement;
-      const isNowDark = root.classList.contains('dark') || !root.classList.contains('light');
-      setIsDark(isNowDark);
-      
-      // Get theme accent color
-      const h = parseInt(getComputedStyle(root).getPropertyValue('--gold-h').trim()) || 45;
-      const s = parseInt(getComputedStyle(root).getPropertyValue('--gold-s').trim()) || 90;
-      const l = parseInt(getComputedStyle(root).getPropertyValue('--gold-l').trim()) || 55;
-      setThemeColor({ h, s, l });
-    };
-
-    updateTheme();
-    
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(document.documentElement, { 
-      attributes: true, 
-      attributeFilter: ['class', 'style'] 
-    });
-    
-    // Also listen for storage changes (theme color is saved there)
-    window.addEventListener('storage', updateTheme);
-    
-    // Poll for style changes since inline styles may not trigger mutation
-    const interval = setInterval(updateTheme, 500);
-    
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('storage', updateTheme);
-      clearInterval(interval);
-    };
-  }, []);
+  const themeColorRef = useRef({ h: 45, s: 90, l: 55 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -70,27 +37,57 @@ const MatrixBackground = () => {
     
     // Array to track y position of each column
     const drops: number[] = Array(columns).fill(1);
+    
+    // Randomize initial drop positions for immediate visual effect
+    for (let i = 0; i < drops.length; i++) {
+      drops[i] = Math.floor(Math.random() * (canvas.height / fontSize));
+    }
+
+    // Update theme values from DOM
+    const updateThemeValues = () => {
+      const root = document.documentElement;
+      isDarkRef.current = root.classList.contains('dark') || !root.classList.contains('light');
+      
+      const h = parseInt(getComputedStyle(root).getPropertyValue('--gold-h').trim()) || 45;
+      const s = parseInt(getComputedStyle(root).getPropertyValue('--gold-s').trim()) || 90;
+      const l = parseInt(getComputedStyle(root).getPropertyValue('--gold-l').trim()) || 55;
+      themeColorRef.current = { h, s, l };
+    };
+
+    // Initial update
+    updateThemeValues();
+    
+    // Watch for theme changes
+    const observer = new MutationObserver(updateThemeValues);
+    observer.observe(document.documentElement, { 
+      attributes: true, 
+      attributeFilter: ['class', 'style'] 
+    });
 
     // Get matrix color based on theme accent
     const getMatrixColor = () => {
-      const { h, s, l } = themeColor;
-      if (isDark) {
-        // Slightly brighter for dark mode
+      const { h, s, l } = themeColorRef.current;
+      if (isDarkRef.current) {
         return `hsl(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%)`;
       } else {
-        // Slightly darker for light mode
         return `hsl(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%)`;
       }
     };
 
     // Get background fade color based on theme
     const getFadeColor = () => {
-      if (isDark) {
+      if (isDarkRef.current) {
         return 'rgba(0, 0, 0, 0.05)';
       } else {
         return 'rgba(255, 255, 255, 0.08)';
       }
     };
+    
+    // Update canvas opacity based on theme
+    const updateCanvasOpacity = () => {
+      canvas.style.opacity = isDarkRef.current ? '0.3' : '0.2';
+    };
+    updateCanvasOpacity();
 
     // Calculate current speed based on elapsed time
     const getCurrentInterval = () => {
@@ -105,6 +102,9 @@ const MatrixBackground = () => {
     };
 
     const draw = () => {
+      // Update opacity on each frame for smooth transitions
+      updateCanvasOpacity();
+      
       // Semi-transparent fade to create trail effect
       ctx.fillStyle = getFadeColor();
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -141,18 +141,16 @@ const MatrixBackground = () => {
 
     return () => {
       clearTimeout(timeoutId);
+      observer.disconnect();
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, [isDark, themeColor]);
+  }, []);
 
   return (
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ 
-        background: 'transparent',
-        opacity: isDark ? 0.3 : 0.2
-      }}
+      style={{ background: 'transparent' }}
     />
   );
 };
