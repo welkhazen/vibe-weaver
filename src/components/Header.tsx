@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Bell, Menu, User, Lock, Shield, Eye, HelpCircle, LogOut, Palette } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Bell, Menu, User, Lock, Shield, Eye, HelpCircle, LogOut, Palette, Sun, Moon } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +33,22 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
     return savedHue ? parseInt(savedHue) : 45;
   });
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('theme-mode');
+    return savedMode ? savedMode === 'dark' : true;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.classList.remove('light');
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+      root.classList.add('light');
+    }
+    localStorage.setItem('theme-mode', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
 
   const applyThemeColor = (hue: number) => {
     const root = document.documentElement;
@@ -125,6 +141,36 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
                     ))}
                   </div>
                 )}
+              </div>
+              
+              {/* Dark/Light Mode Toggle */}
+              <div className="px-2 py-1">
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="flex items-center gap-3 w-full px-2 py-1.5 rounded-sm hover:bg-accent/50 text-foreground text-sm"
+                >
+                  {isDarkMode ? (
+                    <Moon className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <Sun className="w-4 h-4 text-muted-foreground" />
+                  )}
+                  <span>{isDarkMode ? 'Dark Mode' : 'Light Mode'}</span>
+                  <div 
+                    className={cn(
+                      "w-10 h-5 rounded-full ml-auto relative transition-colors duration-300",
+                      isDarkMode ? "bg-primary/30" : "bg-accent"
+                    )}
+                  >
+                    <div 
+                      className={cn(
+                        "absolute top-0.5 w-4 h-4 rounded-full transition-all duration-300",
+                        isDarkMode 
+                          ? "right-0.5 bg-primary" 
+                          : "left-0.5 bg-foreground/50"
+                      )}
+                    />
+                  </div>
+                </button>
               </div>
               
               <DropdownMenuSeparator className="bg-border/50" />
