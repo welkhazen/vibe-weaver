@@ -14,13 +14,52 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      user_progress: {
+        Row: {
+          created_at: string
+          id: string
+          level: number
+          streak_days: number
+          total_bookings: number
+          total_polls_answered: number
+          total_reviews: number
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          level?: number
+          streak_days?: number
+          total_bookings?: number
+          total_polls_answered?: number
+          total_reviews?: number
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          level?: number
+          streak_days?: number
+          total_bookings?: number
+          total_polls_answered?: number
+          total_reviews?: number
+          updated_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      calculate_level: { Args: { xp_amount: number }; Returns: number }
+      get_cashback_percentage: { Args: { user_level: number }; Returns: number }
     }
     Enums: {
       [_ in never]: never

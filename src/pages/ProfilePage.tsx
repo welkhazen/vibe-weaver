@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, TrendingUp, Percent, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const upcomingSessions = [
@@ -35,9 +35,41 @@ const upcomingSessions = [
   },
 ];
 
+// Level thresholds and rewards
+const levelData = [
+  { level: 1, xpRequired: 0, cashback: 0 },
+  { level: 2, xpRequired: 100, cashback: 2 },
+  { level: 3, xpRequired: 250, cashback: 3 },
+  { level: 4, xpRequired: 500, cashback: 5 },
+  { level: 5, xpRequired: 1000, cashback: 7 },
+  { level: 6, xpRequired: 1750, cashback: 10 },
+  { level: 7, xpRequired: 2750, cashback: 12 },
+  { level: 8, xpRequired: 4000, cashback: 15 },
+  { level: 9, xpRequired: 5500, cashback: 18 },
+  { level: 10, xpRequired: 7500, cashback: 20 },
+];
+
 const ProfilePage = () => {
   const [showAllBookings, setShowAllBookings] = useState(false);
   const displayedSessions = showAllBookings ? upcomingSessions : upcomingSessions.slice(0, 2);
+
+  // Mock user progress (will be fetched from database when auth is implemented)
+  const userProgress = {
+    xp: 1250,
+    level: 5,
+    totalBookings: 24,
+    totalReviews: 12,
+    streakDays: 4,
+  };
+
+  const currentLevelData = levelData[userProgress.level - 1];
+  const nextLevelData = userProgress.level < 10 ? levelData[userProgress.level] : null;
+  
+  const xpForCurrentLevel = currentLevelData.xpRequired;
+  const xpForNextLevel = nextLevelData?.xpRequired ?? currentLevelData.xpRequired;
+  const xpProgress = nextLevelData 
+    ? ((userProgress.xp - xpForCurrentLevel) / (xpForNextLevel - xpForCurrentLevel)) * 100
+    : 100;
 
   return (
     <div className="animate-fade-in pb-24">
@@ -57,6 +89,10 @@ const ProfilePage = () => {
             <button className="absolute bottom-2 right-2 p-2 rounded-full bg-primary text-primary-foreground shadow-lg">
               <Camera className="w-4 h-4" />
             </button>
+            {/* Level Badge */}
+            <div className="absolute -top-1 -right-1 w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg glow-primary">
+              <span className="text-sm font-bold text-primary-foreground">{userProgress.level}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -75,28 +111,83 @@ const ProfilePage = () => {
         </button>
       </div>
 
+      {/* Level Progress Card */}
+      <div className="px-4 mt-6">
+        <div className="metallic-card theme-glow-box p-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" />
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-primary icon-glow" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">Level {userProgress.level}</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {userProgress.level < 10 ? `${xpForNextLevel - userProgress.xp} XP to Level ${userProgress.level + 1}` : 'Max Level Reached!'}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="flex items-center gap-1 text-primary">
+                  <Percent className="w-4 h-4" />
+                  <span className="text-xl font-bold">{currentLevelData.cashback}%</span>
+                </div>
+                <p className="text-[10px] text-muted-foreground">Cashback</p>
+              </div>
+            </div>
+            
+            {/* XP Progress Bar */}
+            <div className="mt-2">
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className="text-muted-foreground">{userProgress.xp.toLocaleString()} XP</span>
+                <span className="text-muted-foreground">{xpForNextLevel.toLocaleString()} XP</span>
+              </div>
+              <div className="h-2 bg-accent rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-primary rounded-full transition-all duration-500"
+                  style={{ width: `${xpProgress}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Level Benefits Preview */}
+            {nextLevelData && (
+              <div className="mt-3 pt-3 border-t border-border/30">
+                <div className="flex items-center gap-2 text-xs">
+                  <Zap className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-muted-foreground">
+                    Next: <span className="text-foreground font-medium">{nextLevelData.cashback}% cashback</span> at Level {nextLevelData.level}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 px-4 mt-6">
+      <div className="grid grid-cols-3 gap-3 px-4 mt-4">
         <div className="metallic-card theme-glow-box p-4 text-center">
           <div className="flex justify-center mb-2">
             <Calendar className="w-6 h-6 text-primary icon-glow" />
           </div>
-          <span className="text-2xl font-bold text-foreground">24</span>
+          <span className="text-2xl font-bold text-foreground">{userProgress.totalBookings}</span>
           <p className="text-xs text-muted-foreground mt-1">Sessions</p>
         </div>
         <div className="metallic-card theme-glow-box p-4 text-center">
           <div className="flex justify-center mb-2">
             <Star className="w-6 h-6 text-primary icon-glow" />
           </div>
-          <span className="text-2xl font-bold text-foreground">4.9</span>
-          <p className="text-xs text-muted-foreground mt-1">Rating</p>
+          <span className="text-2xl font-bold text-foreground">{userProgress.totalReviews}</span>
+          <p className="text-xs text-muted-foreground mt-1">Reviews</p>
         </div>
         <div className="metallic-card theme-glow-box p-4 text-center">
           <div className="flex justify-center mb-2">
             <Award className="w-6 h-6 text-primary icon-glow" />
           </div>
-          <span className="text-2xl font-bold text-foreground">5</span>
-          <p className="text-xs text-muted-foreground mt-1">Badges</p>
+          <span className="text-2xl font-bold text-foreground">{userProgress.streakDays}</span>
+          <p className="text-xs text-muted-foreground mt-1">Day Streak</p>
         </div>
       </div>
 
