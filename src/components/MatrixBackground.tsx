@@ -35,13 +35,24 @@ const MatrixBackground = () => {
 
     const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
+    const rows = Math.floor(canvas.height / fontSize);
     
     // Array to track y position of each column
     const drops: number[] = Array(columns).fill(1);
     
+    // Grid to store characters for final static display
+    const charGrid: string[][] = Array(columns).fill(null).map(() => Array(rows).fill(''));
+    
     // Randomize initial drop positions for immediate visual effect
     for (let i = 0; i < drops.length; i++) {
       drops[i] = Math.floor(Math.random() * (canvas.height / fontSize));
+    }
+    
+    // Pre-fill the grid with random characters
+    for (let col = 0; col < columns; col++) {
+      for (let row = 0; row < rows; row++) {
+        charGrid[col][row] = charArray[Math.floor(Math.random() * charArray.length)];
+      }
     }
 
     // Update theme values from DOM
@@ -102,6 +113,30 @@ const MatrixBackground = () => {
       return speedRef.current + (targetSpeedRef.current - speedRef.current) * easeOut;
     };
 
+    // Draw the complete grid (used for final static state)
+    const drawFullGrid = () => {
+      updateCanvasOpacity();
+      
+      // Clear canvas with background color
+      if (isDarkRef.current) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+      } else {
+        ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+      }
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      const matrixColor = getMatrixColor();
+      ctx.fillStyle = matrixColor;
+      ctx.font = `${fontSize}px monospace`;
+      
+      // Draw all characters in the grid
+      for (let col = 0; col < columns; col++) {
+        for (let row = 0; row < rows; row++) {
+          ctx.fillText(charGrid[col][row], col * fontSize, (row + 1) * fontSize);
+        }
+      }
+    };
+
     const draw = () => {
       // Update opacity on each frame for smooth transitions
       updateCanvasOpacity();
@@ -117,6 +152,12 @@ const MatrixBackground = () => {
       for (let i = 0; i < drops.length; i++) {
         // Random character
         const char = charArray[Math.floor(Math.random() * charArray.length)];
+        
+        // Update the grid with this character for the final static state
+        const rowIndex = Math.floor(drops[i]) % rows;
+        if (rowIndex >= 0 && rowIndex < rows) {
+          charGrid[i][rowIndex] = char;
+        }
         
         // Draw the character
         ctx.fillText(char, i * fontSize, drops[i] * fontSize);
@@ -139,7 +180,7 @@ const MatrixBackground = () => {
       if (elapsed >= slowdownDuration) {
         if (!stoppedRef.current) {
           stoppedRef.current = true;
-          draw(); // One final draw to keep characters visible
+          drawFullGrid(); // Draw the complete grid for even coverage
         }
         return; // Don't schedule another frame
       }
