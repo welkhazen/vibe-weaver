@@ -147,11 +147,12 @@ const OrbitalCategorySelector = ({ onSelectInstructor }: OrbitalCategorySelector
               <button
                 key={sub.id}
                 onClick={() => handleSubcategoryClick(sub.id)}
-                className="absolute top-1/2 left-1/2 opacity-0 group"
+                className="absolute top-1/2 left-1/2 group"
                 style={{
-                  transform: `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px))`,
+                  '--orbital-x': `${pos.x}px`,
+                  '--orbital-y': `${pos.y}px`,
                   animation: `orbital-item-in 280ms ease-out ${delay}ms forwards`,
-                }}
+                } as React.CSSProperties}
               >
                 <div className={cn(
                   'w-11 h-11 rounded-full flex items-center justify-center transition-all duration-150',
@@ -230,8 +231,14 @@ const OrbitalCategorySelector = ({ onSelectInstructor }: OrbitalCategorySelector
           to { opacity: 1; transform: scale(1); }
         }
         @keyframes orbital-item-in {
-          from { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
-          to { opacity: 1; transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px))) scale(1); }
+          0% { 
+            opacity: 0; 
+            transform: translate(-50%, -50%) scale(0.3); 
+          }
+          100% { 
+            opacity: 1; 
+            transform: translate(calc(-50% + var(--orbital-x, 0px)), calc(-50% + var(--orbital-y, 0px))) scale(1); 
+          }
         }
         @keyframes fade-in-up {
           from { opacity: 0; transform: translateY(8px); }
