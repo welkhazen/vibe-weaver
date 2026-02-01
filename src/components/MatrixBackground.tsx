@@ -1,23 +1,28 @@
 import { useEffect, useRef } from 'react';
 
-interface Dot {
+interface StaticChar {
   x: number;
   y: number;
-  baseSize: number;
-  currentSize: number;
+  char: string;
   opacity: number;
+  size: number;
 }
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const startTimeRef = useRef(Date.now());
-  const dotsRef = useRef<Dot[]>([]);
+  const staticCharsRef = useRef<StaticChar[]>([]);
   const animationCompleteRef = useRef(false);
+  const frameIdRef = useRef<number>(0);
   
-  // Timing constants
-  const matrixPhaseDuration = 2000; // 0-2s: matrix slowing
-  const transitionDuration = 2000; // 2-4s: morph to dots
-  const totalDuration = matrixPhaseDuration + transitionDuration; // 4s total
+  // Timing constants - 5 seconds total
+  const matrixPhaseDuration = 2500; // 0-2.5s: matrix rain slowing
+  const transitionDuration = 2500; // 2.5-5s: morph to static chars
+  const totalDuration = matrixPhaseDuration + transitionDuration;
+  
+  // Matrix characters
+  const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
+  const charArray = chars.split('');
   
   // Theme refs
   const isDarkRef = useRef(
@@ -30,52 +35,51 @@ const MatrixBackground = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    // Generate dot grid
-    const generateDots = () => {
-      const dots: Dot[] = [];
-      const spacing = 45;
-      const cols = Math.ceil(canvas.width / spacing) + 1;
-      const rows = Math.ceil(canvas.height / spacing) + 1;
+    const fontSize = 14;
+    
+    // Generate static character grid (denser than dots)
+    const generateStaticChars = () => {
+      const chars: StaticChar[] = [];
+      const spacingX = 20; // Denser horizontal spacing
+      const spacingY = 22; // Denser vertical spacing
+      const cols = Math.ceil(canvas.width / spacingX) + 1;
+      const rows = Math.ceil(canvas.height / spacingY) + 1;
       
       for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
-          // Add slight randomization for organic feel
-          const offsetX = (Math.random() - 0.5) * 10;
-          const offsetY = (Math.random() - 0.5) * 10;
+          // Slight position variation for organic feel
+          const offsetX = (Math.random() - 0.5) * 4;
+          const offsetY = (Math.random() - 0.5) * 4;
           
-          dots.push({
-            x: col * spacing + offsetX,
-            y: row * spacing + offsetY,
-            baseSize: 2 + Math.random() * 2, // 2-4px radius
-            currentSize: 0,
-            opacity: 0
+          chars.push({
+            x: col * spacingX + offsetX,
+            y: row * spacingY + offsetY,
+            char: charArray[Math.floor(Math.random() * charArray.length)],
+            opacity: 0.3 + Math.random() * 0.5, // Varied opacity for depth
+            size: fontSize * (0.7 + Math.random() * 0.4) // Varied sizes
           });
         }
       }
-      dotsRef.current = dots;
+      staticCharsRef.current = chars;
     };
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      generateDots();
+      generateStaticChars();
       
-      // If animation complete, redraw static dots
       if (animationCompleteRef.current) {
-        drawStaticDots();
+        drawStaticChars(1);
       }
     };
     
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Matrix setup
-    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
-    const charArray = chars.split('');
-    const fontSize = 14;
+    // Matrix rain setup
     const columns = Math.floor(canvas.width / fontSize);
     const drops: number[] = Array(columns).fill(1);
     
@@ -93,9 +97,8 @@ const MatrixBackground = () => {
       const l = parseInt(getComputedStyle(root).getPropertyValue('--gold-l').trim()) || 55;
       themeColorRef.current = { h, s, l };
       
-      // Redraw static dots if animation complete
       if (animationCompleteRef.current) {
-        drawStaticDots();
+        drawStaticChars(1);
       }
     };
 
@@ -108,7 +111,7 @@ const MatrixBackground = () => {
     });
 
     // Color helpers
-    const getMatrixColor = (opacity: number = 1) => {
+    const getCharColor = (opacity: number = 1) => {
       const { h, s, l } = themeColorRef.current;
       if (isDarkRef.current) {
         return `hsla(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%, ${opacity})`;
@@ -116,172 +119,173 @@ const MatrixBackground = () => {
       return `hsla(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%, ${opacity})`;
     };
 
-    const getFadeColor = () => {
+    const getStaticCharColor = (baseOpacity: number, morphProgress: number) => {
+      const { h, s, l } = themeColorRef.current;
+      const finalOpacity = baseOpacity * morphProgress;
+      
       if (isDarkRef.current) {
-        return 'rgba(0, 0, 0, 0.05)';
+        // Chrome/silver tint in dark mode
+        const chromeSaturation = Math.max(s * 0.3, 10);
+        const chromeLightness = 65 + (l * 0.15);
+        return `hsla(${h}, ${chromeSaturation}%, ${chromeLightness}%, ${finalOpacity})`;
       }
-      return 'rgba(255, 255, 255, 0.08)';
+      // Darker metallic in light mode
+      const chromeSaturation = Math.max(s * 0.25, 8);
+      const chromeLightness = 30 + (l * 0.1);
+      return `hsla(${h}, ${chromeSaturation}%, ${chromeLightness}%, ${finalOpacity})`;
     };
 
-    const getChromeColors = () => {
+    const getFadeColor = (opacity: number = 0.05) => {
       if (isDarkRef.current) {
-        return {
-          highlight: 'rgba(255, 255, 255, 0.9)',
-          base: 'rgba(180, 180, 190, 0.7)',
-          shadow: 'rgba(80, 80, 90, 0.5)',
-          glow: 'rgba(200, 200, 210, 0.3)'
-        };
+        return `rgba(0, 0, 0, ${opacity})`;
       }
-      return {
-        highlight: 'rgba(255, 255, 255, 0.95)',
-        base: 'rgba(120, 120, 130, 0.6)',
-        shadow: 'rgba(60, 60, 70, 0.4)',
-        glow: 'rgba(100, 100, 110, 0.2)'
-      };
+      return `rgba(255, 255, 255, ${opacity * 1.5})`;
     };
 
-    const updateCanvasOpacity = () => {
-      canvas.style.opacity = isDarkRef.current ? '0.4' : '0.25';
-    };
-    updateCanvasOpacity();
-
-    // Draw a single chrome dot
-    const drawChromeDot = (x: number, y: number, size: number, opacity: number) => {
-      if (size <= 0 || opacity <= 0) return;
-      
-      const colors = getChromeColors();
-      
-      // Outer glow
-      const glowGradient = ctx.createRadialGradient(x, y, 0, x, y, size * 2);
-      glowGradient.addColorStop(0, colors.glow);
-      glowGradient.addColorStop(1, 'transparent');
-      ctx.globalAlpha = opacity * 0.5;
-      ctx.fillStyle = glowGradient;
-      ctx.beginPath();
-      ctx.arc(x, y, size * 2, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Main metallic sphere
-      const metalGradient = ctx.createRadialGradient(
-        x - size * 0.3, y - size * 0.3, 0,
-        x, y, size
-      );
-      metalGradient.addColorStop(0, colors.highlight);
-      metalGradient.addColorStop(0.4, colors.base);
-      metalGradient.addColorStop(0.8, colors.shadow);
-      metalGradient.addColorStop(1, 'transparent');
-      
-      ctx.globalAlpha = opacity;
-      ctx.fillStyle = metalGradient;
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.globalAlpha = 1;
+    const updateCanvasOpacity = (phase: 'matrix' | 'transition' | 'static') => {
+      if (phase === 'static') {
+        canvas.style.opacity = isDarkRef.current ? '0.35' : '0.2';
+      } else {
+        canvas.style.opacity = isDarkRef.current ? '0.4' : '0.25';
+      }
     };
 
-    // Draw static dots (final state)
-    const drawStaticDots = () => {
+    // Draw static characters (final state)
+    const drawStaticChars = (morphProgress: number) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      for (const dot of dotsRef.current) {
-        drawChromeDot(dot.x, dot.y, dot.baseSize, 1);
+      for (const charData of staticCharsRef.current) {
+        const color = getStaticCharColor(charData.opacity, morphProgress);
+        ctx.fillStyle = color;
+        ctx.font = `${charData.size * morphProgress}px monospace`;
+        ctx.fillText(charData.char, charData.x, charData.y);
       }
     };
 
-    // Easing functions
-    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-    const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    // Smooth easing functions
+    const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+    const easeInOutQuart = (t: number) => 
+      t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
 
-    // Main animation loop
-    let timeoutId: number;
+    // Use requestAnimationFrame for smooth animation
+    let lastFrameTime = 0;
+    const targetFPS = 60;
+    const frameInterval = 1000 / targetFPS;
     
-    const loop = () => {
+    // Matrix rain speed control
+    let matrixSpeed = 1;
+    let lastMatrixUpdate = 0;
+    
+    const animate = (currentTime: number) => {
       const elapsed = Date.now() - startTimeRef.current;
       
-      // Phase 3: Animation complete - draw static dots
+      // Animation complete - draw final static state
       if (elapsed >= totalDuration) {
         if (!animationCompleteRef.current) {
           animationCompleteRef.current = true;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          drawStaticDots();
+          updateCanvasOpacity('static');
+          drawStaticChars(1);
         }
         return;
       }
       
-      updateCanvasOpacity();
+      // Throttle to target FPS for smooth animation
+      const deltaTime = currentTime - lastFrameTime;
+      if (deltaTime < frameInterval) {
+        frameIdRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      lastFrameTime = currentTime - (deltaTime % frameInterval);
       
       if (elapsed < matrixPhaseDuration) {
-        // Phase 1: Matrix rain (0-2s)
-        ctx.fillStyle = getFadeColor();
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Phase 1: Matrix rain (0-2.5s) - gradually slowing
+        updateCanvasOpacity('matrix');
         
         const phaseProgress = elapsed / matrixPhaseDuration;
-        const charOpacity = 1 - easeOutCubic(phaseProgress) * 0.3;
+        const slowdownFactor = easeOutQuart(phaseProgress);
         
-        ctx.fillStyle = getMatrixColor(charOpacity);
-        ctx.font = `${fontSize}px monospace`;
+        // Fade effect
+        ctx.fillStyle = getFadeColor(0.03 + slowdownFactor * 0.05);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        for (let i = 0; i < drops.length; i++) {
-          const char = charArray[Math.floor(Math.random() * charArray.length)];
-          ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+        // Matrix speed slows down over time
+        matrixSpeed = 1 - slowdownFactor * 0.85; // Slows to 15% speed
+        
+        // Only update matrix drops based on speed
+        const matrixUpdateInterval = 16 / matrixSpeed;
+        if (currentTime - lastMatrixUpdate > matrixUpdateInterval) {
+          lastMatrixUpdate = currentTime;
           
-          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
+          const charOpacity = 1 - slowdownFactor * 0.4;
+          ctx.fillStyle = getCharColor(charOpacity);
+          ctx.font = `${fontSize}px monospace`;
+          
+          for (let i = 0; i < drops.length; i++) {
+            const char = charArray[Math.floor(Math.random() * charArray.length)];
+            ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+            
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+              drops[i] = 0;
+            }
+            drops[i]++;
           }
-          drops[i]++;
         }
         
-        // Calculate interval (slowing down)
-        const interval = 15 + easeOutCubic(phaseProgress) * 85; // 15ms -> 100ms
-        timeoutId = window.setTimeout(loop, interval);
-        
       } else {
-        // Phase 2: Transition to dots (2-4s)
-        const transitionElapsed = elapsed - matrixPhaseDuration;
-        const morphProgress = easeInOutCubic(transitionElapsed / transitionDuration);
+        // Phase 2: Transition to static characters (2.5-5s)
+        updateCanvasOpacity('transition');
         
-        // Clear with theme-appropriate background
+        const transitionElapsed = elapsed - matrixPhaseDuration;
+        const morphProgress = easeInOutQuart(transitionElapsed / transitionDuration);
+        
+        // Smooth clear with crossfade
         if (isDarkRef.current) {
-          ctx.fillStyle = `rgba(0, 0, 0, ${0.1 + morphProgress * 0.9})`;
+          ctx.fillStyle = `rgba(0, 0, 0, ${0.08 + morphProgress * 0.15})`;
         } else {
-          ctx.fillStyle = `rgba(255, 255, 255, ${0.1 + morphProgress * 0.9})`;
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.1 + morphProgress * 0.2})`;
         }
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw fading matrix characters
-        if (morphProgress < 0.7) {
-          const charOpacity = (1 - morphProgress / 0.7) * 0.5;
-          const charScale = 1 - morphProgress;
+        // Fading matrix rain (only in first half of transition)
+        if (morphProgress < 0.5) {
+          const fadeProgress = morphProgress / 0.5;
+          const charOpacity = (1 - fadeProgress) * 0.6;
+          const charScale = 1 - fadeProgress * 0.5;
           
-          ctx.fillStyle = getMatrixColor(charOpacity);
+          ctx.fillStyle = getCharColor(charOpacity);
           ctx.font = `${fontSize * charScale}px monospace`;
           
+          // Reduce density as we fade
+          const drawChance = 1 - fadeProgress * 0.7;
           for (let i = 0; i < drops.length; i++) {
-            if (Math.random() > 0.3) {
+            if (Math.random() < drawChance) {
               const char = charArray[Math.floor(Math.random() * charArray.length)];
               ctx.fillText(char, i * fontSize, drops[i] * fontSize);
             }
           }
         }
         
-        // Draw growing chrome dots
-        for (const dot of dotsRef.current) {
-          const dotOpacity = morphProgress;
-          const dotSize = dot.baseSize * morphProgress;
-          drawChromeDot(dot.x, dot.y, dotSize, dotOpacity);
+        // Growing static characters
+        const staticProgress = morphProgress;
+        for (const charData of staticCharsRef.current) {
+          const color = getStaticCharColor(charData.opacity, staticProgress);
+          const size = charData.size * staticProgress;
+          
+          if (size > 0.5) {
+            ctx.fillStyle = color;
+            ctx.font = `${size}px monospace`;
+            ctx.fillText(charData.char, charData.x, charData.y);
+          }
         }
-        
-        // Slower updates during transition for smooth effect
-        const interval = 30 + morphProgress * 20; // 30ms -> 50ms
-        timeoutId = window.setTimeout(loop, interval);
       }
+      
+      frameIdRef.current = requestAnimationFrame(animate);
     };
     
-    loop();
+    frameIdRef.current = requestAnimationFrame(animate);
 
     return () => {
-      clearTimeout(timeoutId);
+      cancelAnimationFrame(frameIdRef.current);
       observer.disconnect();
       window.removeEventListener('resize', resizeCanvas);
     };
