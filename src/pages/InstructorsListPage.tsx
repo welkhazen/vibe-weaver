@@ -5,7 +5,25 @@ import FilterSection, { FilterValues } from '@/components/FilterSection';
 import InstructorDetail from '@/components/InstructorDetail';
 import { getSubcategoryById, getCategoryById } from '@/data/categories';
 import { getInstructorsBySubcategory, Instructor } from '@/data/instructors';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+
+// Category-specific photo keywords for professional images
+const categoryPhotoKeywords: Record<string, string> = {
+  'mental-health': 'therapist,counselor,psychologist',
+  'physical': 'fitness,trainer,athlete',
+  'arts-crafts': 'artist,creative,painter',
+  'dance': 'dancer,ballet,choreographer',
+  'music': 'musician,pianist,singer',
+  'education': 'teacher,professor,tutor',
+};
+
+// Generate a consistent photo URL based on instructor id and category
+const getInstructorPhotoUrl = (instructor: Instructor): string => {
+  const keywords = categoryPhotoKeywords[instructor.category] || 'professional';
+  // Use instructor id as seed for consistent photos
+  return `https://images.unsplash.com/photo-${1500000000000 + instructor.id * 1000}?w=200&h=200&fit=crop&crop=face`;
+};
 
 const InstructorsListPage = () => {
   const { subcategoryId } = useParams<{ subcategoryId: string }>();
@@ -88,11 +106,16 @@ const InstructorsListPage = () => {
               )}
             >
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-full bg-accent/60 border border-border/50 flex items-center justify-center flex-shrink-0">
-                  <span className="text-lg font-semibold text-foreground">
+                <Avatar className="w-14 h-14 border-2 border-primary/30 flex-shrink-0">
+                  <AvatarImage 
+                    src={`https://i.pravatar.cc/150?u=${instructor.id}`} 
+                    alt={instructor.provider}
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="bg-accent/60 text-lg font-semibold text-foreground">
                     {instructor.provider.charAt(0)}
-                  </span>
-                </div>
+                  </AvatarFallback>
+                </Avatar>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-foreground truncate">
                     {instructor.provider}
