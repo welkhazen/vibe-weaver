@@ -136,47 +136,63 @@ const OrbitalCategorySelector = ({ onSelectInstructor }: OrbitalCategorySelector
             </p>
           </div>
 
-          {/* Subcategories */}
-          {currentSubcategories.map((sub, index) => {
-            const pos = orbitalPositions[index];
-            const IconComponent = sub.icon;
-            const isSelected = selectedSubcategory === sub.id;
-            const delay = 80 + index * 40;
+          {/* Rotating orbital wrapper */}
+          <div 
+            className="absolute inset-0"
+            style={{
+              animation: 'orbital-rotate 60s linear infinite',
+            }}
+          >
+            {/* Subcategories */}
+            {currentSubcategories.map((sub, index) => {
+              const pos = orbitalPositions[index];
+              const IconComponent = sub.icon;
+              const isSelected = selectedSubcategory === sub.id;
+              const delay = 80 + index * 40;
 
-            return (
-              <button
-                key={sub.id}
-                onClick={() => handleSubcategoryClick(sub.id)}
-                className="absolute top-1/2 left-1/2 group"
-                style={{
-                  '--orbital-x': `${pos.x}px`,
-                  '--orbital-y': `${pos.y}px`,
-                  animation: `orbital-item-in 280ms ease-out ${delay}ms forwards`,
-                } as React.CSSProperties}
-              >
-                <div className={cn(
-                  'w-11 h-11 rounded-full flex items-center justify-center transition-all duration-150',
-                  isSelected 
-                    ? 'bg-primary/30 border-2 border-primary scale-105' 
-                    : 'bg-accent/60 border border-border/50 group-hover:bg-accent group-hover:scale-105'
-                )}>
-                  <IconComponent 
-                    className={cn(
-                      'w-5 h-5 transition-colors duration-150',
-                      isSelected ? 'text-primary' : 'text-foreground'
-                    )} 
-                    strokeWidth={1.5} 
-                  />
-                </div>
-                <p className={cn(
-                  'text-[9px] text-center mt-1 max-w-[56px] leading-tight transition-colors duration-150',
-                  isSelected ? 'text-primary font-medium' : 'text-muted-foreground'
-                )}>
-                  {sub.label}
-                </p>
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={sub.id}
+                  onClick={() => handleSubcategoryClick(sub.id)}
+                  className="absolute top-1/2 left-1/2 group"
+                  style={{
+                    '--orbital-x': `${pos.x}px`,
+                    '--orbital-y': `${pos.y}px`,
+                    animation: `orbital-item-in 280ms ease-out ${delay}ms forwards`,
+                  } as React.CSSProperties}
+                >
+                  {/* Counter-rotate content to keep it upright */}
+                  <div 
+                    className="flex flex-col items-center"
+                    style={{
+                      animation: 'orbital-counter-rotate 60s linear infinite',
+                    }}
+                  >
+                    <div className={cn(
+                      'w-11 h-11 rounded-full flex items-center justify-center transition-all duration-150',
+                      isSelected 
+                        ? 'bg-primary/30 border-2 border-primary scale-105' 
+                        : 'bg-accent/60 border border-border/50 group-hover:bg-accent group-hover:scale-105'
+                    )}>
+                      <IconComponent 
+                        className={cn(
+                          'w-5 h-5 transition-colors duration-150',
+                          isSelected ? 'text-primary' : 'text-foreground'
+                        )} 
+                        strokeWidth={1.5} 
+                      />
+                    </div>
+                    <p className={cn(
+                      'text-[9px] text-center mt-1 max-w-[56px] leading-tight transition-colors duration-150',
+                      isSelected ? 'text-primary font-medium' : 'text-muted-foreground'
+                    )}>
+                      {sub.label}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Instructors list */}
@@ -243,6 +259,14 @@ const OrbitalCategorySelector = ({ onSelectInstructor }: OrbitalCategorySelector
         @keyframes fade-in-up {
           from { opacity: 0; transform: translateY(8px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes orbital-rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes orbital-counter-rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(-360deg); }
         }
       `}</style>
     </div>
