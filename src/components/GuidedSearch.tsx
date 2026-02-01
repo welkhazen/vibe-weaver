@@ -136,23 +136,30 @@ const GuidedSearch = () => {
     setInput('');
   };
 
-  // Collapsed state - just a search bar
+  // Collapsed state - Hero + Search combined
   if (!isExpanded) {
     return (
-      <div className="px-4 pb-4">
-        <button
-          onClick={handleExpand}
-          className="w-full metallic-card p-4 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 group"
-        >
-          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-            <Sparkles className="w-5 h-5 text-primary" />
+      <div className="px-4 py-6">
+        <div className="metallic-card theme-glow-box p-5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
+          <div className="relative z-10">
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider">Welcome</span>
+            <h2 className="text-xl font-bold text-foreground mt-1">Find Your Perfect Coach</h2>
+            <p className="text-sm text-muted-foreground mt-1 mb-4">Explore 500+ verified professionals</p>
+            
+            {/* Integrated Search Bar */}
+            <button
+              onClick={handleExpand}
+              className="w-full bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/40 hover:bg-background/70 group"
+            >
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                <Sparkles className="w-4 h-4 text-primary" />
+              </div>
+              <span className="flex-1 text-left text-sm text-muted-foreground">Tell me what you're looking for...</span>
+              <Search className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+            </button>
           </div>
-          <div className="flex-1 text-left">
-            <p className="text-sm font-medium text-foreground">Find Your Perfect Match</p>
-            <p className="text-xs text-muted-foreground">Tell me what you're looking for...</p>
-          </div>
-          <Search className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-        </button>
+        </div>
       </div>
     );
   }

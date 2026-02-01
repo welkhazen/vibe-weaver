@@ -73,19 +73,7 @@ const HomePage = () => {
   if (!selectedCategory) {
     return (
       <div className="animate-fade-in pb-24">
-        {/* Hero section */}
-        <div className="px-4 py-6">
-          <div className="metallic-card theme-glow-box p-5 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
-            <div className="relative z-10">
-              <span className="text-xs font-semibold text-primary uppercase tracking-wider">Welcome</span>
-              <h2 className="text-xl font-bold text-foreground mt-1">Find Your Perfect Coach</h2>
-              <p className="text-sm text-muted-foreground mt-1">Explore 500+ verified professionals</p>
-            </div>
-          </div>
-        </div>
-
-        {/* AI Guided Search */}
+        {/* Combined Hero + AI Search */}
         <GuidedSearch />
 
         {/* Filter Section */}
