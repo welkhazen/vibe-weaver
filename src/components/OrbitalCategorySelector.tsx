@@ -88,7 +88,7 @@ const OrbitalCategorySelector = () => {
               key={category.id}
               className={cn(
                 "col-span-2 metallic-card theme-glow-box p-4 relative overflow-hidden",
-                isClosing ? "animate-orbital-close" : "animate-scale-in"
+                isClosing ? "animate-orbital-close" : "animate-orbital-open"
               )}
             >
               {/* Close button */}
@@ -105,7 +105,7 @@ const OrbitalCategorySelector = () => {
                 <div 
                   className="absolute inset-[20%] rounded-full border border-border/30 opacity-0"
                   style={{
-                    animation: 'orbital-ring-in 300ms ease-out forwards',
+                    animation: 'orbital-ring-in 400ms ease-out forwards',
                   }}
                 />
 
@@ -119,7 +119,7 @@ const OrbitalCategorySelector = () => {
                   <div 
                     className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/40 flex items-center justify-center opacity-0"
                     style={{
-                      animation: 'center-pop-in 250ms ease-out 50ms forwards',
+                      animation: 'center-pop-in 350ms ease-out 100ms forwards',
                     }}
                   >
                     {selectedCategoryData && (
@@ -129,7 +129,7 @@ const OrbitalCategorySelector = () => {
                   <p 
                     className="text-[10px] text-muted-foreground text-center mt-1.5 opacity-0"
                     style={{
-                      animation: 'fade-in-up 200ms ease-out 150ms forwards',
+                      animation: 'fade-in-up 300ms ease-out 200ms forwards',
                     }}
                   >
                     {selectedCategoryData?.label}
@@ -157,7 +157,7 @@ const OrbitalCategorySelector = () => {
                         style={{
                           '--orbital-x': `${pos.x}px`,
                           '--orbital-y': `${pos.y}px`,
-                          animation: `orbital-item-in 280ms ease-out ${delay}ms forwards`,
+                          animation: `orbital-item-in 380ms ease-out ${delay}ms forwards`,
                         } as React.CSSProperties}
                       >
                         {/* Counter-rotate content to keep it upright */}
@@ -217,6 +217,16 @@ const OrbitalCategorySelector = () => {
                   from { transform: rotate(0deg); }
                   to { transform: rotate(-360deg); }
                 }
+                @keyframes orbital-open {
+                  0% { 
+                    opacity: 0; 
+                    transform: scale(0.9); 
+                  }
+                  100% { 
+                    opacity: 1; 
+                    transform: scale(1); 
+                  }
+                }
                 @keyframes orbital-close {
                   0% { 
                     opacity: 1; 
@@ -226,6 +236,9 @@ const OrbitalCategorySelector = () => {
                     opacity: 0; 
                     transform: scale(0.9); 
                   }
+                }
+                .animate-orbital-open {
+                  animation: orbital-open 400ms ease-out forwards;
                 }
                 .animate-orbital-close {
                   animation: orbital-close 400ms ease-out forwards;
