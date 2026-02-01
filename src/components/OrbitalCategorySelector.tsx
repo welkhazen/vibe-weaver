@@ -188,17 +188,17 @@ const OrbitalCategorySelector = () => {
 
               <style>{`
                 @keyframes orbital-ring-in {
-                  from { opacity: 0; transform: scale(0.8); }
+                  from { opacity: 0; transform: scale(0.5); }
                   to { opacity: 1; transform: scale(1); }
                 }
                 @keyframes center-pop-in {
-                  from { opacity: 0; transform: scale(0.5); }
+                  from { opacity: 0; transform: scale(0.3); }
                   to { opacity: 1; transform: scale(1); }
                 }
                 @keyframes orbital-item-in {
                   0% { 
                     opacity: 0; 
-                    transform: translate(-50%, -50%) scale(0.3); 
+                    transform: translate(-50%, -50%) scale(0); 
                   }
                   100% { 
                     opacity: 1; 
@@ -206,8 +206,8 @@ const OrbitalCategorySelector = () => {
                   }
                 }
                 @keyframes fade-in-up {
-                  from { opacity: 0; transform: translateY(8px); }
-                  to { opacity: 1; transform: translateY(0); }
+                  from { opacity: 0; transform: translateY(8px) scale(0.9); }
+                  to { opacity: 1; transform: translateY(0) scale(1); }
                 }
                 @keyframes orbital-rotate {
                   from { transform: rotate(0deg); }
@@ -220,28 +220,32 @@ const OrbitalCategorySelector = () => {
                 @keyframes orbital-open {
                   0% { 
                     opacity: 0; 
-                    transform: scale(0.9); 
+                    transform: scale(0.4);
+                  }
+                  60% {
+                    opacity: 1;
+                    transform: scale(1.02);
                   }
                   100% { 
                     opacity: 1; 
-                    transform: scale(1); 
+                    transform: scale(1);
                   }
                 }
                 @keyframes orbital-close {
                   0% { 
                     opacity: 1; 
-                    transform: scale(1); 
+                    transform: scale(1);
                   }
                   100% { 
                     opacity: 0; 
-                    transform: scale(0.9); 
+                    transform: scale(0.4);
                   }
                 }
                 .animate-orbital-open {
-                  animation: orbital-open 400ms ease-out forwards;
+                  animation: orbital-open 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
                 }
                 .animate-orbital-close {
-                  animation: orbital-close 400ms ease-out forwards;
+                  animation: orbital-close 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
                 }
               `}</style>
             </div>
