@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Tag, DollarSign, ChevronDown, X, Search } from 'lucide-react';
+import { MapPin, Tag, DollarSign, X, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { categories, subcategories, getSubcategoriesByCategory } from '@/data/categories';
+import { categories, getSubcategoriesByCategory } from '@/data/categories';
 import {
   Select,
   SelectContent,
@@ -13,41 +13,49 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 
-const locations = [
-  'New York',
-  'Los Angeles',
-  'Chicago',
-  'Houston',
-  'Miami',
-  'San Francisco',
-  'Seattle',
-  'Boston',
-  'Denver',
-  'Austin',
-];
+// Lebanon districts and their areas
+const lebanonLocations: Record<string, string[]> = {
+  'Beirut': ['Achrafieh', 'Hamra', 'Verdun', 'Mar Mikhael', 'Gemmayzeh', 'Downtown', 'Badaro', 'Clemenceau'],
+  'Mount Lebanon': ['Jounieh', 'Byblos', 'Baabda', 'Aley', 'Chouf', 'Metn', 'Kesrwan', 'Broummana'],
+  'North Lebanon': ['Tripoli', 'Batroun', 'Bcharre', 'Koura', 'Zgharta', 'Minieh', 'Akkar'],
+  'South Lebanon': ['Sidon', 'Tyre', 'Jezzine', 'Nabatieh', 'Bint Jbeil', 'Marjayoun'],
+  'Bekaa': ['Zahle', 'Baalbek', 'Hermel', 'Rachaya', 'West Bekaa'],
+};
+
+const districts = Object.keys(lebanonLocations);
 
 const FilterTabs = () => {
   const navigate = useNavigate();
-  const [location, setLocation] = useState<string>('');
+  const [district, setDistrict] = useState<string>('');
+  const [area, setArea] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('');
   const [maxPrice, setMaxPrice] = useState<number[]>([150]);
+
+  const availableAreas = useMemo(() => {
+    if (!district) return [];
+    return lebanonLocations[district] || [];
+  }, [district]);
 
   const availableSubcategories = useMemo(() => {
     if (!selectedCategory) return [];
     return getSubcategoriesByCategory(selectedCategory);
   }, [selectedCategory]);
 
+  const handleDistrictChange = (value: string) => {
+    setDistrict(value);
+    setArea(''); // Reset area when district changes
+  };
+
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
-    setSelectedSubcategory(''); // Reset subcategory when category changes
+    setSelectedSubcategory('');
   };
 
   const handleSearch = () => {
     if (selectedSubcategory) {
       navigate(`/instructors/${selectedSubcategory}`);
     } else if (selectedCategory) {
-      // Navigate to first subcategory of selected category
       const subs = getSubcategoriesByCategory(selectedCategory);
       if (subs.length > 0) {
         navigate(`/instructors/${subs[0].id}`);
@@ -56,128 +64,108 @@ const FilterTabs = () => {
   };
 
   const clearFilters = () => {
-    setLocation('');
+    setDistrict('');
+    setArea('');
     setSelectedCategory('');
     setSelectedSubcategory('');
     setMaxPrice([150]);
   };
 
-  const hasFilters = location || selectedCategory || selectedSubcategory || maxPrice[0] !== 150;
+  const hasFilters = district || area || selectedCategory || selectedSubcategory || maxPrice[0] !== 150;
 
   return (
-    <div className="px-4 py-4">
-      <div className="metallic-card theme-glow-box p-4 space-y-4">
+    <div className="px-4 py-2">
+      <div className="metallic-card theme-glow-box p-3 space-y-2.5">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-foreground flex items-center gap-2">
-            <Search className="w-4 h-4 text-muted-foreground" />
-            Quick Filter
-          </h3>
+          <span className="text-xs font-medium text-muted-foreground">Quick Filter</span>
           {hasFilters && (
             <button
               onClick={clearFilters}
-              className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+              className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-0.5 transition-colors"
             >
-              <X className="w-3 h-3" />
+              <X className="w-2.5 h-2.5" />
               Clear
             </button>
           )}
         </div>
 
-        {/* Filter Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          {/* Location Select */}
-          <div className="space-y-1.5">
-            <label className="text-xs text-muted-foreground flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              Location
-            </label>
-            <Select value={location} onValueChange={setLocation}>
-              <SelectTrigger className="h-9 bg-accent/50 border-border/50 text-sm">
-                <SelectValue placeholder="Any location" />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border z-50">
-                {locations.map((loc) => (
-                  <SelectItem key={loc} value={loc} className="text-sm">
-                    {loc}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        {/* Filter Grid - Compact */}
+        <div className="grid grid-cols-2 gap-2">
+          {/* District */}
+          <Select value={district} onValueChange={handleDistrictChange}>
+            <SelectTrigger className="h-8 bg-accent/50 border-border/50 text-xs">
+              <MapPin className="w-3 h-3 mr-1 text-muted-foreground shrink-0" />
+              <SelectValue placeholder="District" />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-border z-50">
+              {districts.map((d) => (
+                <SelectItem key={d} value={d} className="text-xs">{d}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-          {/* Category Select */}
-          <div className="space-y-1.5">
-            <label className="text-xs text-muted-foreground flex items-center gap-1">
-              <Tag className="w-3 h-3" />
-              Category
-            </label>
-            <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-              <SelectTrigger className="h-9 bg-accent/50 border-border/50 text-sm">
-                <SelectValue placeholder="Any category" />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border z-50">
-                {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id} className="text-sm">
-                    {cat.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Area */}
+          <Select value={area} onValueChange={setArea} disabled={!district}>
+            <SelectTrigger className={cn("h-8 bg-accent/50 border-border/50 text-xs", !district && "opacity-50")}>
+              <SelectValue placeholder={district ? "Area" : "Select district"} />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-border z-50">
+              {availableAreas.map((a) => (
+                <SelectItem key={a} value={a} className="text-xs">{a}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-          {/* Subcategory Select */}
-          <div className="space-y-1.5">
-            <label className="text-xs text-muted-foreground">Subcategory</label>
-            <Select 
-              value={selectedSubcategory} 
-              onValueChange={setSelectedSubcategory}
-              disabled={!selectedCategory}
-            >
-              <SelectTrigger className={cn(
-                "h-9 bg-accent/50 border-border/50 text-sm",
-                !selectedCategory && "opacity-50"
-              )}>
-                <SelectValue placeholder={selectedCategory ? "Select..." : "Pick category first"} />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border z-50">
-                {availableSubcategories.map((sub) => (
-                  <SelectItem key={sub.id} value={sub.id} className="text-sm">
-                    {sub.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Category */}
+          <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+            <SelectTrigger className="h-8 bg-accent/50 border-border/50 text-xs">
+              <Tag className="w-3 h-3 mr-1 text-muted-foreground shrink-0" />
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-border z-50">
+              {categories.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id} className="text-xs">{cat.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-          {/* Max Price */}
-          <div className="space-y-1.5">
-            <label className="text-xs text-muted-foreground flex items-center gap-1">
-              <DollarSign className="w-3 h-3" />
-              Max Price: ${maxPrice[0]}
-            </label>
-            <div className="h-9 flex items-center px-2">
-              <Slider
-                value={maxPrice}
-                onValueChange={setMaxPrice}
-                max={300}
-                min={10}
-                step={10}
-                className="w-full"
-              />
-            </div>
-          </div>
+          {/* Subcategory */}
+          <Select value={selectedSubcategory} onValueChange={setSelectedSubcategory} disabled={!selectedCategory}>
+            <SelectTrigger className={cn("h-8 bg-accent/50 border-border/50 text-xs", !selectedCategory && "opacity-50")}>
+              <SelectValue placeholder={selectedCategory ? "Subcategory" : "Select category"} />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-border z-50">
+              {availableSubcategories.map((sub) => (
+                <SelectItem key={sub.id} value={sub.id} className="text-xs">{sub.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        {/* Search Button */}
-        <Button
-          onClick={handleSearch}
-          disabled={!selectedCategory && !selectedSubcategory}
-          className="w-full metallic-button h-10 text-sm font-medium"
-        >
-          <Search className="w-4 h-4 mr-2" />
-          Find Instructors
-        </Button>
+        {/* Price + Search Row */}
+        <div className="flex items-center gap-2">
+          <div className="flex-1 flex items-center gap-2">
+            <DollarSign className="w-3 h-3 text-muted-foreground shrink-0" />
+            <Slider
+              value={maxPrice}
+              onValueChange={setMaxPrice}
+              max={300}
+              min={10}
+              step={10}
+              className="flex-1"
+            />
+            <span className="text-xs text-muted-foreground w-8">${maxPrice[0]}</span>
+          </div>
+          <Button
+            onClick={handleSearch}
+            disabled={!selectedCategory && !selectedSubcategory}
+            size="sm"
+            className="metallic-button h-7 text-xs px-3"
+          >
+            <Search className="w-3 h-3" />
+          </Button>
+        </div>
       </div>
     </div>
   );
