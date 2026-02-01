@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
@@ -11,6 +11,7 @@ import {
 const OrbitalCategorySelector = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const orbitalRef = useRef<HTMLDivElement>(null);
 
   const currentSubcategories = selectedCategory 
     ? getSubcategoriesByCategory(selectedCategory) 
@@ -18,7 +19,20 @@ const OrbitalCategorySelector = () => {
 
   const selectedCategoryData = getCategoryById(selectedCategory || '');
 
-  const handleCategoryClick = (categoryId: string) => {
+  // Handle click outside to close expanded category
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectedCategory && orbitalRef.current && !orbitalRef.current.contains(event.target as Node)) {
+        setSelectedCategory(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [selectedCategory]);
+
+  const handleCategoryClick = (categoryId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
     if (selectedCategory === categoryId) {
       setSelectedCategory(null);
     } else {
@@ -27,7 +41,6 @@ const OrbitalCategorySelector = () => {
   };
 
   const handleSubcategoryClick = (subcategoryId: string) => {
-    // Navigate to the instructors list page
     navigate(`/instructors/${subcategoryId}`);
   };
 
@@ -59,6 +72,7 @@ const OrbitalCategorySelector = () => {
         if (isSelected) {
           return (
             <div
+              ref={orbitalRef}
               key={category.id}
               className="col-span-2 metallic-card theme-glow-box p-4 relative overflow-hidden animate-scale-in"
             >
@@ -111,7 +125,7 @@ const OrbitalCategorySelector = () => {
                 <div 
                   className="absolute inset-0"
                   style={{
-                    animation: 'orbital-rotate 60s linear infinite',
+                    animation: 'orbital-rotate 120s linear infinite',
                   }}
                 >
                   {/* Subcategories */}
@@ -135,7 +149,7 @@ const OrbitalCategorySelector = () => {
                         <div 
                           className="flex flex-col items-center"
                           style={{
-                            animation: 'orbital-counter-rotate 60s linear infinite',
+                            animation: 'orbital-counter-rotate 120s linear infinite',
                           }}
                         >
                           <div className={cn(
@@ -197,7 +211,7 @@ const OrbitalCategorySelector = () => {
         return (
           <button
             key={category.id}
-            onClick={() => handleCategoryClick(category.id)}
+            onClick={(e) => handleCategoryClick(category.id, e)}
             className={cn(
               'metallic-card theme-glow-box p-5 flex flex-col items-center gap-3',
               'transition-all duration-200 ease-out',
