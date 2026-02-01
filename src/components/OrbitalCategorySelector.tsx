@@ -221,24 +221,29 @@ const OrbitalCategorySelector = () => {
                   0% { 
                     opacity: 0; 
                     transform: scale(0.4);
+                    filter: blur(8px);
                   }
                   60% {
                     opacity: 1;
                     transform: scale(1.02);
+                    filter: blur(0px);
                   }
                   100% { 
                     opacity: 1; 
                     transform: scale(1);
+                    filter: blur(0px);
                   }
                 }
                 @keyframes orbital-close {
                   0% { 
                     opacity: 1; 
                     transform: scale(1);
+                    filter: blur(0px);
                   }
                   100% { 
                     opacity: 0; 
                     transform: scale(0.4);
+                    filter: blur(8px);
                   }
                 }
                 .animate-orbital-open {
