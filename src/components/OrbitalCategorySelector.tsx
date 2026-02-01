@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 import { 
@@ -6,44 +7,32 @@ import {
   getSubcategoriesByCategory, 
   getCategoryById,
 } from '@/data/categories';
-import { getInstructorsBySubcategory, Instructor } from '@/data/instructors';
 
-interface OrbitalCategorySelectorProps {
-  onSelectInstructor: (instructor: Instructor) => void;
-}
-
-const OrbitalCategorySelector = ({ onSelectInstructor }: OrbitalCategorySelectorProps) => {
+const OrbitalCategorySelector = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
 
   const currentSubcategories = selectedCategory 
     ? getSubcategoriesByCategory(selectedCategory) 
     : [];
-
-  const instructors = useMemo(() => {
-    if (!selectedSubcategory) return [];
-    return getInstructorsBySubcategory(selectedSubcategory);
-  }, [selectedSubcategory]);
 
   const selectedCategoryData = getCategoryById(selectedCategory || '');
 
   const handleCategoryClick = (categoryId: string) => {
     if (selectedCategory === categoryId) {
       setSelectedCategory(null);
-      setSelectedSubcategory(null);
     } else {
       setSelectedCategory(categoryId);
-      setSelectedSubcategory(null);
     }
   };
 
   const handleSubcategoryClick = (subcategoryId: string) => {
-    setSelectedSubcategory(subcategoryId);
+    // Navigate to the instructors list page
+    navigate(`/instructors/${subcategoryId}`);
   };
 
   const handleClose = () => {
     setSelectedCategory(null);
-    setSelectedSubcategory(null);
   };
 
   // Pre-calculate orbital positions (memoized)
@@ -147,7 +136,6 @@ const OrbitalCategorySelector = ({ onSelectInstructor }: OrbitalCategorySelector
             {currentSubcategories.map((sub, index) => {
               const pos = orbitalPositions[index];
               const IconComponent = sub.icon;
-              const isSelected = selectedSubcategory === sub.id;
               const delay = 80 + index * 40;
 
               return (
@@ -170,22 +158,14 @@ const OrbitalCategorySelector = ({ onSelectInstructor }: OrbitalCategorySelector
                   >
                     <div className={cn(
                       'w-11 h-11 rounded-full flex items-center justify-center transition-all duration-150',
-                      isSelected 
-                        ? 'bg-primary/30 border-2 border-primary scale-105' 
-                        : 'bg-accent/60 border border-border/50 group-hover:bg-accent group-hover:scale-105'
+                      'bg-accent/60 border border-border/50 group-hover:bg-accent group-hover:scale-105'
                     )}>
                       <IconComponent 
-                        className={cn(
-                          'w-5 h-5 transition-colors duration-150',
-                          isSelected ? 'text-primary' : 'text-foreground'
-                        )} 
+                        className="w-5 h-5 transition-colors duration-150 text-foreground"
                         strokeWidth={1.5} 
                       />
                     </div>
-                    <p className={cn(
-                      'text-[9px] text-center mt-1 max-w-[56px] leading-tight transition-colors duration-150',
-                      isSelected ? 'text-primary font-medium' : 'text-muted-foreground'
-                    )}>
+                    <p className="text-[9px] text-center mt-1 max-w-[56px] leading-tight transition-colors duration-150 text-muted-foreground">
                       {sub.label}
                     </p>
                   </div>
@@ -194,47 +174,6 @@ const OrbitalCategorySelector = ({ onSelectInstructor }: OrbitalCategorySelector
             })}
           </div>
         </div>
-
-        {/* Instructors list */}
-        {selectedSubcategory && instructors.length > 0 && (
-          <div 
-            className="mt-2 pt-3 border-t border-border/50 opacity-0"
-            style={{
-              animation: 'fade-in-up 200ms ease-out forwards',
-            }}
-          >
-            <p className="text-xs text-muted-foreground mb-2">
-              {instructors.length} instructors
-            </p>
-            <div className="space-y-1.5 max-h-[180px] overflow-y-auto">
-              {instructors.map((instructor) => (
-                <button
-                  key={instructor.id}
-                  onClick={() => onSelectInstructor(instructor)}
-                  className="w-full p-2.5 rounded-lg bg-accent/30 hover:bg-accent/50 transition-colors duration-150 text-left"
-                >
-                  <h4 className="font-medium text-sm text-foreground">
-                    {instructor.provider}
-                  </h4>
-                  <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                    {instructor.title}
-                  </p>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {selectedSubcategory && instructors.length === 0 && (
-          <div 
-            className="mt-2 pt-3 border-t border-border/50 text-center opacity-0"
-            style={{
-              animation: 'fade-in-up 200ms ease-out forwards',
-            }}
-          >
-            <p className="text-sm text-muted-foreground">No instructors found</p>
-          </div>
-        )}
       </div>
 
       <style>{`
