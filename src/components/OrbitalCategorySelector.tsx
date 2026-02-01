@@ -255,11 +255,14 @@ const OrbitalCategorySelector = () => {
             onClick={(e) => handleCategoryClick(category.id, e)}
             className={cn(
               'metallic-card theme-glow-box p-5 flex flex-col items-center gap-3',
-              'transition-all duration-200 ease-out',
+              'transition-all duration-400 ease-out',
               'hover:scale-[1.02] active:scale-[0.98]',
               'group',
               hasSelection && 'opacity-40 scale-95'
             )}
+            style={{
+              transitionDuration: '400ms',
+            }}
           >
             <IconComponent className="w-10 h-10 text-foreground icon-glow" strokeWidth={1.5} />
             <span className="text-sm font-medium text-foreground text-center leading-tight">
