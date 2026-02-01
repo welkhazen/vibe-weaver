@@ -38,10 +38,42 @@ const InstructorsListPage = () => {
   const subcategory = getSubcategoryById(subcategoryId || '');
   const category = subcategory ? getCategoryById(subcategory.categoryId) : null;
   
-  const instructors = useMemo(() => {
+  const allInstructors = useMemo(() => {
     if (!subcategoryId) return [];
     return getInstructorsBySubcategory(subcategoryId);
   }, [subcategoryId]);
+
+  // Apply filters to instructors
+  const instructors = useMemo(() => {
+    return allInstructors.filter((instructor) => {
+      // Price filter - extract numeric value from price string
+      const priceNum = parseInt(instructor.price.replace(/[^0-9]/g, ''), 10);
+      if (priceNum > filters.maxPrice) return false;
+
+      // Location filter
+      if (filters.location !== 'all') {
+        const instructorLocation = instructor.location.toLowerCase();
+        if (filters.location === 'online' && instructorLocation !== 'online') return false;
+        if (filters.location === 'downtown' && !instructorLocation.includes('downtown')) return false;
+        if (filters.location === 'midtown' && !instructorLocation.includes('midtown')) return false;
+        if (filters.location === 'westside' && !instructorLocation.includes('westside')) return false;
+        if (filters.location === 'east-side' && !instructorLocation.includes('east')) return false;
+      }
+
+      // Session type filter
+      if (filters.sessionType !== 'all') {
+        const location = instructor.location.toLowerCase();
+        const title = instructor.title.toLowerCase();
+        
+        if (filters.sessionType === 'online' && location !== 'online') return false;
+        if (filters.sessionType === 'group' && !title.includes('class') && !title.includes('group') && !title.includes('workshop')) return false;
+        if (filters.sessionType === 'package' && !title.includes('package') && !title.includes('course') && !title.includes('bootcamp')) return false;
+        if (filters.sessionType === 'single' && (title.includes('class') || title.includes('group') || title.includes('workshop') || title.includes('package') || title.includes('course'))) return false;
+      }
+
+      return true;
+    });
+  }, [allInstructors, filters]);
 
   // Show instructor detail view
   if (selectedInstructor) {
