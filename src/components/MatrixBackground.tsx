@@ -3,9 +3,10 @@ import { useEffect, useRef } from 'react';
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const speedRef = useRef(15); // Start fast (lower interval = faster)
-  const targetSpeedRef = useRef(50); // Final slow speed
+  const targetSpeedRef = useRef(200); // Final slow speed before stopping
   const startTimeRef = useRef(Date.now());
-  const slowdownDuration = 8000; // 8 seconds to slow down
+  const stoppedRef = useRef(false);
+  const slowdownDuration = 3000; // 3 seconds to slow down and stop
   
   // Use refs for theme to avoid re-running effect
   const isDarkRef = useRef(
@@ -132,6 +133,17 @@ const MatrixBackground = () => {
     let timeoutId: number;
     
     const loop = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      
+      // Stop completely after duration
+      if (elapsed >= slowdownDuration) {
+        if (!stoppedRef.current) {
+          stoppedRef.current = true;
+          draw(); // One final draw to keep characters visible
+        }
+        return; // Don't schedule another frame
+      }
+      
       draw();
       const currentInterval = getCurrentInterval();
       timeoutId = window.setTimeout(loop, currentInterval);
