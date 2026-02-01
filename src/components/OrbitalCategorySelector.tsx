@@ -11,6 +11,7 @@ import {
 const OrbitalCategorySelector = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
   const orbitalRef = useRef<HTMLDivElement>(null);
 
   const currentSubcategories = selectedCategory 
@@ -19,17 +20,28 @@ const OrbitalCategorySelector = () => {
 
   const selectedCategoryData = getCategoryById(selectedCategory || '');
 
+  // Smooth close function with animation
+  const closeOrbital = () => {
+    if (selectedCategory && !isClosing) {
+      setIsClosing(true);
+      setTimeout(() => {
+        setSelectedCategory(null);
+        setIsClosing(false);
+      }, 400); // Match animation duration
+    }
+  };
+
   // Handle click outside to close expanded category
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (selectedCategory && orbitalRef.current && !orbitalRef.current.contains(event.target as Node)) {
-        setSelectedCategory(null);
+      if (selectedCategory && !isClosing && orbitalRef.current && !orbitalRef.current.contains(event.target as Node)) {
+        closeOrbital();
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [selectedCategory]);
+  }, [selectedCategory, isClosing]);
 
   const handleCategoryClick = (categoryId: string, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -45,7 +57,7 @@ const OrbitalCategorySelector = () => {
   };
 
   const handleClose = () => {
-    setSelectedCategory(null);
+    closeOrbital();
   };
 
   // Pre-calculate orbital positions (memoized)
@@ -74,7 +86,10 @@ const OrbitalCategorySelector = () => {
             <div
               ref={orbitalRef}
               key={category.id}
-              className="col-span-2 metallic-card theme-glow-box p-4 relative overflow-hidden animate-scale-in"
+              className={cn(
+                "col-span-2 metallic-card theme-glow-box p-4 relative overflow-hidden",
+                isClosing ? "animate-orbital-close" : "animate-scale-in"
+              )}
             >
               {/* Close button */}
               <button
@@ -201,6 +216,19 @@ const OrbitalCategorySelector = () => {
                 @keyframes orbital-counter-rotate {
                   from { transform: rotate(0deg); }
                   to { transform: rotate(-360deg); }
+                }
+                @keyframes orbital-close {
+                  0% { 
+                    opacity: 1; 
+                    transform: scale(1); 
+                  }
+                  100% { 
+                    opacity: 0; 
+                    transform: scale(0.9); 
+                  }
+                }
+                .animate-orbital-close {
+                  animation: orbital-close 400ms ease-out forwards;
                 }
               `}</style>
             </div>
