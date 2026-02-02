@@ -1,18 +1,13 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+const STORAGE_KEY = 'matrix-animation-played';
+const ANIMATION_DURATION = 5000; // 5 seconds
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const speedRef = useRef(15); // Start fast (lower interval = faster)
-  const targetSpeedRef = useRef(50); // Final slow speed
-  const startTimeRef = useRef(Date.now());
-  const slowdownDuration = 8000; // 8 seconds to slow down
-  
-  // Use refs for theme to avoid re-running effect
-  const isDarkRef = useRef(
-    document.documentElement.classList.contains('dark') || 
-    !document.documentElement.classList.contains('light')
+  const [hasPlayed, setHasPlayed] = useState(() => 
+    sessionStorage.getItem(STORAGE_KEY) === 'true'
   );
-  const themeColorRef = useRef({ h: 45, s: 90, l: 55 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -31,120 +26,112 @@ const MatrixBackground = () => {
     // Matrix characters
     const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
     const charArray = chars.split('');
-
     const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
-    
-    // Array to track y position of each column
-    const drops: number[] = Array(columns).fill(1);
-    
-    // Randomize initial drop positions for immediate visual effect
-    for (let i = 0; i < drops.length; i++) {
-      drops[i] = Math.floor(Math.random() * (canvas.height / fontSize));
+    const rows = Math.floor(canvas.height / fontSize);
+
+    // If animation already played this session, draw static grid immediately
+    if (hasPlayed) {
+      drawStaticGrid(ctx, canvas, charArray, fontSize, columns, rows);
+      window.removeEventListener('resize', resizeCanvas);
+      return;
     }
 
-    // Update theme values from DOM
-    const updateThemeValues = () => {
-      const root = document.documentElement;
-      isDarkRef.current = root.classList.contains('dark') || !root.classList.contains('light');
-      
-      const h = parseInt(getComputedStyle(root).getPropertyValue('--gold-h').trim()) || 45;
-      const s = parseInt(getComputedStyle(root).getPropertyValue('--gold-s').trim()) || 90;
-      const l = parseInt(getComputedStyle(root).getPropertyValue('--gold-l').trim()) || 55;
-      themeColorRef.current = { h, s, l };
-    };
-
-    // Initial update
-    updateThemeValues();
-    
-    // Watch for theme changes
-    const observer = new MutationObserver(updateThemeValues);
-    observer.observe(document.documentElement, { 
-      attributes: true, 
-      attributeFilter: ['class', 'style'] 
-    });
-
-    // Get matrix color based on theme accent
-    const getMatrixColor = () => {
-      const { h, s, l } = themeColorRef.current;
-      if (isDarkRef.current) {
-        return `hsl(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%)`;
-      } else {
-        return `hsl(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%)`;
-      }
-    };
-
-    // Get background fade color based on theme
-    const getFadeColor = () => {
-      if (isDarkRef.current) {
-        return 'rgba(0, 0, 0, 0.05)';
-      } else {
-        return 'rgba(255, 255, 255, 0.08)';
-      }
-    };
-    
-    // Update canvas opacity based on theme
-    const updateCanvasOpacity = () => {
-      canvas.style.opacity = isDarkRef.current ? '0.3' : '0.2';
-    };
-    updateCanvasOpacity();
-
-    // Calculate current speed based on elapsed time
-    const getCurrentInterval = () => {
-      const elapsed = Date.now() - startTimeRef.current;
-      const progress = Math.min(elapsed / slowdownDuration, 1);
-      
-      // Ease-out function for smooth deceleration
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      
-      // Interpolate from fast (15ms) to slow (50ms)
-      return speedRef.current + (targetSpeedRef.current - speedRef.current) * easeOut;
-    };
+    // Animation state
+    const drops: number[] = Array(columns).fill(0).map(() => 
+      Math.floor(Math.random() * -20) // Start above screen
+    );
+    const startTime = Date.now();
+    let animationId: number;
+    let isStopped = false;
 
     const draw = () => {
-      // Update opacity on each frame for smooth transitions
-      updateCanvasOpacity();
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / ANIMATION_DURATION, 1);
       
-      // Semi-transparent fade to create trail effect
-      ctx.fillStyle = getFadeColor();
+      // Ease-out cubic for smooth deceleration
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      
+      // Speed: starts fast (every frame), slows to a crawl
+      const baseInterval = 30; // ms between drops at start
+      const slowestInterval = 500; // ms at end
+      const currentInterval = baseInterval + (slowestInterval - baseInterval) * easeOut;
+      
+      // Fade: starts strong, gets weaker (characters accumulate)
+      const fadeOpacity = 0.08 - (0.06 * easeOut); // 0.08 -> 0.02
+      
+      // Clear with decreasing opacity (characters persist more)
+      ctx.fillStyle = `rgba(0, 0, 0, ${fadeOpacity})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const matrixColor = getMatrixColor();
-      ctx.fillStyle = matrixColor;
+      // Matrix green with slight variation
+      const brightness = 70 - (20 * easeOut); // Gets dimmer
+      ctx.fillStyle = `hsl(120, 60%, ${brightness}%)`;
       ctx.font = `${fontSize}px monospace`;
 
-      for (let i = 0; i < drops.length; i++) {
-        // Random character
-        const char = charArray[Math.floor(Math.random() * charArray.length)];
-        
-        // Draw the character
-        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+      // Slow down the drop rate as animation progresses
+      const dropChance = 1 - (0.7 * easeOut); // 1.0 -> 0.3
 
-        // Reset drop randomly after reaching bottom
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
+      for (let i = 0; i < drops.length; i++) {
+        if (Math.random() < dropChance) {
+          const char = charArray[Math.floor(Math.random() * charArray.length)];
+          ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975 - (0.5 * easeOut)) {
+            drops[i] = 0;
+          }
+          drops[i]++;
         }
-        drops[i]++;
+      }
+
+      // Check if animation should stop
+      if (progress >= 1 && !isStopped) {
+        isStopped = true;
+        sessionStorage.setItem(STORAGE_KEY, 'true');
+        setHasPlayed(true);
+        
+        // Final: draw static grid overlay
+        setTimeout(() => {
+          drawStaticGrid(ctx, canvas, charArray, fontSize, columns, rows);
+        }, 100);
+        return;
+      }
+
+      if (!isStopped) {
+        animationId = requestAnimationFrame(draw);
       }
     };
 
-    // Use dynamic timing with setTimeout instead of setInterval
-    let timeoutId: number;
-    
-    const loop = () => {
-      draw();
-      const currentInterval = getCurrentInterval();
-      timeoutId = window.setTimeout(loop, currentInterval);
+    // Start animation loop with dynamic timing
+    let lastDraw = 0;
+    const loop = (timestamp: number) => {
+      if (isStopped) return;
+      
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / ANIMATION_DURATION, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      
+      const baseInterval = 16;
+      const slowestInterval = 150;
+      const currentInterval = baseInterval + (slowestInterval - baseInterval) * easeOut;
+      
+      if (timestamp - lastDraw >= currentInterval) {
+        draw();
+        lastDraw = timestamp;
+      }
+      
+      if (!isStopped) {
+        animationId = requestAnimationFrame(loop);
+      }
     };
-    
-    loop();
+
+    animationId = requestAnimationFrame(loop);
 
     return () => {
-      clearTimeout(timeoutId);
-      observer.disconnect();
+      cancelAnimationFrame(animationId);
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, []);
+  }, [hasPlayed]);
 
   return (
     <canvas
@@ -154,5 +141,33 @@ const MatrixBackground = () => {
     />
   );
 };
+
+// Draw a subtle static grid of characters
+function drawStaticGrid(
+  ctx: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement,
+  charArray: string[],
+  fontSize: number,
+  columns: number,
+  rows: number
+) {
+  // Clear canvas first
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Very subtle gray-green color
+  ctx.fillStyle = 'hsla(120, 20%, 50%, 0.08)';
+  ctx.font = `${fontSize}px monospace`;
+
+  // Draw grid of random characters
+  for (let col = 0; col < columns; col++) {
+    for (let row = 0; row < rows + 1; row++) {
+      // Add some randomness to which cells get characters
+      if (Math.random() > 0.3) {
+        const char = charArray[Math.floor(Math.random() * charArray.length)];
+        ctx.fillText(char, col * fontSize, row * fontSize);
+      }
+    }
+  }
+}
 
 export default MatrixBackground;

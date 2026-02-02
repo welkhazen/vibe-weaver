@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import MatrixBackground from '@/components/MatrixBackground';
 import GoldenGlowBackground from '@/components/GoldenGlowBackground';
 import Header from '@/components/Header';
 import BottomNav from '@/components/BottomNav';
@@ -40,9 +39,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
-      {/* Matrix falling code background */}
-      <MatrixBackground />
-      
       {/* Golden glow ambient lighting */}
       <GoldenGlowBackground />
       
