@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Tag, DollarSign, X, Search } from 'lucide-react';
+import { MapPin, Tag, DollarSign, X, Search, ChevronDown } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { categories, getSubcategoriesByCategory } from '@/data/categories';
 import {
@@ -26,6 +27,7 @@ const districts = Object.keys(lebanonLocations);
 
 const FilterTabs = () => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
   const [district, setDistrict] = useState<string>('');
   const [area, setArea] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -75,98 +77,125 @@ const FilterTabs = () => {
 
   return (
     <div className="px-4 py-2">
-      <div className="metallic-card theme-glow-box p-3 space-y-2.5">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-muted-foreground">Quick Filter</span>
-          {hasFilters && (
-            <button
-              onClick={clearFilters}
-              className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-0.5 transition-colors"
-            >
-              <X className="w-2.5 h-2.5" />
-              Clear
-            </button>
-          )}
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <div className="metallic-card theme-glow-box p-3">
+          {/* Header - Always visible */}
+          <CollapsibleTrigger className="w-full">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Search className="w-3.5 h-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium text-muted-foreground">Quick Filter</span>
+                {hasFilters && (
+                  <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded-full">
+                    Active
+                  </span>
+                )}
+              </div>
+              <ChevronDown className={cn(
+                "w-4 h-4 text-muted-foreground transition-transform duration-200",
+                isOpen && "rotate-180"
+              )} />
+            </div>
+          </CollapsibleTrigger>
+
+          <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+            <div className="pt-3 space-y-2.5">
+              {/* Clear filters */}
+              {hasFilters && (
+                <div className="flex justify-end">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      clearFilters();
+                    }}
+                    className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-0.5 transition-colors"
+                  >
+                    <X className="w-2.5 h-2.5" />
+                    Clear
+                  </button>
+                </div>
+              )}
+
+              {/* Filter Grid - Compact */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* District */}
+                <Select value={district} onValueChange={handleDistrictChange}>
+                  <SelectTrigger className="h-8 bg-accent/50 border-border/50 text-xs">
+                    <MapPin className="w-3 h-3 mr-1 text-muted-foreground shrink-0" />
+                    <SelectValue placeholder="District" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border z-50">
+                    {districts.map((d) => (
+                      <SelectItem key={d} value={d} className="text-xs">{d}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {/* Area */}
+                <Select value={area} onValueChange={setArea} disabled={!district}>
+                  <SelectTrigger className={cn("h-8 bg-accent/50 border-border/50 text-xs", !district && "opacity-50")}>
+                    <SelectValue placeholder={district ? "Area" : "Select district"} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border z-50">
+                    {availableAreas.map((a) => (
+                      <SelectItem key={a} value={a} className="text-xs">{a}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {/* Category */}
+                <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+                  <SelectTrigger className="h-8 bg-accent/50 border-border/50 text-xs">
+                    <Tag className="w-3 h-3 mr-1 text-muted-foreground shrink-0" />
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border z-50">
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id} className="text-xs">{cat.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {/* Subcategory */}
+                <Select value={selectedSubcategory} onValueChange={setSelectedSubcategory} disabled={!selectedCategory}>
+                  <SelectTrigger className={cn("h-8 bg-accent/50 border-border/50 text-xs", !selectedCategory && "opacity-50")}>
+                    <SelectValue placeholder={selectedCategory ? "Subcategory" : "Select category"} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border z-50">
+                    {availableSubcategories.map((sub) => (
+                      <SelectItem key={sub.id} value={sub.id} className="text-xs">{sub.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Price + Search Row */}
+              <div className="flex items-center gap-2">
+                <div className="flex-1 flex items-center gap-2">
+                  <DollarSign className="w-3 h-3 text-muted-foreground shrink-0" />
+                  <Slider
+                    value={maxPrice}
+                    onValueChange={setMaxPrice}
+                    max={300}
+                    min={10}
+                    step={10}
+                    className="flex-1"
+                  />
+                  <span className="text-xs text-muted-foreground w-8">${maxPrice[0]}</span>
+                </div>
+                <Button
+                  onClick={handleSearch}
+                  disabled={!selectedCategory && !selectedSubcategory}
+                  size="sm"
+                  className="metallic-button h-7 text-xs px-3"
+                >
+                  <Search className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+          </CollapsibleContent>
         </div>
-
-        {/* Filter Grid - Compact */}
-        <div className="grid grid-cols-2 gap-2">
-          {/* District */}
-          <Select value={district} onValueChange={handleDistrictChange}>
-            <SelectTrigger className="h-8 bg-accent/50 border-border/50 text-xs">
-              <MapPin className="w-3 h-3 mr-1 text-muted-foreground shrink-0" />
-              <SelectValue placeholder="District" />
-            </SelectTrigger>
-            <SelectContent className="bg-card border-border z-50">
-              {districts.map((d) => (
-                <SelectItem key={d} value={d} className="text-xs">{d}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Area */}
-          <Select value={area} onValueChange={setArea} disabled={!district}>
-            <SelectTrigger className={cn("h-8 bg-accent/50 border-border/50 text-xs", !district && "opacity-50")}>
-              <SelectValue placeholder={district ? "Area" : "Select district"} />
-            </SelectTrigger>
-            <SelectContent className="bg-card border-border z-50">
-              {availableAreas.map((a) => (
-                <SelectItem key={a} value={a} className="text-xs">{a}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Category */}
-          <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-            <SelectTrigger className="h-8 bg-accent/50 border-border/50 text-xs">
-              <Tag className="w-3 h-3 mr-1 text-muted-foreground shrink-0" />
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent className="bg-card border-border z-50">
-              {categories.map((cat) => (
-                <SelectItem key={cat.id} value={cat.id} className="text-xs">{cat.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Subcategory */}
-          <Select value={selectedSubcategory} onValueChange={setSelectedSubcategory} disabled={!selectedCategory}>
-            <SelectTrigger className={cn("h-8 bg-accent/50 border-border/50 text-xs", !selectedCategory && "opacity-50")}>
-              <SelectValue placeholder={selectedCategory ? "Subcategory" : "Select category"} />
-            </SelectTrigger>
-            <SelectContent className="bg-card border-border z-50">
-              {availableSubcategories.map((sub) => (
-                <SelectItem key={sub.id} value={sub.id} className="text-xs">{sub.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Price + Search Row */}
-        <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-2">
-            <DollarSign className="w-3 h-3 text-muted-foreground shrink-0" />
-            <Slider
-              value={maxPrice}
-              onValueChange={setMaxPrice}
-              max={300}
-              min={10}
-              step={10}
-              className="flex-1"
-            />
-            <span className="text-xs text-muted-foreground w-8">${maxPrice[0]}</span>
-          </div>
-          <Button
-            onClick={handleSearch}
-            disabled={!selectedCategory && !selectedSubcategory}
-            size="sm"
-            className="metallic-button h-7 text-xs px-3"
-          >
-            <Search className="w-3 h-3" />
-          </Button>
-        </div>
-      </div>
+      </Collapsible>
     </div>
   );
 };
