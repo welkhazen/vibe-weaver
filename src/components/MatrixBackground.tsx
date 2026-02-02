@@ -58,15 +58,14 @@ const MatrixBackground = () => {
       const currentInterval = baseInterval + (slowestInterval - baseInterval) * easeOut;
       
       // Fade: starts strong, gets weaker (characters accumulate)
-      const fadeOpacity = 0.08 - (0.06 * easeOut); // 0.08 -> 0.02
+      const fadeOpacity = 0.05 - (0.035 * easeOut); // 0.05 -> 0.015 (slower fade = more visible)
       
       // Clear with decreasing opacity (characters persist more)
       ctx.fillStyle = `rgba(0, 0, 0, ${fadeOpacity})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Use theme's matrix color (silver/gray from CSS variable)
-      const matrixColor = getComputedStyle(document.documentElement).getPropertyValue('--matrix-color').trim() || 'hsl(0 0% 75%)';
-      const brightness = 75 - (15 * easeOut); // Gets slightly dimmer
+      // Use theme's matrix color (silver/gray) - brighter values for visibility
+      const brightness = 85 - (10 * easeOut); // 85% -> 75% brightness
       ctx.fillStyle = `hsl(0, 0%, ${brightness}%)`;
       ctx.font = `${fontSize}px monospace`;
 
