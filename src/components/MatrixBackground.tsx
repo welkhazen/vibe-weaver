@@ -64,9 +64,10 @@ const MatrixBackground = () => {
       ctx.fillStyle = `rgba(0, 0, 0, ${fadeOpacity})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Matrix green with slight variation
-      const brightness = 70 - (20 * easeOut); // Gets dimmer
-      ctx.fillStyle = `hsl(120, 60%, ${brightness}%)`;
+      // Use theme's matrix color (silver/gray from CSS variable)
+      const matrixColor = getComputedStyle(document.documentElement).getPropertyValue('--matrix-color').trim() || 'hsl(0 0% 75%)';
+      const brightness = 75 - (15 * easeOut); // Gets slightly dimmer
+      ctx.fillStyle = `hsl(0, 0%, ${brightness}%)`;
       ctx.font = `${fontSize}px monospace`;
 
       // Slow down the drop rate as animation progresses
@@ -154,8 +155,8 @@ function drawStaticGrid(
   // Clear canvas first
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Very subtle gray-green color
-  ctx.fillStyle = 'hsla(120, 20%, 50%, 0.08)';
+  // Very subtle silver/gray color (theme-aware)
+  ctx.fillStyle = 'hsla(0, 0%, 50%, 0.08)';
   ctx.font = `${fontSize}px monospace`;
 
   // Draw grid of random characters
