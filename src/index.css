@@ -324,40 +324,33 @@
     border-color: hsla(var(--gold-h, 45), var(--gold-s, 80%), var(--gold-l, 40%), 0.4);
   }
 
-  /* Chromium text effect for light mode */
+  /* Theme-colored text for light mode visibility */
   .light .text-foreground,
-  .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 {
-    background: linear-gradient(
-      180deg,
-      hsl(40 10% 25%) 0%,
-      hsl(40 10% 35%) 40%,
-      hsl(40 10% 20%) 60%,
-      hsl(40 10% 30%) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: none;
-    filter: drop-shadow(0 0 1px hsla(var(--gold-h, 45), var(--gold-s, 80%), var(--gold-l, 40%), 0.3));
+  .light h1, .light h2, .light h3, .light h4, .light h5, .light h6,
+  .light p, .light span, .light label {
+    color: hsl(var(--gold-h, 45) calc(var(--gold-s, 80%) * 0.4) 25%);
+  }
+
+  /* Lighter text elements use slightly more saturation */
+  .light .text-muted-foreground {
+    color: hsl(var(--gold-h, 45) calc(var(--gold-s, 80%) * 0.3) 40%);
   }
 
   /* Chromium text glow utility */
   .text-chrome {
     background: linear-gradient(
       180deg,
-      hsl(40 10% 30%) 0%,
-      hsl(40 10% 45%) 40%,
-      hsl(40 10% 25%) 60%,
-      hsl(40 10% 35%) 100%
+      hsl(var(--gold-h, 45) calc(var(--gold-s, 80%) * 0.5) 30%) 0%,
+      hsl(var(--gold-h, 45) calc(var(--gold-s, 80%) * 0.6) 40%) 50%,
+      hsl(var(--gold-h, 45) calc(var(--gold-s, 80%) * 0.5) 25%) 100%
     );
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 2px hsla(var(--gold-h, 45), var(--gold-s, 80%), var(--gold-l, 40%), 0.4));
   }
 
   .light .text-chrome {
-    filter: drop-shadow(0 0 3px hsla(var(--gold-h, 45), var(--gold-s, 80%), var(--gold-l, 40%), 0.5));
+    filter: drop-shadow(0 0 2px hsla(var(--gold-h, 45), var(--gold-s, 80%), var(--gold-l, 40%), 0.3));
   }
 
   /* Chrome/Silver ring effect */
