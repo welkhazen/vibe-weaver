@@ -278,38 +278,46 @@
   border-color: hsl(var(--gold) / 0.5);
 }
 
-/* Theme-aware icon glow */
+/* Theme-aware icon glow - subtle */
 .icon-glow {
-  filter: drop-shadow(0 0 4px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.5));
+  filter: drop-shadow(0 0 2px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.25));
   transition: filter 0.3s ease;
 }
 
 .icon-glow:hover {
-  filter: drop-shadow(0 0 8px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.7));
+  filter: drop-shadow(0 0 4px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.35));
 }
 
-/* Theme-aware box outline */
+/* Theme-aware box outline - minimal */
 .theme-border {
-  border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.4);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.25);
+  transition: border-color 0.3s ease;
 }
 
 .theme-border:hover {
-  border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.6);
+  border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.4);
 }
 
-/* Theme-aware box glow */
+/* Theme-aware box glow - reduced */
 .theme-glow-box {
-  box-shadow: 0 0 8px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.15),
-              inset 0 1px 0 0 hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.1);
-  border: 1px solid hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.2);
+  box-shadow: 0 0 4px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.08);
+  border: 1px solid hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.15);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .theme-glow-box:hover {
-  box-shadow: 0 0 16px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.25),
-              inset 0 1px 0 0 hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.15);
-  border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.35);
+  box-shadow: 0 0 8px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.12);
+  border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.25);
+}
+
+.light .theme-glow-box {
+  box-shadow: 0 1px 3px hsl(0 0% 0% / 0.06);
+  border: 1px solid hsla(var(--gold-h, 45), var(--gold-s, 80%), var(--gold-l, 40%), 0.2);
+}
+
+.light .theme-glow-box:hover {
+  box-shadow: 0 2px 6px hsl(0 0% 0% / 0.08);
+  border-color: hsla(var(--gold-h, 45), var(--gold-s, 80%), var(--gold-l, 40%), 0.3);
 }
 
 .light .theme-glow-box {
@@ -329,14 +337,12 @@
   .light h1, .light h2, .light h3, .light h4, .light h5, .light h6,
   .light p, .light span, .light label {
     color: hsl(var(--gold-h, 45) calc(var(--gold-s, 80%) * 0.4) 25%);
-    text-shadow: 0 1px 2px hsla(var(--gold-h, 45), var(--gold-s, 80%), 20%, 0.15),
-                 0 0 8px hsla(var(--gold-h, 45), var(--gold-s, 80%), var(--gold-l, 40%), 0.1);
+    text-shadow: 0 1px 1px hsla(var(--gold-h, 45), var(--gold-s, 80%), 20%, 0.08);
   }
 
   /* Lighter text elements use slightly more saturation */
   .light .text-muted-foreground {
     color: hsl(var(--gold-h, 45) calc(var(--gold-s, 80%) * 0.3) 40%);
-    text-shadow: 0 1px 1px hsla(var(--gold-h, 45), var(--gold-s, 80%), 20%, 0.1);
   }
 
   /* Chromium text glow utility */
