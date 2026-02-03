@@ -252,72 +252,70 @@
     0 6px 24px hsl(0 0% 0% / 0.12);
 }
 
-/* Glow effect for primary elements */
+/* Glow effect for primary elements - reduced */
 .glow-primary {
-  box-shadow: 0 0 20px hsl(var(--primary) / 0.4);
+  box-shadow: 0 0 10px hsl(var(--primary) / 0.2);
 }
 
-/* Golden glow effects */
+/* Golden glow effects - significantly reduced */
 .glow-gold {
-  box-shadow: 0 0 20px hsl(var(--gold) / 0.4),
-              0 0 40px hsl(var(--gold) / 0.2),
-              0 0 60px hsl(var(--gold) / 0.1);
+  box-shadow: 0 0 10px hsl(var(--gold) / 0.15),
+              0 0 20px hsl(var(--gold) / 0.08);
 }
 
 .glow-gold-soft {
-  box-shadow: 0 0 15px hsl(var(--gold) / 0.3),
-              0 0 30px hsl(var(--gold) / 0.15);
+  box-shadow: 0 0 8px hsl(var(--gold) / 0.12);
 }
 
 .text-gold {
   color: hsl(var(--gold));
-  text-shadow: 0 0 10px hsl(var(--gold) / 0.5);
+  text-shadow: 0 0 4px hsl(var(--gold) / 0.2);
 }
 
 .border-gold {
-  border-color: hsl(var(--gold) / 0.5);
+  border-color: hsl(var(--gold) / 0.3);
 }
 
-/* Theme-aware icon glow - subtle */
+/* Theme-aware icon glow - very subtle, grey-based with hint of color */
 .icon-glow {
-  filter: drop-shadow(0 0 2px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.25));
+  filter: drop-shadow(0 0 2px hsla(0, 0%, 50%, 0.2));
   transition: filter 0.3s ease;
 }
 
 .icon-glow:hover {
-  filter: drop-shadow(0 0 4px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.35));
+  filter: drop-shadow(0 0 3px hsla(var(--gold-h, 45), 15%, 50%, 0.25));
 }
 
-/* Theme-aware box outline - minimal */
+/* Theme-aware box outline - minimal, grey-based */
 .theme-border {
-  border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.25);
+  border-color: hsla(0, 0%, 50%, 0.2);
   transition: border-color 0.3s ease;
 }
 
 .theme-border:hover {
-  border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.4);
+  border-color: hsla(var(--gold-h, 45), 20%, 50%, 0.3);
 }
 
-/* Theme-aware box glow - reduced */
+/* Theme-aware box glow - grey-based with subtle color hint */
 .theme-glow-box {
-  box-shadow: 0 0 4px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.08);
-  border: 1px solid hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.15);
+  box-shadow: 0 0 4px hsla(0, 0%, 40%, 0.08);
+  border: 1px solid hsla(0, 0%, 50%, 0.12);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .theme-glow-box:hover {
-  box-shadow: 0 0 8px hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.12);
-  border-color: hsla(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%), 0.25);
+  box-shadow: 0 0 6px hsla(var(--gold-h, 45), 15%, 45%, 0.1);
+  border-color: hsla(var(--gold-h, 45), 20%, 50%, 0.2);
 }
 
 .light .theme-glow-box {
-  box-shadow: 0 1px 3px hsl(0 0% 0% / 0.06);
-  border: 1px solid hsla(var(--gold-h, 45), var(--gold-s, 80%), var(--gold-l, 40%), 0.2);
+  box-shadow: 0 1px 3px hsl(0 0% 0% / 0.05);
+  border: 1px solid hsla(0, 0%, 40%, 0.15);
 }
 
 .light .theme-glow-box:hover {
-  box-shadow: 0 2px 6px hsl(0 0% 0% / 0.08);
-  border-color: hsla(var(--gold-h, 45), var(--gold-s, 80%), var(--gold-l, 40%), 0.3);
+  box-shadow: 0 2px 5px hsl(0 0% 0% / 0.07);
+  border-color: hsla(var(--gold-h, 45), 15%, 40%, 0.2);
 }
 
 .light .theme-glow-box {
