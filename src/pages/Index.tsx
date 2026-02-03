@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import MatrixBackground from '@/components/MatrixBackground';
 import GoldenGlowBackground from '@/components/GoldenGlowBackground';
+import PerforatedBackground from '@/components/PerforatedBackground';
 import Header from '@/components/Header';
 import BottomNav from '@/components/BottomNav';
 import HomePage from '@/pages/HomePage';
@@ -45,6 +46,9 @@ const Index = () => {
       
       {/* Golden glow ambient lighting */}
       <GoldenGlowBackground />
+      
+      {/* Perforated overlay that fades in after 5s */}
+      <PerforatedBackground />
       
       {/* Main app container */}
       <div className="relative z-10 max-w-lg mx-auto min-h-screen flex flex-col">
