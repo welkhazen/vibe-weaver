@@ -1,17 +1,4 @@
-import { useEffect, useState } from 'react';
-
 const PerforatedBackground = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Start transition after 5 seconds
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <>
       <style>{`
@@ -56,9 +43,8 @@ const PerforatedBackground = () => {
         }
       `}</style>
       <div
-        className="fixed inset-0 pointer-events-none z-[2] transition-opacity duration-[3000ms] ease-in-out"
+        className="fixed inset-0 pointer-events-none z-[0]"
         style={{
-          opacity: isVisible ? 1 : 0,
           background: `
             /* Center dark vignette */
             radial-gradient(ellipse 80% 80% at 50% 50%, transparent 20%, hsl(0 0% 3% / 0.4) 80%),
@@ -71,7 +57,7 @@ const PerforatedBackground = () => {
           `,
           backgroundSize: '100% 100%, 8px 8px, 12px 12px, 100% 100%',
           backgroundAttachment: 'fixed',
-          animation: isVisible ? 'dotDrift 20s ease-in-out infinite, dotPulse 8s ease-in-out infinite' : 'none',
+          animation: 'dotDrift 20s ease-in-out infinite, dotPulse 8s ease-in-out infinite',
         }}
       />
     </>

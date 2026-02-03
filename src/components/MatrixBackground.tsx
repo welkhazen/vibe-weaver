@@ -1,11 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [opacity, setOpacity] = useState(0.3);
   const speedRef = useRef(15); // Start fast (lower interval = faster)
   const targetSpeedRef = useRef(50); // Final slow speed
   const startTimeRef = useRef(Date.now());
-  const slowdownDuration = 8000; // 8 seconds to slow down
+  const slowdownDuration = 5000; // 5 seconds of animation
+  const fadeStartTime = 4000; // Start fading at 4 seconds
+  const fadeDuration = 5000; // Fade over 5 seconds (4s to 9s)
   
   // Use refs for theme to avoid re-running effect
   const isDarkRef = useRef(
@@ -83,9 +86,30 @@ const MatrixBackground = () => {
       }
     };
     
-    // Update canvas opacity based on theme
+    // Calculate fade opacity based on elapsed time
+    const calculateOpacity = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      
+      if (elapsed < fadeStartTime) {
+        // Full opacity during initial animation
+        return isDarkRef.current ? 0.3 : 0.2;
+      } else if (elapsed < fadeStartTime + fadeDuration) {
+        // Gradually fade out from 4s to 9s
+        const fadeProgress = (elapsed - fadeStartTime) / fadeDuration;
+        const easeOut = 1 - Math.pow(fadeProgress, 2); // Ease-out for smooth fade
+        const baseOpacity = isDarkRef.current ? 0.3 : 0.2;
+        return baseOpacity * easeOut;
+      } else {
+        // Fully faded after 9s
+        return 0;
+      }
+    };
+    
+    // Update canvas opacity
     const updateCanvasOpacity = () => {
-      canvas.style.opacity = isDarkRef.current ? '0.3' : '0.2';
+      const newOpacity = calculateOpacity();
+      canvas.style.opacity = String(newOpacity);
+      return newOpacity > 0;
     };
     updateCanvasOpacity();
 
@@ -130,8 +154,17 @@ const MatrixBackground = () => {
 
     // Use dynamic timing with setTimeout instead of setInterval
     let timeoutId: number;
+    let isRunning = true;
     
     const loop = () => {
+      if (!isRunning) return;
+      
+      const shouldContinue = updateCanvasOpacity();
+      if (!shouldContinue) {
+        // Stop the animation once fully faded
+        return;
+      }
+      
       draw();
       const currentInterval = getCurrentInterval();
       timeoutId = window.setTimeout(loop, currentInterval);
@@ -140,6 +173,7 @@ const MatrixBackground = () => {
     loop();
 
     return () => {
+      isRunning = false;
       clearTimeout(timeoutId);
       observer.disconnect();
       window.removeEventListener('resize', resizeCanvas);
@@ -149,7 +183,7 @@ const MatrixBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
+      className="fixed inset-0 pointer-events-none z-[1]"
       style={{ background: 'transparent' }}
     />
   );
