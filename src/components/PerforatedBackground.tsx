@@ -42,8 +42,9 @@ const PerforatedBackground = () => {
           }
         }
       `}</style>
+      {/* Dark mode background */}
       <div
-        className="fixed inset-0 pointer-events-none z-[0]"
+        className="fixed inset-0 pointer-events-none z-[0] dark:block hidden"
         style={{
           background: `
             /* Center dark vignette */
@@ -54,6 +55,25 @@ const PerforatedBackground = () => {
             radial-gradient(circle at center, hsl(0 0% 5%) 2.5px, transparent 2.5px),
             /* Base gunmetal gradient */
             linear-gradient(145deg, hsl(220 10% 8%) 0%, hsl(220 10% 4%) 50%, hsl(220 10% 6%) 100%)
+          `,
+          backgroundSize: '100% 100%, 8px 8px, 12px 12px, 100% 100%',
+          backgroundAttachment: 'fixed',
+          animation: 'dotDrift 20s ease-in-out infinite, dotPulse 8s ease-in-out infinite',
+        }}
+      />
+      {/* Light mode background */}
+      <div
+        className="fixed inset-0 pointer-events-none z-[0] dark:hidden block"
+        style={{
+          background: `
+            /* Center light vignette - subtle warmth */
+            radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, hsl(40 15% 90% / 0.5) 90%),
+            /* Perforated dot pattern - small, subtle */
+            radial-gradient(circle at center, hsl(40 10% 82%) 1px, transparent 1px),
+            /* Perforated dot pattern - larger */
+            radial-gradient(circle at center, hsl(40 8% 88%) 2.5px, transparent 2.5px),
+            /* Base creamy white gradient */
+            linear-gradient(145deg, hsl(40 20% 96%) 0%, hsl(40 15% 94%) 50%, hsl(40 18% 95%) 100%)
           `,
           backgroundSize: '100% 100%, 8px 8px, 12px 12px, 100% 100%',
           backgroundAttachment: 'fixed',
