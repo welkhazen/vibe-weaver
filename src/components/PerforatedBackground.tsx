@@ -45,14 +45,14 @@ const PerforatedBackground = () => {
     linear-gradient(145deg, hsl(220 10% 8%) 0%, hsl(220 10% 4%) 50%, hsl(220 10% 6%) 100%)
   `;
 
-  // Light background with darker, more visible accent-colored dots
+  // Light background with much darker, chrome-like dots
   const lightBackground = `
-    /* Center subtle vignette with accent tint */
-    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, hsl(${accentColor.h} 10% 85% / 0.3) 90%),
-    /* Perforated dot pattern - small, darker chrome/accent colored */
-    radial-gradient(circle at center, hsl(${accentColor.h} ${accentColor.s * 0.25}% 35%) 1.2px, transparent 1.2px),
-    /* Perforated dot pattern - larger, darker chrome/accent colored */
-    radial-gradient(circle at center, hsl(${accentColor.h} ${accentColor.s * 0.2}% 45%) 2.5px, transparent 2.5px),
+    /* Center subtle vignette */
+    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, hsl(0 0% 85% / 0.25) 90%),
+    /* Perforated dot pattern - small, dark chrome */
+    radial-gradient(circle at center, hsl(${accentColor.h} 8% 22%) 1.2px, transparent 1.2px),
+    /* Perforated dot pattern - larger, dark chrome */
+    radial-gradient(circle at center, hsl(${accentColor.h} 6% 28%) 2.5px, transparent 2.5px),
     /* Base creamy gradient */
     linear-gradient(145deg, hsl(40 25% 97%) 0%, hsl(40 20% 94%) 50%, hsl(40 22% 96%) 100%)
   `;

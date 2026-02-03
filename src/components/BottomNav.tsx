@@ -27,10 +27,10 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
       <style>{`
         @keyframes brainGlow {
           0%, 100% {
-            box-shadow: 0 0 6px 1px hsla(var(--gold-h, 45), var(--gold-s, 90)%, var(--gold-l, 55)%, 0.2);
+            box-shadow: 0 0 4px 1px hsla(0, 0%, 60%, 0.15), 0 0 8px 2px hsla(var(--gold-h, 45), 20%, 50%, 0.08);
           }
           50% {
-            box-shadow: 0 0 12px 3px hsla(var(--gold-h, 45), var(--gold-s, 90)%, var(--gold-l, 55)%, 0.4);
+            box-shadow: 0 0 6px 2px hsla(0, 0%, 55%, 0.2), 0 0 12px 3px hsla(var(--gold-h, 45), 25%, 50%, 0.12);
           }
         }
       `}</style>
@@ -55,7 +55,7 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
                     : 'hover:scale-105 active:scale-95'
                 )}
                 style={item.useThemeColor ? { 
-                  color: `hsl(var(--gold-h, 45) var(--gold-s, 90)% var(--gold-l, 55)%)`,
+                  color: `hsl(var(--gold-h, 45) calc(var(--gold-s, 90) * 0.4)% var(--gold-l, 55)%)`,
                   animation: 'brainGlow 5s ease-in-out infinite',
                   borderRadius: '12px',
                 } : undefined}
@@ -65,7 +65,7 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
               <span 
                 className="text-[10px] mt-1 font-medium"
                 style={item.useThemeColor ? { 
-                  color: `hsl(var(--gold-h, 45) var(--gold-s, 90)% var(--gold-l, 55)%)` 
+                  color: `hsl(var(--gold-h, 45) calc(var(--gold-s, 90) * 0.4)% var(--gold-l, 55)%)` 
                 } : undefined}
               >
                 {item.label}
