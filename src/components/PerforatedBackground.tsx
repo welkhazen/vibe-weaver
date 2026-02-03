@@ -2,19 +2,33 @@ import { useEffect, useState } from 'react';
 
 const PerforatedBackground = () => {
   const [isDark, setIsDark] = useState(true);
+  const [accentColor, setAccentColor] = useState({ h: 45, s: 90, l: 55 });
 
   useEffect(() => {
-    const checkTheme = () => {
+    const checkThemeAndColor = () => {
       const isLight = document.documentElement.classList.contains('light');
       setIsDark(!isLight);
+      
+      // Get accent color from CSS variables
+      const root = document.documentElement;
+      const computedStyle = getComputedStyle(root);
+      const goldH = computedStyle.getPropertyValue('--gold-h').trim() || '45';
+      const goldS = computedStyle.getPropertyValue('--gold-s').trim() || '90%';
+      const goldL = computedStyle.getPropertyValue('--gold-l').trim() || '55%';
+      
+      setAccentColor({
+        h: parseFloat(goldH),
+        s: parseFloat(goldS),
+        l: parseFloat(goldL)
+      });
     };
 
-    checkTheme();
+    checkThemeAndColor();
     
-    const observer = new MutationObserver(checkTheme);
+    const observer = new MutationObserver(checkThemeAndColor);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class']
+      attributeFilter: ['class', 'style']
     });
 
     return () => observer.disconnect();
@@ -31,13 +45,14 @@ const PerforatedBackground = () => {
     linear-gradient(145deg, hsl(220 10% 8%) 0%, hsl(220 10% 4%) 50%, hsl(220 10% 6%) 100%)
   `;
 
+  // Light background with accent-colored dots
   const lightBackground = `
-    /* Center subtle vignette */
-    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, hsl(40 20% 90% / 0.5) 90%),
-    /* Perforated dot pattern - small */
-    radial-gradient(circle at center, hsl(40 15% 85%) 1px, transparent 1px),
-    /* Perforated dot pattern - larger */
-    radial-gradient(circle at center, hsl(40 15% 88%) 2.5px, transparent 2.5px),
+    /* Center subtle vignette with accent tint */
+    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, hsl(${accentColor.h} 15% 88% / 0.4) 90%),
+    /* Perforated dot pattern - small, accent colored */
+    radial-gradient(circle at center, hsl(${accentColor.h} ${accentColor.s * 0.4}% 65%) 1.2px, transparent 1.2px),
+    /* Perforated dot pattern - larger, accent colored */
+    radial-gradient(circle at center, hsl(${accentColor.h} ${accentColor.s * 0.3}% 75%) 2.5px, transparent 2.5px),
     /* Base creamy gradient */
     linear-gradient(145deg, hsl(40 25% 97%) 0%, hsl(40 20% 94%) 50%, hsl(40 22% 96%) 100%)
   `;
