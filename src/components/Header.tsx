@@ -83,8 +83,9 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
 
   return (
     <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 safe-area-top">
-      <div className="flex items-center justify-between px-4 h-14 max-w-lg mx-auto">
-        <div className="flex items-center gap-1">
+      {/* Unified header layout - same for mobile + tablet */}
+      <div className="flex items-center justify-between px-4 sm:px-6 h-14 w-full max-w-lg mx-auto">
+        <div className="flex items-center gap-1 flex-shrink-0">
           {/* Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -195,11 +196,11 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
           </DropdownMenu>
         </div>
         
-        <h1 className="text-lg font-bold text-foreground tracking-tight">
+        {/* Centered title - consistent across all sizes */}
+        <h1 className="text-lg font-bold text-foreground tracking-tight text-center flex-1 min-w-0 truncate px-2">
           {title}
         </h1>
-
-        <button className="p-2 rounded-xl hover:bg-accent transition-colors relative">
+        <button className="p-2 rounded-xl hover:bg-accent transition-colors relative flex-shrink-0">
           <Bell className="w-5 h-5 text-foreground" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full" />
         </button>

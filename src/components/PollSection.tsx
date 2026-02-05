@@ -56,10 +56,10 @@ const pollData: PollItem[] = [
 
 const PollSection = () => {
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+    <div className="w-full space-y-4">
+      {/* Header - responsive layout */}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="min-w-0">
           <h3 className="text-lg font-semibold text-foreground">Community Polls</h3>
           <p className="text-xs text-muted-foreground mt-0.5">Vote & see what others think</p>
         </div>
@@ -74,8 +74,8 @@ const PollSection = () => {
         </a>
       </div>
 
-      {/* Poll Cards */}
-      <div className="grid gap-3">
+      {/* Poll Cards - full width inside container */}
+      <div className="w-full grid gap-3">
         {pollData.map((item, index) => (
           <PollCard
             key={index}
