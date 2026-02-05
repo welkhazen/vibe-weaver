@@ -2,7 +2,8 @@ import PollSection from '@/components/PollSection';
 
 const TCMPage = () => {
   return (
-    <div className="px-4 py-4 animate-fade-in pb-24">
+    <div className="w-full px-4 sm:px-6 py-4 animate-fade-in pb-24">
+      {/* Hero - always centered */}
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-foreground mb-2">The Cumulative Mind</h2>
         <p className="text-muted-foreground text-sm">

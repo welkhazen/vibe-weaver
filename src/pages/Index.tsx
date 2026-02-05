@@ -50,8 +50,8 @@ const Index = () => {
       {/* Perforated overlay that fades in after 5s */}
       <PerforatedBackground />
       
-      {/* Main app container */}
-      <div className="relative z-10 max-w-lg mx-auto min-h-screen flex flex-col">
+      {/* Main app container - unified layout for mobile + tablet */}
+      <div className="relative z-10 w-full max-w-lg mx-auto min-h-screen flex flex-col">
         <Header title={getPageTitle()} />
         
         <main className="flex-1 overflow-y-auto">
