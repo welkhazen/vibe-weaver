@@ -35,6 +35,24 @@ const Index = () => {
     }
   }, []);
 
+  // Listen for hash changes at runtime
+  useEffect(() => {
+    const onHashChange = () => {
+      const hash = (window.location.hash || "").replace("#", "").toLowerCase();
+      if (hash === "raw" || hash === "community" || hash === "polls") {
+        setActiveTab("tcm");
+      } else if (hash === "explore" || hash === "search") {
+        setActiveTab("search");
+      } else if (hash === "challenges") {
+        setActiveTab("challenges");
+      } else if (hash === "profile") {
+        setActiveTab("profile");
+      }
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
   const getPageTitle = () => {
     switch (activeTab) {
       case 'home': return 'The Art of raW';
