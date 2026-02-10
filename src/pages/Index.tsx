@@ -17,6 +17,24 @@ const Index = () => {
   // Initialize theme color from localStorage on mount
   useThemeColor();
 
+  // Deep-link: allow ?tab=raw or #raw to open a specific tab on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    const hash = (window.location.hash || "").replace("#", "");
+    const target = (tab || hash || "").toLowerCase();
+
+    if (target === "raw" || target === "community" || target === "polls") {
+      setActiveTab("tcm");
+    } else if (target === "explore" || target === "search") {
+      setActiveTab("search");
+    } else if (target === "challenges") {
+      setActiveTab("challenges");
+    } else if (target === "profile") {
+      setActiveTab("profile");
+    }
+  }, []);
+
   const getPageTitle = () => {
     switch (activeTab) {
       case 'home': return 'The Art of raW';
