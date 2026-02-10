@@ -1,13 +1,9 @@
-import GuidedSearch from '@/components/GuidedSearch';
 import OrbitalCategorySelector from '@/components/OrbitalCategorySelector';
 import FilterTabs from '@/components/FilterTabs';
 
 const HomePage = () => {
   return (
     <div className="w-full animate-fade-in pb-24">
-      {/* Combined Hero + AI Search */}
-      <GuidedSearch />
-
       {/* Quick Filter */}
       <FilterTabs />
 
