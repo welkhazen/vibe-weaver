@@ -13,7 +13,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('home');
-  
+
   // Initialize theme color from localStorage on mount
   useThemeColor();
 
@@ -55,28 +55,28 @@ const Index = () => {
 
   const getPageTitle = () => {
     switch (activeTab) {
-      case 'home': return 'The Art of raW';
-      case 'search': return 'Explore';
-      case 'challenges': return 'Challenges';
-      case 'profile': return 'Profile';
-      case 'tcm': return 'The Cumulative Mind';
-      default: return 'The Art of raW';
+      case 'home':return 'The Art of raW';
+      case 'search':return 'Explore';
+      case 'challenges':return 'Challenges';
+      case 'profile':return 'Profile';
+      case 'tcm':return 'The Cumulative Mind';
+      default:return 'The Art of raW';
     }
   };
 
   const renderPage = () => {
     switch (activeTab) {
-      case 'home': return <HomePage />;
-      case 'search': return <ExplorePage />;
-      case 'challenges': return <ChallengesPage />;
-      case 'profile': return <ProfilePage />;
-      case 'tcm': return <TCMPage />;
-      default: return <HomePage />;
+      case 'home':return <HomePage />;
+      case 'search':return <ExplorePage />;
+      case 'challenges':return <ChallengesPage />;
+      case 'profile':return <ProfilePage />;
+      case 'tcm':return <TCMPage />;
+      default:return <HomePage />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground relative">
+    <div className="min-h-screen text-foreground relative bg-destructive-foreground">
       {/* Matrix falling code background */}
       <MatrixBackground />
       
@@ -96,8 +96,8 @@ const Index = () => {
         
         <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Index;
