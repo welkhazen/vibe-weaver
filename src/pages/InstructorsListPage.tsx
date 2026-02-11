@@ -157,7 +157,7 @@ const InstructorsListPage = () => {
                   </p>
                   <div className="flex items-center gap-3 mt-2">
                     <span className="text-sm font-medium text-primary">
-                      ${instructor.price}
+                      {instructor.price}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {instructor.duration}
