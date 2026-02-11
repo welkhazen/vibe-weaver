@@ -1,5 +1,5 @@
-import { Instagram } from "lucide-react";
-import PollCard from "./PollCard";
+import { Instagram } from 'lucide-react';
+import PollCard from './PollCard';
 
 interface PollItem {
   question: string;
@@ -61,9 +61,7 @@ const PollSection = () => {
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="min-w-0">
           <h3 className="text-lg font-semibold text-foreground">Community Polls</h3>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Answer and find out what you really think - Answer and see what others think
-          </p>
+          <p className="text-xs text-muted-foreground mt-0.5">Vote & see what others think</p>
         </div>
         <a
           href="https://instagram.com/thecumulativemind"
@@ -79,7 +77,12 @@ const PollSection = () => {
       {/* Poll Cards - full width inside container */}
       <div className="w-full grid gap-3">
         {pollData.map((item, index) => (
-          <PollCard key={index} question={item.question} options={item.options} index={index} />
+          <PollCard
+            key={index}
+            question={item.question}
+            options={item.options}
+            index={index}
+          />
         ))}
       </div>
     </div>

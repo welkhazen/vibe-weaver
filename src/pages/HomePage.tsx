@@ -3,7 +3,7 @@ import FilterTabs from '@/components/FilterTabs';
 
 const HomePage = () => {
   return (
-    <div className="w-full animate-fade-in pb-24 bg-[sidebar-accent-foreground] bg-primary">
+    <div className="w-full animate-fade-in pb-24">
       {/* Quick Filter */}
       <FilterTabs />
 
@@ -15,8 +15,8 @@ const HomePage = () => {
 
       {/* Orbital Category Selector */}
       <OrbitalCategorySelector />
-    </div>);
-
+    </div>
+  );
 };
 
 export default HomePage;
