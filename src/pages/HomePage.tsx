@@ -3,7 +3,7 @@ import FilterTabs from '@/components/FilterTabs';
 
 const HomePage = () => {
   return (
-    <div className="w-full animate-fade-in pb-24 bg-popover bg-[sidebar-accent-foreground]">
+    <div className="w-full animate-fade-in pb-24 bg-[sidebar-accent-foreground] bg-primary">
       {/* Quick Filter */}
       <FilterTabs />
 
