@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Bell, Menu, User, Lock, Shield, Eye, HelpCircle, LogOut, Palette, Sun, Moon } from 'lucide-react';
+import { Bell, Menu, Palette, Sun, Moon } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -72,14 +72,6 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
     setShowColorPicker(false);
   };
 
-  const menuItems = [
-    { icon: <User className="w-4 h-4" />, label: 'Edit Profile', action: 'profile' },
-    { icon: <Lock className="w-4 h-4" />, label: 'Change Password', action: 'password' },
-    { icon: <Shield className="w-4 h-4" />, label: 'Privacy & Security', action: 'privacy' },
-    { icon: <Bell className="w-4 h-4" />, label: 'Notifications', action: 'notifications' },
-    { icon: <Eye className="w-4 h-4" />, label: 'Visibility', action: 'visibility' },
-    { icon: <HelpCircle className="w-4 h-4" />, label: 'Help & FAQ', action: 'help' },
-  ];
 
   return (
     <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 safe-area-top">
@@ -174,24 +166,6 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
                 </button>
               </div>
               
-              <DropdownMenuSeparator className="bg-border/50" />
-              
-              {menuItems.map((item) => (
-                <DropdownMenuItem 
-                  key={item.action}
-                  className="flex items-center gap-3 cursor-pointer hover:bg-accent/50 text-foreground"
-                  onClick={() => onNavigate?.(item.action)}
-                >
-                  <span className="text-muted-foreground">{item.icon}</span>
-                  {item.label}
-                </DropdownMenuItem>
-              ))}
-              
-              <DropdownMenuSeparator className="bg-border/50" />
-              <DropdownMenuItem className="flex items-center gap-3 cursor-pointer text-destructive hover:bg-destructive/10">
-                <LogOut className="w-4 h-4" />
-                Log Out
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
