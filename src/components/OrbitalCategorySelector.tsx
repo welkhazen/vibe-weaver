@@ -27,12 +27,18 @@ const OrbitalCategorySelector = () => {
 
   const closeOrbital = () => {
     if (selectedCategory && !isClosing && !isSwitching) {
-      setIsClosing(true);
+      // Phase 1: fade out inner content
+      setIsSwitching(true);
       setTimeout(() => {
-        setSelectedCategory(null);
-        setIsClosing(false);
-        setHasOpened(false);
-      }, 400);
+        // Phase 2: collapse the card
+        setIsSwitching(false);
+        setIsClosing(true);
+        setTimeout(() => {
+          setSelectedCategory(null);
+          setIsClosing(false);
+          setHasOpened(false);
+        }, 350);
+      }, 200);
     }
   };
 
