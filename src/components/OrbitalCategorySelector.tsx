@@ -14,6 +14,7 @@ const OrbitalCategorySelector = () => {
   const [isClosing, setIsClosing] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
   const [hasOpened, setHasOpened] = useState(false);
+  const [isReturning, setIsReturning] = useState(false);
   const pendingCategory = useRef<string | null>(null);
   const switchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const orbitalRef = useRef<HTMLDivElement>(null);
@@ -30,13 +31,16 @@ const OrbitalCategorySelector = () => {
       // Phase 1: fade out inner content
       setIsSwitching(true);
       setTimeout(() => {
-        // Phase 2: collapse the card
+        // Phase 2: collapse the card + start spring return
         setIsSwitching(false);
         setIsClosing(true);
+        setIsReturning(true);
         setTimeout(() => {
           setSelectedCategory(null);
           setIsClosing(false);
           setHasOpened(false);
+          // Keep isReturning true for the spring animation duration
+          setTimeout(() => setIsReturning(false), 500);
         }, 350);
       }, 200);
     }
@@ -268,6 +272,15 @@ const OrbitalCategorySelector = () => {
                 .animate-content-fade-in {
                   animation: content-fade-in 300ms ease-out forwards;
                 }
+                @keyframes spring-return {
+                  0% { opacity: 0.4; transform: scale(0.95); }
+                  50% { opacity: 1; transform: scale(1.04); }
+                  75% { opacity: 1; transform: scale(0.99); }
+                  100% { opacity: 1; transform: scale(1); }
+                }
+                .animate-spring-return {
+                  animation: spring-return 450ms ease-out forwards;
+                }
               `}</style>
             </div>
           );
@@ -286,7 +299,8 @@ const OrbitalCategorySelector = () => {
               'transition-all duration-400 ease-out',
               'hover:scale-[1.02] active:scale-[0.98]',
               'group',
-              hasSelection && 'opacity-40 scale-95'
+              hasSelection && 'opacity-40 scale-95',
+              isReturning && !hasSelection && 'animate-spring-return'
             )}
             style={{ transitionDuration: '400ms' }}
           >
