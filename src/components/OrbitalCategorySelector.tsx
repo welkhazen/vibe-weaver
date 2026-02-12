@@ -120,10 +120,12 @@ const OrbitalCategorySelector = () => {
 
   return (
     <div className="grid grid-cols-2 gap-3 px-4">
-      {categories.map((category) => {
+      {categories.map((category, index) => {
         const IconComponent = category.icon;
         const isSelected = selectedCategory === category.id;
         const hasSelection = selectedCategory !== null;
+        const puzzleDirections = ['animate-puzzle-tl', 'animate-puzzle-tr', 'animate-puzzle-bl', 'animate-puzzle-br'];
+        const puzzleClass = puzzleDirections[index % 4];
 
         if (isSelected) {
           return (
@@ -272,14 +274,37 @@ const OrbitalCategorySelector = () => {
                 .animate-content-fade-in {
                   animation: content-fade-in 300ms ease-out forwards;
                 }
-                @keyframes spring-return {
-                  0% { opacity: 0.4; transform: scale(0.95); }
-                  40% { opacity: 0.85; transform: scale(1.03); }
-                  65% { opacity: 1; transform: scale(0.995); }
-                  100% { opacity: 1; transform: scale(1); }
+                @keyframes puzzle-return-tl {
+                  0% { opacity: 0; transform: translate(-30px, -30px) scale(0.85) rotate(-8deg); }
+                  60% { opacity: 1; transform: translate(2px, 2px) scale(1.02) rotate(0.5deg); }
+                  100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
                 }
-                .animate-spring-return {
-                  animation: spring-return 650ms cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+                @keyframes puzzle-return-tr {
+                  0% { opacity: 0; transform: translate(30px, -30px) scale(0.85) rotate(8deg); }
+                  60% { opacity: 1; transform: translate(-2px, 2px) scale(1.02) rotate(-0.5deg); }
+                  100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+                }
+                @keyframes puzzle-return-bl {
+                  0% { opacity: 0; transform: translate(-30px, 30px) scale(0.85) rotate(8deg); }
+                  60% { opacity: 1; transform: translate(2px, -2px) scale(1.02) rotate(-0.5deg); }
+                  100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+                }
+                @keyframes puzzle-return-br {
+                  0% { opacity: 0; transform: translate(30px, 30px) scale(0.85) rotate(-8deg); }
+                  60% { opacity: 1; transform: translate(-2px, -2px) scale(1.02) rotate(0.5deg); }
+                  100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+                }
+                .animate-puzzle-tl {
+                  animation: puzzle-return-tl 600ms cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+                }
+                .animate-puzzle-tr {
+                  animation: puzzle-return-tr 600ms cubic-bezier(0.34, 1.2, 0.64, 1) 50ms forwards;
+                }
+                .animate-puzzle-bl {
+                  animation: puzzle-return-bl 600ms cubic-bezier(0.34, 1.2, 0.64, 1) 100ms forwards;
+                }
+                .animate-puzzle-br {
+                  animation: puzzle-return-br 600ms cubic-bezier(0.34, 1.2, 0.64, 1) 150ms forwards;
                 }
               `}</style>
             </div>
@@ -300,7 +325,7 @@ const OrbitalCategorySelector = () => {
               'hover:scale-[1.02] active:scale-[0.98]',
               'group',
               hasSelection && 'opacity-40 scale-95',
-              isReturning && !hasSelection && 'transition-all duration-700 ease-out'
+              isReturning && !hasSelection && puzzleClass
             )}
             style={{ transitionDuration: '400ms' }}
           >
