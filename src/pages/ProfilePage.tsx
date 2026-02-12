@@ -2,54 +2,53 @@ import { useState } from 'react';
 import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, TrendingUp, Percent, Zap, Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import LevelUpCelebration from '@/components/LevelUpCelebration';
-import profileAvatar from '@/assets/profile-avatar.png';
 
 const upcomingSessions = [
-  {
-    id: 1,
-    title: 'Vinyasa Flow Yoga',
-    instructor: 'Sarah Chen',
-    date: 'Today',
-    time: '10:00 AM',
-    duration: '60 min',
-    type: 'in-person',
-    location: 'Downtown Studio',
-  },
-  {
-    id: 2,
-    title: 'CBT Therapy Session',
-    instructor: 'Dr. Michael Ross',
-    date: 'Tomorrow',
-    time: '2:00 PM',
-    duration: '50 min',
-    type: 'online',
-    location: 'Video Call',
-  },
-  {
-    id: 3,
-    title: 'Piano Lesson',
-    instructor: 'Emma Williams',
-    date: 'Jan 30',
-    time: '4:30 PM',
-    duration: '45 min',
-    type: 'in-person',
-    location: 'East Side Music Hall',
-  },
-];
+{
+  id: 1,
+  title: 'Vinyasa Flow Yoga',
+  instructor: 'Sarah Chen',
+  date: 'Today',
+  time: '10:00 AM',
+  duration: '60 min',
+  type: 'in-person',
+  location: 'Downtown Studio'
+},
+{
+  id: 2,
+  title: 'CBT Therapy Session',
+  instructor: 'Dr. Michael Ross',
+  date: 'Tomorrow',
+  time: '2:00 PM',
+  duration: '50 min',
+  type: 'online',
+  location: 'Video Call'
+},
+{
+  id: 3,
+  title: 'Piano Lesson',
+  instructor: 'Emma Williams',
+  date: 'Jan 30',
+  time: '4:30 PM',
+  duration: '45 min',
+  type: 'in-person',
+  location: 'East Side Music Hall'
+}];
+
 
 // Level thresholds and rewards
 const levelData = [
-  { level: 1, xpRequired: 0, cashback: 0 },
-  { level: 2, xpRequired: 100, cashback: 2 },
-  { level: 3, xpRequired: 250, cashback: 3 },
-  { level: 4, xpRequired: 500, cashback: 5 },
-  { level: 5, xpRequired: 1000, cashback: 7 },
-  { level: 6, xpRequired: 1750, cashback: 10 },
-  { level: 7, xpRequired: 2750, cashback: 12 },
-  { level: 8, xpRequired: 4000, cashback: 15 },
-  { level: 9, xpRequired: 5500, cashback: 18 },
-  { level: 10, xpRequired: 7500, cashback: 20 },
-];
+{ level: 1, xpRequired: 0, cashback: 0 },
+{ level: 2, xpRequired: 100, cashback: 2 },
+{ level: 3, xpRequired: 250, cashback: 3 },
+{ level: 4, xpRequired: 500, cashback: 5 },
+{ level: 5, xpRequired: 1000, cashback: 7 },
+{ level: 6, xpRequired: 1750, cashback: 10 },
+{ level: 7, xpRequired: 2750, cashback: 12 },
+{ level: 8, xpRequired: 4000, cashback: 15 },
+{ level: 9, xpRequired: 5500, cashback: 18 },
+{ level: 10, xpRequired: 7500, cashback: 20 }];
+
 
 const ProfilePage = () => {
   const [showAllBookings, setShowAllBookings] = useState(false);
@@ -62,28 +61,28 @@ const ProfilePage = () => {
     level: 5,
     totalBookings: 24,
     totalReviews: 12,
-    streakDays: 4,
+    streakDays: 4
   };
 
   const currentLevelData = levelData[userProgress.level - 1];
   const nextLevelData = userProgress.level < 10 ? levelData[userProgress.level] : null;
-  
+
   const xpForCurrentLevel = currentLevelData.xpRequired;
   const xpForNextLevel = nextLevelData?.xpRequired ?? currentLevelData.xpRequired;
-  const xpProgress = nextLevelData 
-    ? ((userProgress.xp - xpForCurrentLevel) / (xpForNextLevel - xpForCurrentLevel)) * 100
-    : 100;
+  const xpProgress = nextLevelData ?
+  (userProgress.xp - xpForCurrentLevel) / (xpForNextLevel - xpForCurrentLevel) * 100 :
+  100;
 
   return (
     <div className="animate-fade-in pb-24">
       {/* Level Up Celebration Modal */}
-      {showLevelUpCelebration && (
-        <LevelUpCelebration
-          newLevel={userProgress.level}
-          cashbackPercent={currentLevelData.cashback}
-          onClose={() => setShowLevelUpCelebration(false)}
-        />
-      )}
+      {showLevelUpCelebration &&
+      <LevelUpCelebration
+        newLevel={userProgress.level}
+        cashbackPercent={currentLevelData.cashback}
+        onClose={() => setShowLevelUpCelebration(false)} />
+
+      }
       {/* Profile header */}
       <div className="relative">
         {/* Banner */}
@@ -93,7 +92,9 @@ const ProfilePage = () => {
         <div className="absolute left-1/2 -translate-x-1/2 -bottom-16">
           <div className="relative">
             <div className="w-32 h-32 rounded-full bg-card chrome-ring flex items-center justify-center overflow-hidden">
-              <img src={profileAvatar} alt="Profile" className="w-full h-full object-cover" />
+              <div className="w-full h-full bg-gradient-to-br from-primary/40 to-primary/10 flex items-center justify-center">
+                <span className="text-5xl">👤</span>
+              </div>
             </div>
             <button className="absolute bottom-2 right-2 p-2 rounded-full bg-primary text-primary-foreground shadow-lg">
               <Camera className="w-4 h-4" />
@@ -111,7 +112,7 @@ const ProfilePage = () => {
         <h2 className="text-2xl font-bold text-foreground">John Doe</h2>
         <div className="flex items-center justify-center gap-1 mt-1 text-muted-foreground">
           <MapPin className="w-4 h-4" />
-          <span className="text-sm">New York, USA</span>
+          <span className="text-sm">Beirut, Lebanon </span>
         </div>
         
         <button className="mt-4 px-6 py-2 rounded-full bg-primary text-primary-foreground font-medium inline-flex items-center gap-2 glow-primary">
@@ -153,16 +154,16 @@ const ProfilePage = () => {
                 <span className="text-muted-foreground">{xpForNextLevel.toLocaleString()} XP</span>
               </div>
               <div className="h-2 bg-accent rounded-full overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-primary rounded-full transition-all duration-500"
-                  style={{ width: `${xpProgress}%` }}
-                />
+                  style={{ width: `${xpProgress}%` }} />
+
               </div>
             </div>
 
             {/* Level Benefits Preview */}
-            {nextLevelData && (
-              <div className="mt-3 pt-3 border-t border-border/30 flex items-center justify-between">
+            {nextLevelData &&
+            <div className="mt-3 pt-3 border-t border-border/30 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs">
                   <Zap className="w-3.5 h-3.5 text-primary" />
                   <span className="text-muted-foreground">
@@ -171,14 +172,14 @@ const ProfilePage = () => {
                 </div>
                 {/* Demo button to preview level-up animation */}
                 <button
-                  onClick={() => setShowLevelUpCelebration(true)}
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/20 text-primary text-[10px] font-medium hover:bg-primary/30 transition-colors active:scale-95"
-                >
+                onClick={() => setShowLevelUpCelebration(true)}
+                className="flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/20 text-primary text-[10px] font-medium hover:bg-primary/30 transition-colors active:scale-95">
+
                   <Gift className="w-3 h-3" />
                   Preview
                 </button>
               </div>
-            )}
+            }
           </div>
         </div>
       </div>
@@ -229,11 +230,11 @@ const ProfilePage = () => {
             </div>
           </div>
           <div className="grid grid-cols-7 gap-1 text-center text-xs">
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-              <div key={i} className="py-1.5 text-muted-foreground font-medium">
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) =>
+            <div key={i} className="py-1.5 text-muted-foreground font-medium">
                 {day}
               </div>
-            ))}
+            )}
             {Array.from({ length: 31 }, (_, i) => {
               const dayNum = i + 1;
               const isToday = dayNum === 29;
@@ -243,37 +244,37 @@ const ProfilePage = () => {
                   key={i}
                   className={cn(
                     'py-1.5 rounded-lg text-xs transition-all duration-200',
-                    isToday
-                      ? 'bg-primary text-primary-foreground font-bold'
-                      : hasSession
-                      ? 'bg-primary/20 text-primary font-medium'
-                      : 'hover:bg-accent text-foreground'
-                  )}
-                >
+                    isToday ?
+                    'bg-primary text-primary-foreground font-bold' :
+                    hasSession ?
+                    'bg-primary/20 text-primary font-medium' :
+                    'hover:bg-accent text-foreground'
+                  )}>
+
                   {dayNum}
-                </button>
-              );
+                </button>);
+
             })}
           </div>
         </div>
         
         <div className="space-y-3">
-          {displayedSessions.map((session) => (
-            <div key={session.id} className="metallic-card theme-glow-box p-4">
+          {displayedSessions.map((session) =>
+          <div key={session.id} className="metallic-card theme-glow-box p-4">
               <div className="flex items-start justify-between mb-3">
                 <div>
                   <h4 className="font-semibold text-foreground">{session.title}</h4>
                   <p className="text-sm text-muted-foreground">{session.instructor}</p>
                 </div>
-                {session.type === 'online' ? (
-                  <div className="p-2 rounded-lg bg-primary/20">
+                {session.type === 'online' ?
+              <div className="p-2 rounded-lg bg-primary/20">
                     <Video className="w-4 h-4 text-primary" />
-                  </div>
-                ) : (
-                  <div className="p-2 rounded-lg bg-accent">
+                  </div> :
+
+              <div className="p-2 rounded-lg bg-accent">
                     <MapPin className="w-4 h-4 text-muted-foreground" />
                   </div>
-                )}
+              }
               </div>
               <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1">
@@ -298,25 +299,25 @@ const ProfilePage = () => {
                 </button>
               </div>
             </div>
-          ))}
+          )}
         </div>
 
-        {upcomingSessions.length > 2 && (
-          <button
-            onClick={() => setShowAllBookings(!showAllBookings)}
-            className="w-full mt-3 py-2 flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {showAllBookings ? (
-              <>
+        {upcomingSessions.length > 2 &&
+        <button
+          onClick={() => setShowAllBookings(!showAllBookings)}
+          className="w-full mt-3 py-2 flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+
+            {showAllBookings ?
+          <>
                 Show Less <ChevronUp className="w-4 h-4" />
-              </>
-            ) : (
-              <>
+              </> :
+
+          <>
                 View All ({upcomingSessions.length}) <ChevronDown className="w-4 h-4" />
               </>
-            )}
+          }
           </button>
-        )}
+        }
       </div>
 
       {/* Recent activity */}
@@ -324,11 +325,11 @@ const ProfilePage = () => {
         <h3 className="font-semibold text-foreground mb-3">Recent Activity</h3>
         <div className="space-y-3">
           {[
-            { title: 'Completed Yoga Session', date: 'Today', icon: '🧘' },
-            { title: 'Left a 5-star review', date: 'Yesterday', icon: '⭐' },
-            { title: 'Booked Piano Lesson', date: '2 days ago', icon: '🎹' },
-          ].map((activity, i) => (
-            <div key={i} className="metallic-card theme-glow-box p-4 flex items-center gap-3">
+          { title: 'Completed Yoga Session', date: 'Today', icon: '🧘' },
+          { title: 'Left a 5-star review', date: 'Yesterday', icon: '⭐' },
+          { title: 'Booked Piano Lesson', date: '2 days ago', icon: '🎹' }].
+          map((activity, i) =>
+          <div key={i} className="metallic-card theme-glow-box p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center icon-glow">
                 <span>{activity.icon}</span>
               </div>
@@ -337,11 +338,11 @@ const ProfilePage = () => {
                 <p className="text-xs text-muted-foreground">{activity.date}</p>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default ProfilePage;
