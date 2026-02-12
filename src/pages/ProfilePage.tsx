@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, TrendingUp, Percent, Zap, Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import LevelUpCelebration from '@/components/LevelUpCelebration';
+import profileAvatar from '@/assets/profile-avatar.png';
 
 const upcomingSessions = [
   {
@@ -92,9 +93,7 @@ const ProfilePage = () => {
         <div className="absolute left-1/2 -translate-x-1/2 -bottom-16">
           <div className="relative">
             <div className="w-32 h-32 rounded-full bg-card chrome-ring flex items-center justify-center overflow-hidden">
-              <div className="w-full h-full bg-gradient-to-br from-primary/40 to-primary/10 flex items-center justify-center">
-                <span className="text-5xl">👤</span>
-              </div>
+              <img src={profileAvatar} alt="Profile" className="w-full h-full object-cover" />
             </div>
             <button className="absolute bottom-2 right-2 p-2 rounded-full bg-primary text-primary-foreground shadow-lg">
               <Camera className="w-4 h-4" />
