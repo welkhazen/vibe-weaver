@@ -275,36 +275,40 @@ const OrbitalCategorySelector = () => {
                   animation: content-fade-in 300ms ease-out forwards;
                 }
                 @keyframes puzzle-return-tl {
-                  0% { opacity: 0; transform: translate(-30px, -30px) scale(0.85) rotate(-8deg); }
-                  60% { opacity: 1; transform: translate(2px, 2px) scale(1.02) rotate(0.5deg); }
+                  0% { opacity: 0; transform: translate(-120px, -100px) scale(0.4) rotate(-25deg); }
+                  55% { opacity: 1; transform: translate(6px, 6px) scale(1.05) rotate(2deg); }
+                  75% { opacity: 1; transform: translate(-2px, -2px) scale(0.98) rotate(-0.5deg); }
                   100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
                 }
                 @keyframes puzzle-return-tr {
-                  0% { opacity: 0; transform: translate(30px, -30px) scale(0.85) rotate(8deg); }
-                  60% { opacity: 1; transform: translate(-2px, 2px) scale(1.02) rotate(-0.5deg); }
+                  0% { opacity: 0; transform: translate(120px, -100px) scale(0.4) rotate(25deg); }
+                  55% { opacity: 1; transform: translate(-6px, 6px) scale(1.05) rotate(-2deg); }
+                  75% { opacity: 1; transform: translate(2px, -2px) scale(0.98) rotate(0.5deg); }
                   100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
                 }
                 @keyframes puzzle-return-bl {
-                  0% { opacity: 0; transform: translate(-30px, 30px) scale(0.85) rotate(8deg); }
-                  60% { opacity: 1; transform: translate(2px, -2px) scale(1.02) rotate(-0.5deg); }
+                  0% { opacity: 0; transform: translate(-120px, 100px) scale(0.4) rotate(25deg); }
+                  55% { opacity: 1; transform: translate(6px, -6px) scale(1.05) rotate(-2deg); }
+                  75% { opacity: 1; transform: translate(-2px, 2px) scale(0.98) rotate(0.5deg); }
                   100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
                 }
                 @keyframes puzzle-return-br {
-                  0% { opacity: 0; transform: translate(30px, 30px) scale(0.85) rotate(-8deg); }
-                  60% { opacity: 1; transform: translate(-2px, -2px) scale(1.02) rotate(0.5deg); }
+                  0% { opacity: 0; transform: translate(120px, 100px) scale(0.4) rotate(-25deg); }
+                  55% { opacity: 1; transform: translate(-6px, -6px) scale(1.05) rotate(2deg); }
+                  75% { opacity: 1; transform: translate(2px, 2px) scale(0.98) rotate(-0.5deg); }
                   100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
                 }
                 .animate-puzzle-tl {
-                  animation: puzzle-return-tl 600ms cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+                  animation: puzzle-return-tl 800ms cubic-bezier(0.34, 1.3, 0.64, 1) forwards;
                 }
                 .animate-puzzle-tr {
-                  animation: puzzle-return-tr 600ms cubic-bezier(0.34, 1.2, 0.64, 1) 50ms forwards;
+                  animation: puzzle-return-tr 800ms cubic-bezier(0.34, 1.3, 0.64, 1) 80ms forwards;
                 }
                 .animate-puzzle-bl {
-                  animation: puzzle-return-bl 600ms cubic-bezier(0.34, 1.2, 0.64, 1) 100ms forwards;
+                  animation: puzzle-return-bl 800ms cubic-bezier(0.34, 1.3, 0.64, 1) 160ms forwards;
                 }
                 .animate-puzzle-br {
-                  animation: puzzle-return-br 600ms cubic-bezier(0.34, 1.2, 0.64, 1) 150ms forwards;
+                  animation: puzzle-return-br 800ms cubic-bezier(0.34, 1.3, 0.64, 1) 240ms forwards;
                 }
               `}</style>
             </div>
