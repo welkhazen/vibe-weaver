@@ -300,7 +300,7 @@ const OrbitalCategorySelector = () => {
               'hover:scale-[1.02] active:scale-[0.98]',
               'group',
               hasSelection && 'opacity-40 scale-95',
-              isReturning && !hasSelection && 'animate-spring-return'
+              isReturning && !hasSelection && 'transition-all duration-700 ease-out'
             )}
             style={{ transitionDuration: '400ms' }}
           >
