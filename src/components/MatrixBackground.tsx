@@ -17,20 +17,22 @@ const MatrixBackground = () => {
   );
   const themeColorRef = useRef({ h: 45, s: 90, l: 55 });
 
-  // Watch for theme color changes and restart animation
+  // Watch for theme color changes and dark/light mode toggle to restart animation
   useEffect(() => {
+    let prevDark = isDarkRef.current;
     const observer = new MutationObserver(() => {
       const root = document.documentElement;
       const h = parseInt(getComputedStyle(root).getPropertyValue('--gold-h').trim()) || 45;
       const prevH = themeColorRef.current.h;
-      if (h !== prevH) {
-        // Reset timing refs and bump key to restart animation
+      const nowDark = root.classList.contains('dark') || !root.classList.contains('light');
+      if (h !== prevH || nowDark !== prevDark) {
+        prevDark = nowDark;
         startTimeRef.current = Date.now();
         speedRef.current = 15;
         setAnimationKey(k => k + 1);
       }
     });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'class'] });
     return () => observer.disconnect();
   }, []);
 
