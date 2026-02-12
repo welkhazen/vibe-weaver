@@ -2,33 +2,56 @@ import { useEffect, useRef, useState } from 'react';
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [opacity, setOpacity] = useState(0.3);
-  const speedRef = useRef(15); // Start fast (lower interval = faster)
-  const targetSpeedRef = useRef(50); // Final slow speed
+  const [animationKey, setAnimationKey] = useState(0);
+  const speedRef = useRef(15);
+  const targetSpeedRef = useRef(50);
   const startTimeRef = useRef(Date.now());
-  const slowdownDuration = 5000; // 5 seconds of animation
-  const fadeStartTime = 4000; // Start fading at 4 seconds
-  const fadeDuration = 5000; // Fade over 5 seconds (4s to 9s)
+  const slowdownDuration = 5000;
+  const fadeStartTime = 4000;
+  const fadeDuration = 5000;
   
-  // Use refs for theme to avoid re-running effect
   const isDarkRef = useRef(
     document.documentElement.classList.contains('dark') || 
     !document.documentElement.classList.contains('light')
   );
   const themeColorRef = useRef({ h: 45, s: 90, l: 55 });
 
+  // Watch for theme color changes and restart animation
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const root = document.documentElement;
+      const h = parseInt(getComputedStyle(root).getPropertyValue('--gold-h').trim()) || 45;
+      const prevH = themeColorRef.current.h;
+      if (h !== prevH) {
+        // Reset timing refs and bump key to restart animation
+        startTimeRef.current = Date.now();
+        speedRef.current = 15;
+        setAnimationKey(k => k + 1);
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Reset timing for fresh animation
+    startTimeRef.current = Date.now();
+    speedRef.current = 15;
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Clear canvas for fresh start
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     resizeCanvas();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.style.opacity = '0.3';
     window.addEventListener('resize', resizeCanvas);
 
     // Matrix characters
@@ -38,10 +61,7 @@ const MatrixBackground = () => {
     const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
     
-    // Array to track y position of each column
     const drops: number[] = Array(columns).fill(1);
-    
-    // Randomize initial drop positions for immediate visual effect
     for (let i = 0; i < drops.length; i++) {
       drops[i] = Math.floor(Math.random() * (canvas.height / fontSize));
     }
@@ -57,15 +77,7 @@ const MatrixBackground = () => {
       themeColorRef.current = { h, s, l };
     };
 
-    // Initial update
     updateThemeValues();
-    
-    // Watch for theme changes
-    const observer = new MutationObserver(updateThemeValues);
-    observer.observe(document.documentElement, { 
-      attributes: true, 
-      attributeFilter: ['class', 'style'] 
-    });
 
     // Get matrix color based on theme accent
     const getMatrixColor = () => {
@@ -175,10 +187,9 @@ const MatrixBackground = () => {
     return () => {
       isRunning = false;
       clearTimeout(timeoutId);
-      observer.disconnect();
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, []);
+  }, [animationKey]);
 
   return (
     <canvas
