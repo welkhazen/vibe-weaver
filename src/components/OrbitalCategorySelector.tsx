@@ -120,12 +120,10 @@ const OrbitalCategorySelector = () => {
 
   return (
     <div className="grid grid-cols-2 gap-3 px-4">
-      {categories.map((category, index) => {
+      {categories.map((category) => {
         const IconComponent = category.icon;
         const isSelected = selectedCategory === category.id;
         const hasSelection = selectedCategory !== null;
-        const puzzleDirections = ['animate-puzzle-tl', 'animate-puzzle-tr', 'animate-puzzle-bl', 'animate-puzzle-br'];
-        const puzzleClass = puzzleDirections[index % 4];
 
         if (isSelected) {
           return (
@@ -274,41 +272,14 @@ const OrbitalCategorySelector = () => {
                 .animate-content-fade-in {
                   animation: content-fade-in 300ms ease-out forwards;
                 }
-                @keyframes puzzle-return-tl {
-                  0% { opacity: 0; transform: translate(-120px, -100px) scale(0.4) rotate(-25deg); }
-                  55% { opacity: 1; transform: translate(6px, 6px) scale(1.05) rotate(2deg); }
-                  75% { opacity: 1; transform: translate(-2px, -2px) scale(0.98) rotate(-0.5deg); }
-                  100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+                @keyframes spring-return {
+                  0% { opacity: 0.4; transform: scale(0.95); }
+                  40% { opacity: 0.85; transform: scale(1.03); }
+                  65% { opacity: 1; transform: scale(0.995); }
+                  100% { opacity: 1; transform: scale(1); }
                 }
-                @keyframes puzzle-return-tr {
-                  0% { opacity: 0; transform: translate(120px, -100px) scale(0.4) rotate(25deg); }
-                  55% { opacity: 1; transform: translate(-6px, 6px) scale(1.05) rotate(-2deg); }
-                  75% { opacity: 1; transform: translate(2px, -2px) scale(0.98) rotate(0.5deg); }
-                  100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
-                }
-                @keyframes puzzle-return-bl {
-                  0% { opacity: 0; transform: translate(-120px, 100px) scale(0.4) rotate(25deg); }
-                  55% { opacity: 1; transform: translate(6px, -6px) scale(1.05) rotate(-2deg); }
-                  75% { opacity: 1; transform: translate(-2px, 2px) scale(0.98) rotate(0.5deg); }
-                  100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
-                }
-                @keyframes puzzle-return-br {
-                  0% { opacity: 0; transform: translate(120px, 100px) scale(0.4) rotate(-25deg); }
-                  55% { opacity: 1; transform: translate(-6px, -6px) scale(1.05) rotate(2deg); }
-                  75% { opacity: 1; transform: translate(2px, 2px) scale(0.98) rotate(-0.5deg); }
-                  100% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
-                }
-                .animate-puzzle-tl {
-                  animation: puzzle-return-tl 800ms cubic-bezier(0.34, 1.3, 0.64, 1) forwards;
-                }
-                .animate-puzzle-tr {
-                  animation: puzzle-return-tr 800ms cubic-bezier(0.34, 1.3, 0.64, 1) 80ms forwards;
-                }
-                .animate-puzzle-bl {
-                  animation: puzzle-return-bl 800ms cubic-bezier(0.34, 1.3, 0.64, 1) 160ms forwards;
-                }
-                .animate-puzzle-br {
-                  animation: puzzle-return-br 800ms cubic-bezier(0.34, 1.3, 0.64, 1) 240ms forwards;
+                .animate-spring-return {
+                  animation: spring-return 650ms cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
                 }
               `}</style>
             </div>
@@ -329,7 +300,7 @@ const OrbitalCategorySelector = () => {
               'hover:scale-[1.02] active:scale-[0.98]',
               'group',
               hasSelection && 'opacity-40 scale-95',
-              isReturning && !hasSelection && puzzleClass
+              isReturning && !hasSelection && 'transition-all duration-700 ease-out'
             )}
             style={{ transitionDuration: '400ms' }}
           >
