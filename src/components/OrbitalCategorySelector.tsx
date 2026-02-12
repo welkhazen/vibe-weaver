@@ -31,10 +31,17 @@ const OrbitalCategorySelector = () => {
     }
   };
 
+  // Track category button refs to exclude from click-outside
+  const categoryButtonRefs = useRef<Map<string, HTMLElement>>(new Map());
+
   // Handle click outside to close expanded category
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (selectedCategory && !isClosing && orbitalRef.current && !orbitalRef.current.contains(event.target as Node)) {
+        // Check if the click was on another category button — if so, let handleCategoryClick handle it
+        for (const [, el] of categoryButtonRefs.current) {
+          if (el.contains(event.target as Node)) return;
+        }
         closeOrbital();
       }
     };
@@ -45,10 +52,13 @@ const OrbitalCategorySelector = () => {
 
   const handleCategoryClick = (categoryId: string, event: React.MouseEvent) => {
     event.stopPropagation();
+    if (isClosing) return;
     if (selectedCategory === categoryId) {
-      setSelectedCategory(null);
+      closeOrbital();
     } else {
+      // Switch directly to new category — no close animation needed
       setSelectedCategory(categoryId);
+      setIsClosing(false);
     }
   };
 
@@ -261,6 +271,10 @@ const OrbitalCategorySelector = () => {
         return (
           <button
             key={category.id}
+            ref={(el) => {
+              if (el) categoryButtonRefs.current.set(category.id, el);
+              else categoryButtonRefs.current.delete(category.id);
+            }}
             onClick={(e) => handleCategoryClick(category.id, e)}
             className={cn(
               'metallic-card theme-glow-box p-5 flex flex-col items-center gap-3',
