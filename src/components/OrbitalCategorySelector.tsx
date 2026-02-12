@@ -40,9 +40,9 @@ const OrbitalCategorySelector = () => {
           setIsClosing(false);
           setHasOpened(false);
           // Keep isReturning true for the spring animation duration
-          setTimeout(() => setIsReturning(false), 500);
-        }, 350);
-      }, 200);
+          setTimeout(() => setIsReturning(false), 700);
+        }, 550);
+      }, 300);
     }
   };
 
@@ -264,22 +264,22 @@ const OrbitalCategorySelector = () => {
                   animation: orbital-open 450ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
                 }
                 .animate-orbital-close {
-                  animation: orbital-close 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+                  animation: orbital-close 600ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
                 }
                 .animate-content-fade-out {
-                  animation: content-fade-out 250ms ease-in forwards;
+                  animation: content-fade-out 300ms ease-in forwards;
                 }
                 .animate-content-fade-in {
                   animation: content-fade-in 300ms ease-out forwards;
                 }
                 @keyframes spring-return {
                   0% { opacity: 0.4; transform: scale(0.95); }
-                  50% { opacity: 1; transform: scale(1.04); }
-                  75% { opacity: 1; transform: scale(0.99); }
+                  40% { opacity: 0.85; transform: scale(1.03); }
+                  65% { opacity: 1; transform: scale(0.995); }
                   100% { opacity: 1; transform: scale(1); }
                 }
                 .animate-spring-return {
-                  animation: spring-return 450ms ease-out forwards;
+                  animation: spring-return 650ms cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
                 }
               `}</style>
             </div>
