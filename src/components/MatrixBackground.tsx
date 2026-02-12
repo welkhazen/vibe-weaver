@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+// Matrix rain animation - restarts on theme color change
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [animationKey, setAnimationKey] = useState(0);
