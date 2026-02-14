@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, TrendingUp, Percent, Zap, Gift } from 'lucide-react';
+import { Camera, Edit, MapPin, Star, Award, Calendar, Clock, Video, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, TrendingUp, Percent, Zap, Gift, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import LevelUpCelebration from '@/components/LevelUpCelebration';
 import profileAvatar from '@/assets/profile-avatar.png';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 const upcomingSessions = [
   {
@@ -54,6 +56,7 @@ const levelData = [
 const ProfilePage = () => {
   const [showAllBookings, setShowAllBookings] = useState(false);
   const [showLevelUpCelebration, setShowLevelUpCelebration] = useState(false);
+  const [showAIDialog, setShowAIDialog] = useState(false);
   const displayedSessions = showAllBookings ? upcomingSessions : upcomingSessions.slice(0, 2);
 
   // Mock user progress (will be fetched from database when auth is implemented)
@@ -89,8 +92,8 @@ const ProfilePage = () => {
         {/* Banner */}
         <div className="h-32 bg-gradient-to-br from-primary/30 via-primary/20 to-transparent" />
         
-        {/* Avatar */}
-        <div className="absolute left-1/2 -translate-x-1/2 -bottom-16">
+        {/* Avatar and AI Button row */}
+        <div className="absolute left-1/2 -translate-x-1/2 -bottom-16 flex items-end gap-3">
           <div className="relative">
             <div className="w-32 h-32 rounded-full bg-card chrome-ring flex items-center justify-center overflow-hidden">
               <img src={profileAvatar} alt="Profile" className="w-full h-full object-cover" />
@@ -103,8 +106,54 @@ const ProfilePage = () => {
               <span className="text-sm font-bold text-primary-foreground">{userProgress.level}</span>
             </div>
           </div>
+          
+          {/* AI Avatar Button */}
+          <button
+            onClick={() => setShowAIDialog(true)}
+            className="mb-2 px-3 py-2 rounded-xl bg-primary/20 border border-primary/30 text-primary text-xs font-medium flex items-center gap-1.5 hover:bg-primary/30 transition-colors active:scale-95 whitespace-nowrap"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Add selfie, select character, make app icon</span>
+          </button>
         </div>
       </div>
+
+      {/* AI Avatar Dialog */}
+      <Dialog open={showAIDialog} onOpenChange={setShowAIDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              AI Avatar Creator
+            </DialogTitle>
+            <DialogDescription>
+              Transform your selfie into a unique character or app icon using AI.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-1 gap-3">
+              <Button variant="outline" className="h-auto py-4 flex flex-col items-center gap-2">
+                <Camera className="w-6 h-6 text-primary" />
+                <span className="font-medium">Add Selfie</span>
+                <span className="text-xs text-muted-foreground">Upload a photo of yourself</span>
+              </Button>
+              <Button variant="outline" className="h-auto py-4 flex flex-col items-center gap-2">
+                <Sparkles className="w-6 h-6 text-primary" />
+                <span className="font-medium">Select Character</span>
+                <span className="text-xs text-muted-foreground">Choose a character style</span>
+              </Button>
+              <Button variant="outline" className="h-auto py-4 flex flex-col items-center gap-2">
+                <Award className="w-6 h-6 text-primary" />
+                <span className="font-medium">Make App Icon</span>
+                <span className="text-xs text-muted-foreground">Generate a custom app icon</span>
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              Coming soon — AI-powered image transformation
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Profile info */}
       <div className="mt-20 px-4 text-center">
