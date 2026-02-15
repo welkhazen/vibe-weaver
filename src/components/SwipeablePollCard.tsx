@@ -277,7 +277,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
                 <div className="space-y-1.5 max-h-40 overflow-y-auto">
                   {visibleComments.map((c) =>
                 <div key={c.id} className="space-y-1">
-                      <div className="p-2 border-4 border-primary border-dashed rounded-lg my-[4px] bg-primary-foreground">
+                      <div className="p-2 rounded-lg my-[4px] bg-primary-foreground border-solid border-2 border-[#9952e0]">
                         <div className="flex items-center justify-between mb-0.5">
                           <span className="text-[10px] text-foreground font-semibold">{c.author}</span>
                           <span className="text-[9px] text-muted-foreground">{c.time}</span>
