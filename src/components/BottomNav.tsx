@@ -1,5 +1,5 @@
-import { Home, Search, User, Trophy } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Home, Search, User, Brain, Trophy } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface NavItem {
   id: string;
@@ -9,15 +9,11 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: 'home', label: 'Home', icon: <Home className="w-5 h-5" strokeWidth={2.5} /> },
-  { id: 'search', label: 'Explore', icon: <Search className="w-5 h-5" strokeWidth={2.5} /> },
-  { id: 'tcm', label: '', icon: (
-    <video autoPlay loop muted playsInline className="w-7 h-7" style={{ background: 'transparent' }}>
-      <source src="/assets/brain-logo.webm" type="video/webm" />
-    </video>
-  ), useThemeColor: true },
-  { id: 'challenges', label: 'Challenges', icon: <Trophy className="w-5 h-5" strokeWidth={2.5} /> },
-  { id: 'profile', label: 'Profile', icon: <User className="w-5 h-5" strokeWidth={2.5} /> },
+  { id: "home", label: "Home", icon: <Home className="w-5 h-5" strokeWidth={2.5} /> },
+  { id: "search", label: "Explore", icon: <Search className="w-5 h-5" strokeWidth={2.5} /> },
+  { id: "tcm", label: "", icon: <Brain className="w-10 h-10" strokeWidth={2.5} />, useThemeColor: true },
+  { id: "challenges", label: "Challenges", icon: <Trophy className="w-5 h-5" strokeWidth={2.5} /> },
+  { id: "profile", label: "Profile", icon: <User className="w-5 h-5" strokeWidth={2.5} /> },
 ];
 
 interface BottomNavProps {
@@ -46,32 +42,36 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
               key={item.id}
               onClick={() => onTabChange(item.id)}
               className={cn(
-                'flex flex-col items-center justify-center w-16 h-full transition-all duration-300 ease-out',
-                activeTab === item.id
-                  ? 'text-foreground'
-                  : 'text-foreground/70 hover:text-foreground'
+                "flex flex-col items-center justify-center w-16 h-full transition-all duration-300 ease-out",
+                activeTab === item.id ? "text-foreground" : "text-foreground/70 hover:text-foreground",
               )}
             >
               <div
                 className={cn(
-                  'p-2 rounded-xl transition-all duration-300 ease-out',
-                  activeTab === item.id 
-                    ? 'bg-primary/20 glow-primary scale-110' 
-                    : 'hover:scale-105 active:scale-95'
+                  "p-2 rounded-xl transition-all duration-300 ease-out",
+                  activeTab === item.id ? "bg-primary/20 glow-primary scale-110" : "hover:scale-105 active:scale-95",
                 )}
-                style={item.useThemeColor ? { 
-                  color: `hsl(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%))`,
-                  animation: 'brainGlow 5s ease-in-out infinite',
-                  borderRadius: '12px',
-                } : undefined}
+                style={
+                  item.useThemeColor
+                    ? {
+                        color: `hsl(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%))`,
+                        animation: "brainGlow 5s ease-in-out infinite",
+                        borderRadius: "12px",
+                      }
+                    : undefined
+                }
               >
                 {item.icon}
               </div>
-              <span 
+              <span
                 className="text-[10px] mt-1 font-medium"
-                style={item.useThemeColor ? { 
-                  color: `hsl(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%))`
-                } : undefined}
+                style={
+                  item.useThemeColor
+                    ? {
+                        color: `hsl(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%))`,
+                      }
+                    : undefined
+                }
               >
                 {item.label}
               </span>
