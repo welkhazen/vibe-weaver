@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { EVENT_THEME_CHANGED } from '@/constants/theme';
+import { ThemeChangedEventDetail } from '@/lib/theme';
 
 // Matrix rain animation - restarts on theme color change
 const MatrixBackground = () => {
@@ -18,22 +20,24 @@ const MatrixBackground = () => {
   const themeColorRef = useRef({ h: 45, s: 90, l: 55 });
 
   // Watch for theme color changes and dark/light mode toggle to restart animation
+  // Optimized: Using custom event instead of MutationObserver/getComputedStyle
   useEffect(() => {
-    let prevDark = isDarkRef.current;
-    const observer = new MutationObserver(() => {
-      const root = document.documentElement;
-      const h = parseInt(getComputedStyle(root).getPropertyValue('--gold-h').trim()) || 45;
-      const prevH = themeColorRef.current.h;
-      const nowDark = root.classList.contains('dark') || !root.classList.contains('light');
-      if (h !== prevH || nowDark !== prevDark) {
-        prevDark = nowDark;
+    const handleThemeChange = (e: Event) => {
+      const customEvent = e as CustomEvent<ThemeChangedEventDetail>;
+      const { hue, saturation, lightness, isDark } = customEvent.detail;
+
+      if (hue !== themeColorRef.current.h || isDark !== isDarkRef.current) {
+        themeColorRef.current = { h: hue, s: saturation, l: lightness };
+        isDarkRef.current = isDark;
+
         startTimeRef.current = Date.now();
         speedRef.current = 15;
         setAnimationKey(k => k + 1);
       }
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'class'] });
-    return () => observer.disconnect();
+    };
+
+    window.addEventListener(EVENT_THEME_CHANGED, handleThemeChange);
+    return () => window.removeEventListener(EVENT_THEME_CHANGED, handleThemeChange);
   }, []);
 
   useEffect(() => {
@@ -69,18 +73,7 @@ const MatrixBackground = () => {
       drops[i] = Math.floor(Math.random() * (canvas.height / fontSize));
     }
 
-    // Update theme values from DOM
-    const updateThemeValues = () => {
-      const root = document.documentElement;
-      isDarkRef.current = root.classList.contains('dark') || !root.classList.contains('light');
-      
-      const h = parseInt(getComputedStyle(root).getPropertyValue('--gold-h').trim()) || 45;
-      const s = parseInt(getComputedStyle(root).getPropertyValue('--gold-s').trim()) || 90;
-      const l = parseInt(getComputedStyle(root).getPropertyValue('--gold-l').trim()) || 55;
-      themeColorRef.current = { h, s, l };
-    };
-
-    updateThemeValues();
+    // Initial theme values are already set via refs or will be updated by the first event
 
     // Get matrix color based on theme accent
     const getMatrixColor = () => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Bell, Menu, Palette, Sun, Moon } from 'lucide-react';
 import {
   DropdownMenu,
@@ -9,18 +9,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-
-const colorPresets = [
-  { name: 'Gold', hue: 45, saturation: 90, lightness: 55 },
-  { name: 'Rose', hue: 350, saturation: 80, lightness: 60 },
-  { name: 'Violet', hue: 270, saturation: 70, lightness: 60 },
-  { name: 'Blue', hue: 210, saturation: 80, lightness: 55 },
-  { name: 'Cyan', hue: 180, saturation: 70, lightness: 50 },
-  { name: 'Emerald', hue: 150, saturation: 70, lightness: 45 },
-  { name: 'Orange', hue: 25, saturation: 90, lightness: 55 },
-  { name: 'Pink', hue: 320, saturation: 75, lightness: 60 },
-  { name: 'Silver', hue: 0, saturation: 0, lightness: 70 },
-];
+import { colorPresets, STORAGE_KEY_HUE, STORAGE_KEY_MODE } from '@/constants/theme';
+import { dispatchThemeChanged } from '@/lib/theme';
 
 interface HeaderProps {
   title?: string;
@@ -29,14 +19,30 @@ interface HeaderProps {
 
 const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
   const [selectedHue, setSelectedHue] = useState(() => {
-    const savedHue = localStorage.getItem('theme-hue');
+    const savedHue = localStorage.getItem(STORAGE_KEY_HUE);
     return savedHue ? parseInt(savedHue) : 45;
   });
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem('theme-mode');
+    const savedMode = localStorage.getItem(STORAGE_KEY_MODE);
     return savedMode ? savedMode === 'dark' : true;
   });
+
+  const applyThemeColor = useCallback((hue: number) => {
+    const root = document.documentElement;
+    const preset = colorPresets.find(p => p.hue === hue) || colorPresets[0];
+    const { saturation, lightness } = preset;
+
+    root.style.setProperty('--gold-h', hue.toString());
+    root.style.setProperty('--gold-s', `${saturation}%`);
+    root.style.setProperty('--gold-l', `${lightness}%`);
+
+    root.style.setProperty('--primary-h', hue.toString());
+    root.style.setProperty('--primary-s', `${Math.min(saturation, 60)}%`);
+    root.style.setProperty('--primary-l', `${lightness + 20}%`);
+
+    return preset;
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -47,28 +53,22 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
       root.classList.remove('dark');
       root.classList.add('light');
     }
-    localStorage.setItem('theme-mode', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
-
-  const applyThemeColor = (hue: number) => {
-    const root = document.documentElement;
-    const preset = colorPresets.find(p => p.hue === hue);
-    const saturation = preset?.saturation ?? 80;
-    const lightness = preset?.lightness ?? 55;
+    localStorage.setItem(STORAGE_KEY_MODE, isDarkMode ? 'dark' : 'light');
     
-    root.style.setProperty('--gold-h', hue.toString());
-    root.style.setProperty('--gold-s', `${saturation}%`);
-    root.style.setProperty('--gold-l', `${lightness}%`);
+    const preset = applyThemeColor(selectedHue);
     
-    root.style.setProperty('--primary-h', hue.toString());
-    root.style.setProperty('--primary-s', `${Math.min(saturation, 60)}%`);
-    root.style.setProperty('--primary-l', `${lightness + 20}%`);
-  };
+    // Dispatch event for components that need manual updates (like MatrixBackground)
+    dispatchThemeChanged({
+      hue: selectedHue,
+      saturation: preset.saturation,
+      lightness: preset.lightness,
+      isDark: isDarkMode
+    });
+  }, [isDarkMode, selectedHue, applyThemeColor]);
 
   const handleColorSelect = (hue: number) => {
     setSelectedHue(hue);
-    applyThemeColor(hue);
-    localStorage.setItem('theme-hue', hue.toString());
+    localStorage.setItem(STORAGE_KEY_HUE, hue.toString());
     setShowColorPicker(false);
   };
 
