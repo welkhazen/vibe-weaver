@@ -159,7 +159,7 @@ const ChallengesPage = () => {
         <div className="grid grid-cols-2 gap-3">
           <button className="metallic-card theme-glow-box p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]">
             <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Gift className="w-5 h-5 text-primary" />
+              <Gift className="w-5 h-5 text-black" />
             </div>
             <div className="text-left">
               <p className="text-sm font-medium text-foreground">Redeem</p>
@@ -168,7 +168,7 @@ const ChallengesPage = () => {
           </button>
           <button className="metallic-card theme-glow-box p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]">
             <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Trophy className="w-5 h-5 text-primary icon-glow" />
+              <Trophy className="w-5 h-5 text-black" />
             </div>
             <div className="text-left">
               <p className="text-sm font-medium text-foreground">Leaderboard</p>
@@ -188,8 +188,8 @@ const ChallengesPage = () => {
             className={cn(
               'px-4 py-2 rounded-full text-sm font-medium transition-all duration-300',
               filter === tab ?
-              'bg-primary text-primary-foreground' :
-              'bg-accent text-muted-foreground hover:text-foreground'
+              'bg-primary text-black' :
+              'bg-accent text-black/60 hover:text-black'
             )}>
 
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
