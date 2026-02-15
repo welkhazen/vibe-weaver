@@ -124,7 +124,7 @@ const ChallengesPage = () => {
 
   const handleClaimReward = (challenge: Challenge) => {
     if (challenge.completed) {
-      toast.success(`🎉 Claimed ${challenge.reward} tokens!`);
+      toast.success(`🎉 Claimed ${challenge.reward} flames!`);
     }
   };
 
@@ -140,7 +140,7 @@ const ChallengesPage = () => {
               <div className="flex items-center gap-2 mt-1">
                 <Flame className="w-6 h-6 icon-glow text-primary" />
                 <span className="text-3xl font-bold text-foreground">{userTokens}</span>
-                <span className="text-sm text-muted-foreground">tokens</span>
+                <span className="text-sm text-muted-foreground">flames</span>
               </div>
             </div>
             <div className="text-right">
@@ -163,7 +163,7 @@ const ChallengesPage = () => {
             </div>
             <div className="text-left">
               <p className="text-sm font-medium text-foreground">Redeem</p>
-              <p className="text-xs text-muted-foreground">Use tokens</p>
+              <p className="text-xs text-muted-foreground">Use flames</p>
             </div>
           </button>
           <button className="metallic-card theme-glow-box p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]">

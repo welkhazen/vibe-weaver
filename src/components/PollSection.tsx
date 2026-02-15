@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Instagram, ChevronUp, ChevronDown, Lock, Unlock, Brain, Heart, Eye, Ghost, Link2, Map, Clock, CalendarDays, Coins } from 'lucide-react';
+import { Instagram, ChevronUp, ChevronDown, Lock, Unlock, Brain, Heart, Eye, Ghost, Link2, Map, Clock, CalendarDays, Flame } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import SwipeablePollCard from './SwipeablePollCard';
@@ -38,7 +38,7 @@ const pollData: PollItem[] = [
   { question: "Do you believe in growth mindset?", options: [{ text: "Yes", percentage: 89 }, { text: "No", percentage: 11 }] },
   { question: "Do you journal your thoughts?", options: [{ text: "Yes", percentage: 55 }, { text: "No", percentage: 45 }] },
   { question: "Is forgiveness essential for growth?", options: [{ text: "Yes", percentage: 91 }, { text: "No", percentage: 9 }] },
-  // Bonus questions (unlockable with tokens)
+  // Bonus questions (unlockable with flames)
   { question: "Do you believe in setting boundaries?", options: [{ text: "Yes", percentage: 85 }, { text: "No", percentage: 15 }] },
   { question: "Can meditation change your life?", options: [{ text: "Yes", percentage: 72 }, { text: "No", percentage: 28 }] },
   { question: "Is solitude necessary for creativity?", options: [{ text: "Yes", percentage: 67 }, { text: "No", percentage: 33 }] },
@@ -105,7 +105,7 @@ const PollSection = () => {
 
   const [tokenBalance, setTokenBalance] = useState(() => {
     const saved = localStorage.getItem('poll-tokens');
-    return saved ? parseInt(saved, 10) : 50; // Start with 50 tokens
+    return saved ? parseInt(saved, 10) : 50; // Start with 50 flames
   });
 
   const [bonusUnlocks, setBonusUnlocks] = useState(() => {
@@ -171,7 +171,7 @@ const PollSection = () => {
         <div className="flex items-center gap-2">
           {/* Token balance */}
           <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 border border-primary/20">
-            <Coins className="w-3 h-3 text-primary" />
+            <Flame className="w-3 h-3 text-primary" />
             <span className="text-[10px] font-semibold text-primary">{tokenBalance}</span>
           </div>
           <a
@@ -211,7 +211,7 @@ const PollSection = () => {
             {hasMorePollsAvailable && (
               <div className="pt-2 space-y-2">
                 <div className="h-px bg-border/50 w-full" />
-                <p className="text-xs text-muted-foreground">Or use tokens to unlock more</p>
+                <p className="text-xs text-muted-foreground">Or use flames to unlock more</p>
                 <button
                   onClick={handleUnlockMore}
                   disabled={!canUnlock}
@@ -222,11 +222,11 @@ const PollSection = () => {
                       : 'bg-muted text-muted-foreground cursor-not-allowed'
                   )}
                 >
-                  <Coins className="w-4 h-4" />
-                  <span>Unlock {UNLOCK_BONUS} questions for {UNLOCK_COST} tokens</span>
+                   <Flame className="w-4 h-4" />
+                   <span>Unlock {UNLOCK_BONUS} questions for {UNLOCK_COST} flames</span>
                 </button>
                 {!canUnlock && (
-                  <p className="text-[10px] text-destructive">Not enough tokens ({tokenBalance}/{UNLOCK_COST})</p>
+                  <p className="text-[10px] text-destructive">Not enough flames ({tokenBalance}/{UNLOCK_COST})</p>
                 )}
               </div>
             )}
