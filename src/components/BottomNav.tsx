@@ -11,7 +11,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: "home", label: "Home", icon: <Home className="w-5 h-5" strokeWidth={2.5} /> },
   { id: "search", label: "Explore", icon: <Search className="w-5 h-5" strokeWidth={2.5} /> },
-  { id: "tcm", label: "", icon: <video autoPlay loop muted playsInline className="w-9 h-9" style={{ background: 'transparent', filter: 'brightness(0) invert(1)' }}><source src="/assets/brain-logo.webm" type="video/webm" /></video>, useThemeColor: true },
+  { id: "tcm", label: "", icon: <video autoPlay loop muted playsInline className="w-9 h-9" style={{ background: 'transparent', filter: 'drop-shadow(0 0 1px white) brightness(1.2)' }}><source src="/assets/brain-logo.webm" type="video/webm" /></video>, useThemeColor: true },
   { id: "challenges", label: "Challenges", icon: <Trophy className="w-5 h-5" strokeWidth={2.5} /> },
   { id: "profile", label: "Profile", icon: <User className="w-5 h-5" strokeWidth={2.5} /> },
 ];
