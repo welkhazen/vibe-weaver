@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon, Clock, Check, CreditCard, Coins, Banknote } from 'lucide-react';
+import { CalendarIcon, Clock, Check, CreditCard, Flame, Banknote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -20,7 +20,7 @@ const timeSlots = [
 
 const paymentMethods = [
   { id: 'card', label: 'Card', icon: CreditCard, description: 'Credit or Debit card' },
-  { id: 'token', label: 'Token', icon: Coins, description: 'Use your tokens' },
+  { id: 'token', label: 'Flames', icon: Flame, description: 'Use your flames' },
   { id: 'cash', label: 'Cash', icon: Banknote, description: 'Pay at session' },
 ];
 
