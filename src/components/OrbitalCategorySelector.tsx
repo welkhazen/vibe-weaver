@@ -7,6 +7,7 @@ import {
   getSubcategoriesByCategory,
   getCategoryById } from
 '@/data/categories';
+import mentalHealthIcon from '@/assets/mental-health-icon.png';
 
 const OrbitalCategorySelector = () => {
   const navigate = useNavigate();
@@ -304,7 +305,11 @@ const OrbitalCategorySelector = () => {
             )}
             style={{ transitionDuration: '400ms' }}>
 
-            <IconComponent className="w-10 h-10 text-foreground icon-glow" strokeWidth={1.5} />
+            {category.id === 'mental-health' ? (
+              <img src={mentalHealthIcon} alt="Mental Health" className="w-10 h-10 icon-glow dark:invert-0 invert-0" />
+            ) : (
+              <IconComponent className="w-10 h-10 text-foreground icon-glow" strokeWidth={1.5} />
+            )}
             <span className="text-sm font-medium text-foreground text-center leading-tight">
               {category.label}
             </span>
