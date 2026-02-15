@@ -39,10 +39,10 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
       icon: (
         <video
           autoPlay loop muted playsInline
-          className="w-9 h-9"
+          className="w-12 h-12"
           style={{
             background: 'transparent',
-            filter: `drop-shadow(0 0 1px white) brightness(1.2) hue-rotate(${hueRotation}deg)`,
+            filter: `drop-shadow(0 0 2px white) drop-shadow(0 0 2px white) brightness(0) invert(1) drop-shadow(0 0 1px white) hue-rotate(${hueRotation}deg)`,
           }}
         >
           <source src="/assets/brain-logo.webm" type="video/webm" />
