@@ -9,18 +9,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-
-const colorPresets = [
-  { name: 'Gold', hue: 45, saturation: 90, lightness: 55 },
-  { name: 'Rose', hue: 350, saturation: 80, lightness: 60 },
-  { name: 'Violet', hue: 270, saturation: 70, lightness: 60 },
-  { name: 'Blue', hue: 210, saturation: 80, lightness: 55 },
-  { name: 'Cyan', hue: 180, saturation: 70, lightness: 50 },
-  { name: 'Emerald', hue: 150, saturation: 70, lightness: 45 },
-  { name: 'Orange', hue: 25, saturation: 90, lightness: 55 },
-  { name: 'Pink', hue: 320, saturation: 75, lightness: 60 },
-  { name: 'Silver', hue: 0, saturation: 0, lightness: 70 },
-];
+import { COLOR_PRESETS, STORAGE_KEY_HUE, DEFAULT_HUE, EVENT_THEME_CHANGED } from '@/constants/theme';
+import { applyThemeColor } from '@/lib/theme';
 
 interface HeaderProps {
   title?: string;
@@ -29,11 +19,13 @@ interface HeaderProps {
 
 const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
   const [selectedHue, setSelectedHue] = useState(() => {
-    const savedHue = localStorage.getItem('theme-hue');
-    return savedHue ? parseInt(savedHue) : 45;
+    if (typeof window === 'undefined') return DEFAULT_HUE;
+    const savedHue = localStorage.getItem(STORAGE_KEY_HUE);
+    return savedHue ? parseInt(savedHue) : DEFAULT_HUE;
   });
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window === 'undefined') return true;
     const savedMode = localStorage.getItem('theme-mode');
     return savedMode ? savedMode === 'dark' : true;
   });
@@ -48,27 +40,14 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
       root.classList.add('light');
     }
     localStorage.setItem('theme-mode', isDarkMode ? 'dark' : 'light');
+    window.dispatchEvent(new CustomEvent(EVENT_THEME_CHANGED));
   }, [isDarkMode]);
-
-  const applyThemeColor = (hue: number) => {
-    const root = document.documentElement;
-    const preset = colorPresets.find(p => p.hue === hue);
-    const saturation = preset?.saturation ?? 80;
-    const lightness = preset?.lightness ?? 55;
-    
-    root.style.setProperty('--gold-h', hue.toString());
-    root.style.setProperty('--gold-s', `${saturation}%`);
-    root.style.setProperty('--gold-l', `${lightness}%`);
-    
-    root.style.setProperty('--primary-h', hue.toString());
-    root.style.setProperty('--primary-s', `${Math.min(saturation, 60)}%`);
-    root.style.setProperty('--primary-l', `${lightness + 20}%`);
-  };
 
   const handleColorSelect = (hue: number) => {
     setSelectedHue(hue);
     applyThemeColor(hue);
-    localStorage.setItem('theme-hue', hue.toString());
+    localStorage.setItem(STORAGE_KEY_HUE, hue.toString());
+    window.dispatchEvent(new CustomEvent(EVENT_THEME_CHANGED));
     setShowColorPicker(false);
   };
 
@@ -100,14 +79,14 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
                   <div 
                     className="w-4 h-4 rounded-full border border-border/50 ml-auto"
                     style={{ 
-                      backgroundColor: `hsl(${colorPresets.find(p => p.hue === selectedHue)?.hue ?? 45}, ${colorPresets.find(p => p.hue === selectedHue)?.saturation ?? 90}%, ${colorPresets.find(p => p.hue === selectedHue)?.lightness ?? 55}%)`
+                      backgroundColor: `hsl(${COLOR_PRESETS.find(p => p.hue === selectedHue)?.hue ?? DEFAULT_HUE}, ${COLOR_PRESETS.find(p => p.hue === selectedHue)?.saturation ?? 90}%, ${COLOR_PRESETS.find(p => p.hue === selectedHue)?.lightness ?? 55}%)`
                     }}
                   />
                 </button>
                 
                 {showColorPicker && (
                   <div className="grid grid-cols-3 gap-2 mt-2 p-2 bg-accent/30 rounded-lg">
-                    {colorPresets.map((preset) => (
+                    {COLOR_PRESETS.map((preset) => (
                       <button
                         key={preset.name}
                         onClick={() => handleColorSelect(preset.hue)}

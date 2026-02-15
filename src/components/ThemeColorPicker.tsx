@@ -6,56 +6,30 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-
-const colorPresets = [
-  { name: 'Gold', hue: 45, saturation: 90, lightness: 55 },
-  { name: 'Rose', hue: 350, saturation: 80, lightness: 60 },
-  { name: 'Violet', hue: 270, saturation: 70, lightness: 60 },
-  { name: 'Blue', hue: 210, saturation: 80, lightness: 55 },
-  { name: 'Cyan', hue: 180, saturation: 70, lightness: 50 },
-  { name: 'Emerald', hue: 150, saturation: 70, lightness: 45 },
-  { name: 'Orange', hue: 25, saturation: 90, lightness: 55 },
-  { name: 'Pink', hue: 320, saturation: 75, lightness: 60 },
-  { name: 'Silver', hue: 0, saturation: 0, lightness: 70 },
-];
+import { COLOR_PRESETS, STORAGE_KEY_HUE, DEFAULT_HUE } from '@/constants/theme';
+import { applyThemeColor } from '@/lib/theme';
 
 const ThemeColorPicker = () => {
-  const [selectedHue, setSelectedHue] = useState(45);
+  const [selectedHue, setSelectedHue] = useState(DEFAULT_HUE);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     // Load saved color from localStorage
-    const savedHue = localStorage.getItem('theme-hue');
+    const savedHue = localStorage.getItem(STORAGE_KEY_HUE);
     if (savedHue) {
       setSelectedHue(parseInt(savedHue));
       applyThemeColor(parseInt(savedHue));
     }
   }, []);
 
-  const applyThemeColor = (hue: number) => {
-    const root = document.documentElement;
-    const preset = colorPresets.find(p => p.hue === hue);
-    const saturation = preset?.saturation ?? 80;
-    const lightness = preset?.lightness ?? 55;
-    
-    root.style.setProperty('--gold-h', hue.toString());
-    root.style.setProperty('--gold-s', `${saturation}%`);
-    root.style.setProperty('--gold-l', `${lightness}%`);
-    
-    // Also update primary to match the accent color
-    root.style.setProperty('--primary-h', hue.toString());
-    root.style.setProperty('--primary-s', `${Math.min(saturation, 60)}%`);
-    root.style.setProperty('--primary-l', `${lightness + 20}%`);
-  };
-
   const handleColorSelect = (hue: number) => {
     setSelectedHue(hue);
     applyThemeColor(hue);
-    localStorage.setItem('theme-hue', hue.toString());
+    localStorage.setItem(STORAGE_KEY_HUE, hue.toString());
     setIsOpen(false);
   };
 
-  const currentPreset = colorPresets.find(p => p.hue === selectedHue) || colorPresets[0];
+  const currentPreset = COLOR_PRESETS.find(p => p.hue === selectedHue) || COLOR_PRESETS[0];
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -84,7 +58,7 @@ const ThemeColorPicker = () => {
           </div>
           
           <div className="grid grid-cols-3 gap-2">
-            {colorPresets.map((preset) => (
+            {COLOR_PRESETS.map((preset) => (
               <button
                 key={preset.name}
                 onClick={() => handleColorSelect(preset.hue)}

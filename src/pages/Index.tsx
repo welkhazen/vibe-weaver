@@ -10,12 +10,58 @@ import ProfilePage from '@/pages/ProfilePage';
 import TCMPage from '@/pages/TCMPage';
 import ChallengesPage from '@/pages/ChallengesPage';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { COLOR_PRESETS, STORAGE_KEY_HUE, DEFAULT_HUE, EVENT_THEME_CHANGED } from '@/constants/theme';
+import { getAccentStyles } from '@/lib/theme';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('home');
+  const { currentColor } = useThemeColor();
 
-  // Initialize theme color from localStorage on mount
-  useThemeColor();
+  // We'll also need the accent color and dark mode status which are currently in Header.
+  // For the purpose of optimizing MatrixBackground, we'll read them here too.
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const savedMode = localStorage.getItem('theme-mode');
+    return savedMode ? savedMode === 'dark' : true;
+  });
+
+  const [accentHue, setAccentHue] = useState(() => {
+    if (typeof window === 'undefined') return DEFAULT_HUE;
+    const savedHue = localStorage.getItem(STORAGE_KEY_HUE);
+    return savedHue ? parseInt(savedHue) : DEFAULT_HUE;
+  });
+
+  const accentStyles = getAccentStyles(accentHue);
+
+  // Keep dark mode synced with the DOM (Header also does this, but we'll do it here too to be safe)
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.classList.remove('light');
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+      root.classList.add('light');
+    }
+  }, [isDarkMode]);
+
+  // Listen for storage changes to sync across tabs and potentially within the app
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedMode = localStorage.getItem('theme-mode');
+      if (savedMode) setIsDarkMode(savedMode === 'dark');
+
+      const savedHue = localStorage.getItem(STORAGE_KEY_HUE);
+      if (savedHue) setAccentHue(parseInt(savedHue));
+    };
+    window.addEventListener('storage', handleStorageChange);
+    // Also listen for a custom event we'll dispatch when changing theme
+    window.addEventListener(EVENT_THEME_CHANGED, handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener(EVENT_THEME_CHANGED, handleStorageChange);
+    };
+  }, []);
 
   // Deep-link: allow ?tab=raw or #raw to open a specific tab on mount
   useEffect(() => {
@@ -77,8 +123,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen text-foreground relative bg-destructive-foreground">
-      {/* Matrix falling code background */}
-      <MatrixBackground />
+      {/* Matrix falling code background - now optimized with props */}
+      <MatrixBackground
+        h={accentHue}
+        s={accentStyles.s}
+        l={accentStyles.l}
+        isDark={isDarkMode}
+      />
       
       {/* Golden glow ambient lighting */}
       <GoldenGlowBackground />
