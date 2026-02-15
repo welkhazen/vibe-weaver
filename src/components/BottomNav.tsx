@@ -12,7 +12,7 @@ const navItems: NavItem[] = [
   { id: 'home', label: 'Home', icon: <Home className="w-5 h-5" strokeWidth={2.5} /> },
   { id: 'search', label: 'Explore', icon: <Search className="w-5 h-5" strokeWidth={2.5} /> },
   { id: 'tcm', label: '', icon: (
-    <video autoPlay loop muted playsInline className="w-5 h-5" style={{ background: 'transparent' }}>
+    <video autoPlay loop muted playsInline className="w-7 h-7" style={{ background: 'transparent' }}>
       <source src="/assets/brain-logo.webm" type="video/webm" />
     </video>
   ), useThemeColor: true },
