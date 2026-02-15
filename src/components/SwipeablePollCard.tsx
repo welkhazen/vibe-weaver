@@ -198,7 +198,24 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
               <p className="text-xl font-bold text-foreground text-center leading-relaxed">
                 {question}
               </p>
-              <p className="text-xs text-muted-foreground mt-4">Swipe right for Yes, left for No</p>
+              <p className="text-xs text-muted-foreground mt-4 mb-4">Swipe right for Yes, left for No</p>
+              {!isLocked && (
+                <div className="flex gap-4 w-full">
+                  <button
+                    onClick={() => handleTapVote(1)}
+                    className="flex-1 py-3.5 rounded-xl bg-foreground text-background font-semibold text-sm active:scale-[0.95] transition-all"
+                  >
+                    No
+                  </button>
+                  <button
+                    onClick={() => handleTapVote(0)}
+                    className="flex-1 py-3.5 rounded-xl font-semibold text-sm text-white active:scale-[0.95] transition-all"
+                    style={{ background: 'hsl(var(--gold-h), var(--gold-s), var(--gold-l))' }}
+                  >
+                    Yes
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="w-full space-y-3 animate-fade-in">
@@ -362,24 +379,6 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
         </div>
       </div>
 
-      {/* Tap buttons below card */}
-      {!hasVoted && !isLocked && (
-        <div className="flex gap-4 mt-5 w-full max-w-sm">
-          <button
-            onClick={() => handleTapVote(1)}
-            className="flex-1 py-3.5 rounded-xl bg-foreground text-background font-semibold text-sm active:scale-[0.95] transition-all"
-          >
-            No
-          </button>
-          <button
-            onClick={() => handleTapVote(0)}
-            className="flex-1 py-3.5 rounded-xl font-semibold text-sm text-white active:scale-[0.95] transition-all"
-            style={{ background: 'hsl(var(--gold-h), var(--gold-s), var(--gold-l))' }}
-          >
-            Yes
-          </button>
-        </div>
-      )}
     </div>
   );
 };
