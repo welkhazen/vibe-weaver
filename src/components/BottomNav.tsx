@@ -2,6 +2,29 @@ import { Home, Search, User, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
+const BrainIcon = ({ themeColor }: { themeColor: string }) => (
+  <svg viewBox="0 0 24 24" className="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
+    {/* Brain outline - always white */}
+    <path
+      d="M12 2C9.5 2 7.5 3.5 7 5.5C5.5 5.5 4 7 4 9C3 9.5 2 11 2 12.5C2 14.5 3.5 16 5 16.5C5 18 6.5 20 9 20C10.5 21.5 12 22 12 22C12 22 13.5 21.5 15 20C17.5 20 19 18 19 16.5C20.5 16 22 14.5 22 12.5C22 11 21 9.5 20 9C20 7 18.5 5.5 17 5.5C16.5 3.5 14.5 2 12 2Z"
+      fill="none"
+      stroke="white"
+      strokeWidth="1.2"
+      strokeLinejoin="round"
+      style={{ filter: 'drop-shadow(0 0 0.5px rgba(255,255,255,0.4))' }}
+    />
+    {/* Internal brain features - theme colored */}
+    <path
+      d="M12 4V22M8 8C9.5 8.5 10.5 9 12 9M16 8C14.5 8.5 13.5 9 12 9M7 13C8.5 12.5 10 12 12 12M17 13C15.5 12.5 14 12 12 12M8 17C9.5 16.5 10.5 16 12 16M16 17C14.5 16.5 13.5 16 12 16"
+      fill="none"
+      stroke={themeColor}
+      strokeWidth="1"
+      strokeLinecap="round"
+      opacity="0.9"
+    />
+  </svg>
+);
+
 interface NavItem {
   id: string;
   label: string;
@@ -16,38 +39,33 @@ interface BottomNavProps {
 
 const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
   const [themeHue, setThemeHue] = useState(45);
+  const [themeSat, setThemeSat] = useState('90%');
+  const [themeLit, setThemeLit] = useState('55%');
 
   useEffect(() => {
-    const readHue = () => {
-      const h = getComputedStyle(document.documentElement).getPropertyValue('--gold-h').trim();
+    const readTheme = () => {
+      const style = getComputedStyle(document.documentElement);
+      const h = style.getPropertyValue('--gold-h').trim();
+      const s = style.getPropertyValue('--gold-s').trim();
+      const l = style.getPropertyValue('--gold-l').trim();
       if (h) setThemeHue(parseFloat(h));
+      if (s) setThemeSat(s);
+      if (l) setThemeLit(l);
     };
-    readHue();
-    const observer = new MutationObserver(readHue);
+    readTheme();
+    const observer = new MutationObserver(readTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
     return () => observer.disconnect();
   }, []);
 
-  // Original video blue is ~210° hue; rotate to match theme
-  const hueRotation = themeHue - 210;
+  const themeColor = `hsl(${themeHue}, ${themeSat}, ${themeLit})`;
 
   const navItems: NavItem[] = [
     { id: "home", label: "Home", icon: <Home className="w-5 h-5" strokeWidth={2.5} /> },
     { id: "search", label: "Explore", icon: <Search className="w-5 h-5" strokeWidth={2.5} /> },
     {
       id: "tcm", label: "", useThemeColor: true,
-      icon: (
-        <video
-          autoPlay loop muted playsInline
-          className="w-12 h-12"
-          style={{
-            background: 'transparent',
-            filter: `drop-shadow(0 0 0.5px rgba(255,255,255,0.6)) brightness(0) invert(1) hue-rotate(${hueRotation}deg) saturate(1.5)`,
-          }}
-        >
-          <source src="/assets/brain-logo.webm" type="video/webm" />
-        </video>
-      ),
+      icon: <BrainIcon themeColor={themeColor} />,
     },
     { id: "challenges", label: "Challenges", icon: <Trophy className="w-5 h-5" strokeWidth={2.5} /> },
     { id: "profile", label: "Profile", icon: <User className="w-5 h-5" strokeWidth={2.5} /> },
