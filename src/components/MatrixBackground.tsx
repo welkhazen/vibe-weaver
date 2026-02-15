@@ -1,34 +1,64 @@
 import { useEffect, useRef, useState } from 'react';
+import { EVENT_THEME_CHANGED } from '@/constants/theme';
+import { ThemeChangedEventDetail } from '@/lib/theme';
 
+// Matrix rain animation - restarts on theme color change
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [opacity, setOpacity] = useState(0.3);
-  const speedRef = useRef(15); // Start fast (lower interval = faster)
-  const targetSpeedRef = useRef(50); // Final slow speed
+  const [animationKey, setAnimationKey] = useState(0);
+  const speedRef = useRef(15);
+  const targetSpeedRef = useRef(50);
   const startTimeRef = useRef(Date.now());
-  const slowdownDuration = 5000; // 5 seconds of animation
-  const fadeStartTime = 4000; // Start fading at 4 seconds
-  const fadeDuration = 5000; // Fade over 5 seconds (4s to 9s)
+  const slowdownDuration = 5000;
+  const fadeStartTime = 4000;
+  const fadeDuration = 5000;
   
-  // Use refs for theme to avoid re-running effect
   const isDarkRef = useRef(
     document.documentElement.classList.contains('dark') || 
     !document.documentElement.classList.contains('light')
   );
   const themeColorRef = useRef({ h: 45, s: 90, l: 55 });
 
+  // Watch for theme color changes and dark/light mode toggle to restart animation
+  // Optimized: Using custom event instead of MutationObserver/getComputedStyle
+  useEffect(() => {
+    const handleThemeChange = (e: Event) => {
+      const customEvent = e as CustomEvent<ThemeChangedEventDetail>;
+      const { hue, saturation, lightness, isDark } = customEvent.detail;
+
+      if (hue !== themeColorRef.current.h || isDark !== isDarkRef.current) {
+        themeColorRef.current = { h: hue, s: saturation, l: lightness };
+        isDarkRef.current = isDark;
+
+        startTimeRef.current = Date.now();
+        speedRef.current = 15;
+        setAnimationKey(k => k + 1);
+      }
+    };
+
+    window.addEventListener(EVENT_THEME_CHANGED, handleThemeChange);
+    return () => window.removeEventListener(EVENT_THEME_CHANGED, handleThemeChange);
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Reset timing for fresh animation
+    startTimeRef.current = Date.now();
+    speedRef.current = 15;
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Clear canvas for fresh start
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     resizeCanvas();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.style.opacity = '0.3';
     window.addEventListener('resize', resizeCanvas);
 
     // Matrix characters
@@ -38,34 +68,12 @@ const MatrixBackground = () => {
     const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
     
-    // Array to track y position of each column
     const drops: number[] = Array(columns).fill(1);
-    
-    // Randomize initial drop positions for immediate visual effect
     for (let i = 0; i < drops.length; i++) {
       drops[i] = Math.floor(Math.random() * (canvas.height / fontSize));
     }
 
-    // Update theme values from DOM
-    const updateThemeValues = () => {
-      const root = document.documentElement;
-      isDarkRef.current = root.classList.contains('dark') || !root.classList.contains('light');
-      
-      const h = parseInt(getComputedStyle(root).getPropertyValue('--gold-h').trim()) || 45;
-      const s = parseInt(getComputedStyle(root).getPropertyValue('--gold-s').trim()) || 90;
-      const l = parseInt(getComputedStyle(root).getPropertyValue('--gold-l').trim()) || 55;
-      themeColorRef.current = { h, s, l };
-    };
-
-    // Initial update
-    updateThemeValues();
-    
-    // Watch for theme changes
-    const observer = new MutationObserver(updateThemeValues);
-    observer.observe(document.documentElement, { 
-      attributes: true, 
-      attributeFilter: ['class', 'style'] 
-    });
+    // Initial theme values are already set via refs or will be updated by the first event
 
     // Get matrix color based on theme accent
     const getMatrixColor = () => {
@@ -175,10 +183,9 @@ const MatrixBackground = () => {
     return () => {
       isRunning = false;
       clearTimeout(timeoutId);
-      observer.disconnect();
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, []);
+  }, [animationKey]);
 
   return (
     <canvas

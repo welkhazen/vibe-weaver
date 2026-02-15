@@ -10,6 +10,15 @@ import { useMemo } from 'react';
  */
 const GoldenGlowBackground = () => {
   // Memoize orb properties so they only change on mount
+ * 1. Removed JS-based theme polling and MutationObserver to eliminate layout thrashing.
+ * 2. Replaced manual DOM manipulation with React-based rendering for better performance.
+ * 3. Utilized native CSS variables for theme reactivity, allowing the browser to handle
+ *    color updates without JS intervention or React re-renders.
+ *
+ * Note: --gold-s and --gold-l CSS variables already include the '%' unit.
+ */
+const GoldenGlowBackground = () => {
+  // Generate orb properties once on mount to avoid churn
   const orbs = useMemo(() => {
     return Array.from({ length: 5 }).map((_, i) => ({
       id: i,
@@ -56,6 +65,31 @@ const GoldenGlowBackground = () => {
       `}</style>
       
       <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
+      <div 
+        className="fixed inset-0 pointer-events-none z-[1] overflow-hidden"
+      >
+        {/* Render floating orbs using React and CSS variables for colors */}
+        {orbs.map((orb) => (
+          <div
+            key={orb.id}
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              width: orb.size,
+              height: orb.size,
+              left: `${orb.x}%`,
+              top: `${orb.y}%`,
+              filter: 'blur(40px)',
+              animation: `floatOrb ${orb.duration}s ease-in-out ${orb.delay}s infinite`,
+              background: `radial-gradient(circle at center,
+                hsla(var(--gold-h), var(--gold-s), var(--gold-l), 0.3) 0%,
+                hsla(var(--gold-h), calc(var(--gold-s) - 5%), calc(var(--gold-l) - 5%), 0.15) 30%,
+                hsla(calc(var(--gold-h) - 5), calc(var(--gold-s) - 10%), calc(var(--gold-l) - 10%), 0.05) 60%,
+                transparent 70%
+              )`,
+            }}
+          />
+        ))}
+
         {/* Top-left highlight */}
         <div 
           className="absolute pointer-events-none"
@@ -67,6 +101,8 @@ const GoldenGlowBackground = () => {
             background: `radial-gradient(ellipse at center,
               hsla(var(--gold-h, 45), calc(var(--gold-s, 90) * 1%), calc(var(--gold-l, 55) * 1% + 5%), 0.15) 0%,
               hsla(var(--gold-h, 45), calc(var(--gold-s, 90) * 1% - 5%), calc(var(--gold-l, 55) * 1%), 0.08) 40%,
+              hsla(var(--gold-h), var(--gold-s), calc(var(--gold-l) + 5%), 0.15) 0%,
+              hsla(var(--gold-h), calc(var(--gold-s) - 5%), var(--gold-l), 0.08) 40%,
               transparent 70%
             )`,
             animation: 'shimmerPulse 4s ease-in-out infinite',
@@ -84,6 +120,8 @@ const GoldenGlowBackground = () => {
             background: `radial-gradient(ellipse at center,
               hsla(var(--gold-h, 45), calc(var(--gold-s, 90) * 1%), calc(var(--gold-l, 55) * 1% + 5%), 0.15) 0%,
               hsla(var(--gold-h, 45), calc(var(--gold-s, 90) * 1% - 5%), calc(var(--gold-l, 55) * 1%), 0.08) 40%,
+              hsla(var(--gold-h), var(--gold-s), calc(var(--gold-l) + 5%), 0.15) 0%,
+              hsla(var(--gold-h), calc(var(--gold-s) - 5%), var(--gold-l), 0.08) 40%,
               transparent 70%
             )`,
             animation: 'shimmerPulse 5s ease-in-out 1s infinite',
@@ -101,6 +139,8 @@ const GoldenGlowBackground = () => {
             background: `radial-gradient(ellipse at center,
               hsla(var(--gold-h, 45), calc(var(--gold-s, 90) * 1%), calc(var(--gold-l, 55) * 1% + 5%), 0.15) 0%,
               hsla(var(--gold-h, 45), calc(var(--gold-s, 90) * 1% - 5%), calc(var(--gold-l, 55) * 1%), 0.08) 40%,
+              hsla(var(--gold-h), var(--gold-s), calc(var(--gold-l) + 5%), 0.15) 0%,
+              hsla(var(--gold-h), calc(var(--gold-s) - 5%), var(--gold-l), 0.08) 40%,
               transparent 70%
             )`,
             animation: 'shimmerPulse 6s ease-in-out 2s infinite',
