@@ -3,6 +3,7 @@ import { Instagram, ChevronUp, ChevronDown, Lock, Unlock, Brain, Heart, Eye, Gho
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import SwipeablePollCard from './SwipeablePollCard';
+import AnswerHistoryCard from './AnswerHistoryCard';
 
 interface PollItem {
   question: string;
@@ -32,20 +33,21 @@ const pollData: PollItem[] = [
   { question: "Is forgiveness essential for growth?", options: [{ text: "Yes", percentage: 91 }, { text: "No", percentage: 9 }] },
 ];
 
-const tomorrowQuestions: string[] = [
-  "Do you believe in setting boundaries?",
-  "Can meditation change your life?",
-  "Is solitude necessary for creativity?",
-  "Do you trust your intuition?",
-  "Should you always follow your passion?",
-  "Is failure a better teacher than success?",
-  "Do you practice gratitude daily?",
-  "Can habits define your destiny?",
+const tomorrowQuestions: PollItem[] = [
+  { question: "Do you believe in setting boundaries?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Can meditation change your life?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Is solitude necessary for creativity?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Do you trust your intuition?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Should you always follow your passion?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Is failure a better teacher than success?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Do you practice gratitude daily?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Can habits define your destiny?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
 ];
 
 interface AnswerHistoryItem {
   question: string;
   answer: string;
+  options: { text: string; percentage: number }[];
 }
 
 interface UnlockableTest {
@@ -99,7 +101,7 @@ const PollSection = () => {
     const currentPoll = pollData[currentIndex];
     if (currentPoll) {
       const answer = optionIndex !== undefined ? currentPoll.options[optionIndex]?.text || 'Yes' : 'Yes';
-      setAnswerHistory(prev => [...prev, { question: currentPoll.question, answer }]);
+      setAnswerHistory(prev => [...prev, { question: currentPoll.question, answer, options: currentPoll.options }]);
     }
     setDailyCount((prev) => prev + 1);
     setTotalCount((prev) => prev + 1);
@@ -186,7 +188,7 @@ const PollSection = () => {
 
         <div className={cn(
           'overflow-hidden transition-all duration-300 ease-out',
-          statsExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+          statsExpanded ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
         )}>
           {/* Tabs */}
           <div className="flex gap-1 px-3 mb-2">
@@ -211,7 +213,7 @@ const PollSection = () => {
             ))}
           </div>
 
-          <div className="px-3 pb-3 max-h-56 overflow-y-auto">
+          <div className="px-3 pb-3 max-h-64 overflow-y-auto">
             {/* Milestones tab */}
             {activeTab === 'stats' && (
               <div className="space-y-2 animate-fade-in">
@@ -248,25 +250,17 @@ const PollSection = () => {
 
             {/* History tab */}
             {activeTab === 'history' && (
-              <div className="space-y-1.5 animate-fade-in">
+              <div className="space-y-3 animate-fade-in">
                 {answerHistory.length === 0 ? (
                   <p className="text-[11px] text-muted-foreground text-center py-4">No answers yet today</p>
                 ) : (
                   answerHistory.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-foreground/5 border border-border/30">
-                      <div
-                        className={cn(
-                          'w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0',
-                          item.answer === 'Yes'
-                            ? 'text-white'
-                            : 'bg-foreground text-background'
-                        )}
-                        style={item.answer === 'Yes' ? { background: 'hsl(var(--gold-h), var(--gold-s), var(--gold-l))' } : {}}
-                      >
-                        {item.answer === 'Yes' ? 'Y' : 'N'}
-                      </div>
-                      <span className="text-[10px] text-foreground truncate">{item.question}</span>
-                    </div>
+                    <AnswerHistoryCard
+                      key={i}
+                      question={item.question}
+                      answer={item.answer}
+                      options={item.options}
+                    />
                   ))
                 )}
               </div>
@@ -274,12 +268,19 @@ const PollSection = () => {
 
             {/* Tomorrow tab */}
             {activeTab === 'tomorrow' && (
-              <div className="space-y-1.5 animate-fade-in">
-                <span className="text-[11px] font-medium text-muted-foreground">Coming tomorrow</span>
+              <div className="space-y-2 animate-fade-in">
+                <span className="text-[11px] font-medium text-muted-foreground">Coming tomorrow — {tomorrowQuestions.length} questions</span>
                 {tomorrowQuestions.map((q, i) => (
-                  <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-foreground/5 border border-border/30">
-                    <Lock className="w-3 h-3 text-muted-foreground shrink-0" />
-                    <span className="text-[10px] text-muted-foreground truncate blur-[2px] select-none">{q}</span>
+                  <div key={i} className="rounded-xl border border-border/50 bg-background p-3">
+                    <p className="text-xs font-medium text-foreground mb-2">{q.question}</p>
+                    <div className="space-y-1">
+                      {q.options.map((opt, j) => (
+                        <div key={j} className="px-3 py-1.5 rounded-lg border border-border/30 bg-foreground/5">
+                          <span className="text-[10px] text-muted-foreground">{opt.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[9px] text-muted-foreground mt-1.5">Available tomorrow</p>
                   </div>
                 ))}
               </div>
