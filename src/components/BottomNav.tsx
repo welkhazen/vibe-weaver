@@ -42,7 +42,7 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
           className="w-12 h-12"
           style={{
             background: 'transparent',
-            filter: `drop-shadow(0 0 2px white) drop-shadow(0 0 2px white) brightness(0) invert(1) drop-shadow(0 0 1px white) hue-rotate(${hueRotation}deg)`,
+            filter: `brightness(0) invert(1)`,
           }}
         >
           <source src="/assets/brain-logo.webm" type="video/webm" />
