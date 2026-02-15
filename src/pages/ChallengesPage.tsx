@@ -138,7 +138,7 @@ const ChallengesPage = () => {
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Your Balance</p>
               <div className="flex items-center gap-2 mt-1">
-                <Flame className="w-6 h-6 icon-glow text-[#58d082]" />
+                <Flame className="w-6 h-6 icon-glow text-primary" />
                 <span className="text-3xl font-bold text-foreground">{userTokens}</span>
                 <span className="text-sm text-muted-foreground">tokens</span>
               </div>
@@ -247,7 +247,7 @@ const ChallengesPage = () => {
                       </p>
                     </div>
                     <div className="flex items-center gap-1 px-2 py-1 rounded-full shrink-0 bg-primary-foreground">
-                      <Flame className="opacity-100 rounded-none border-black border-double text-[sidebar-accent-foreground] border-0 bg-primary-foreground text-[#57d182] w-[18px] h-[18px]" />
+                      <Flame className="w-[18px] h-[18px] text-primary" />
                       <span className="text-xs font-semibold text-secondary-foreground">
                         +{challenge.reward}
                       </span>
