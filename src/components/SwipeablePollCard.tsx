@@ -202,15 +202,15 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
               {!isLocked && (
                 <div className="flex gap-4 w-full">
                   <button
-                    onClick={() => handleTapVote(1)}
-                    className="flex-1 py-3.5 rounded-xl bg-foreground text-background font-semibold text-sm active:scale-[0.95] transition-all"
-                  >
-                    No
-                  </button>
-                  <button
                     onClick={() => handleTapVote(0)}
                     className="flex-1 py-3.5 rounded-xl font-semibold text-sm text-white active:scale-[0.95] transition-all"
                     style={{ background: 'hsl(var(--gold-h), var(--gold-s), var(--gold-l))' }}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    onClick={() => handleTapVote(1)}
+                    className="flex-1 py-3.5 rounded-xl bg-foreground text-background font-semibold text-sm active:scale-[0.95] transition-all"
                   >
                     Yes
                   </button>
