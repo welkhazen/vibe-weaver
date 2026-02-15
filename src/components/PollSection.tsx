@@ -187,8 +187,8 @@ const PollSection = () => {
         </button>
 
         <div className={cn(
-          'overflow-hidden transition-all duration-300 ease-out',
-          statsExpanded ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
+          'overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.33,1,0.68,1)]',
+          statsExpanded ? 'max-h-[600px] opacity-100 translate-y-0' : 'max-h-0 opacity-0 translate-y-4'
         )}>
           {/* Tabs */}
           <div className="flex gap-1 px-3 mb-2">
