@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Trophy, Coins, Target, CheckCircle2, Clock, Flame, Gift, Star, Calendar, MessageCircle, Users, Zap } from 'lucide-react';
+import { Trophy, CheckCircle2, Clock, Flame, Gift, Star, Calendar, MessageCircle, Users, Zap, Activity, ChartNoAxesCombined } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -36,7 +36,7 @@ const challenges: Challenge[] = [
   progress: 1,
   total: 3,
   category: 'booking',
-  icon: <Target className="w-5 h-5" />,
+  icon: <Trophy className="w-5 h-5" />,
   completed: false,
   expiresIn: '5 days'
 },
@@ -59,7 +59,7 @@ const challenges: Challenge[] = [
   progress: 4,
   total: 7,
   category: 'streak',
-  icon: <Flame className="w-5 h-5" />,
+  icon: <ChartNoAxesCombined className="w-5 h-5" />,
   completed: false
 },
 {
@@ -138,14 +138,14 @@ const ChallengesPage = () => {
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Your Balance</p>
               <div className="flex items-center gap-2 mt-1">
-                <Coins className="w-6 h-6 text-yellow-400 icon-glow" />
+                <Flame className="w-6 h-6 text-yellow-400 icon-glow" />
                 <span className="text-3xl font-bold text-foreground">{userTokens}</span>
                 <span className="text-sm text-muted-foreground">tokens</span>
               </div>
             </div>
             <div className="text-right">
               <div className="flex items-center gap-1 justify-end">
-                <Flame className="w-5 h-5 text-orange-400" />
+                <Activity className="w-5 h-5 text-orange-400" />
                 <span className="text-xl font-bold text-foreground">{currentStreak}</span>
               </div>
               <p className="text-xs text-muted-foreground">day streak</p>
@@ -159,7 +159,7 @@ const ChallengesPage = () => {
         <div className="grid grid-cols-2 gap-3">
           <button className="metallic-card theme-glow-box p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]">
             <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Gift className="w-5 h-5 text-primary icon-glow" />
+              <Gift className="w-5 h-5 text-primary" />
             </div>
             <div className="text-left">
               <p className="text-sm font-medium text-foreground">Redeem</p>
@@ -247,7 +247,7 @@ const ChallengesPage = () => {
                       </p>
                     </div>
                     <div className="flex items-center gap-1 px-2 py-1 rounded-full shrink-0 bg-primary-foreground">
-                      <Flame className="w-3 h-3 text-primary" />
+                      <Flame className="opacity-100 rounded-none border-black border-double text-[sidebar-accent-foreground] border-0 bg-primary-foreground text-[#57d182] w-[18px] h-[18px]" />
                       <span className="text-xs font-semibold text-secondary-foreground">
                         +{challenge.reward}
                       </span>

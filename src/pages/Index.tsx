@@ -76,7 +76,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen text-foreground relative bg-destructive-foreground">
+    <div className="min-h-screen text-foreground relative bg-destructive-foreground border border-secondary-foreground">
       {/* Matrix falling code background */}
       <MatrixBackground />
       
