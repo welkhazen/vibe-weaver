@@ -154,14 +154,14 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
   '';
 
   return (
-    <div className="relative w-full flex-1 flex flex-col items-center justify-center">
+    <div className="relative w-full flex-1 flex flex-col items-center justify-center my-0 gap-0 border-4">
       {/* Card */}
       <div
-        className={cn(
-          'relative w-full max-w-sm aspect-[3/4] rounded-3xl border border-border/50 bg-background shadow-lg overflow-hidden select-none',
-          'transition-transform duration-300 ease-out',
-          isDragging && '!transition-none',
-          isExiting && 'transition-all duration-300 ease-in opacity-0'
+        className={cn("relative w-full max-w-sm aspect-[2/4] rounded-3xl border border-border/50 bg-background shadow-lg overflow-hidden select-none transition-transform duration-300 ease-out",
+
+
+        isDragging && '!transition-none',
+        isExiting && 'transition-all duration-300 ease-in opacity-0'
         )}
         style={{
           transform: isExiting ?
@@ -274,7 +274,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
                 </div>
 
                 {/* Comments list - always shown, sorted by upvotes */}
-                <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                <div className="space-y-1.5 max-h-60 overflow-y-auto">
                   {visibleComments.map((c) =>
                 <div key={c.id} className="space-y-1">
                       <div className="p-2 rounded-lg my-[4px] bg-primary-foreground border-solid border-2 border-[#9952e0] mx-0 px-[25px] opacity-100">
