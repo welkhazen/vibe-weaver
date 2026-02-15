@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Instagram, ChevronUp, ChevronDown, Lock, Unlock, Brain, Heart, Eye, Ghost, Link2, Map, Clock, CalendarDays } from 'lucide-react';
+import { Instagram, ChevronUp, ChevronDown, Lock, Unlock, Brain, Heart, Eye, Ghost, Link2, Map, Clock, CalendarDays, Coins } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import SwipeablePollCard from './SwipeablePollCard';
@@ -10,7 +10,9 @@ interface PollItem {
   options: { text: string; percentage: number }[];
 }
 
-const DAILY_CAP = 8;
+const BASE_DAILY_CAP = 8;
+const UNLOCK_COST = 15;
+const UNLOCK_BONUS = 5;
 
 const getTodayKey = () => {
   const now = new Date();
@@ -22,6 +24,11 @@ const getHistoryKey = () => {
   return `poll-history-${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 };
 
+const getUnlocksKey = () => {
+  const now = new Date();
+  return `poll-unlocks-${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+};
+
 const pollData: PollItem[] = [
   { question: "Do you believe your thoughts shape your reality?", options: [{ text: "Yes", percentage: 78 }, { text: "No", percentage: 22 }] },
   { question: "Do you practice self-reflection regularly?", options: [{ text: "Yes", percentage: 64 }, { text: "No", percentage: 36 }] },
@@ -31,17 +38,28 @@ const pollData: PollItem[] = [
   { question: "Do you believe in growth mindset?", options: [{ text: "Yes", percentage: 89 }, { text: "No", percentage: 11 }] },
   { question: "Do you journal your thoughts?", options: [{ text: "Yes", percentage: 55 }, { text: "No", percentage: 45 }] },
   { question: "Is forgiveness essential for growth?", options: [{ text: "Yes", percentage: 91 }, { text: "No", percentage: 9 }] },
+  // Bonus questions (unlockable with tokens)
+  { question: "Do you believe in setting boundaries?", options: [{ text: "Yes", percentage: 85 }, { text: "No", percentage: 15 }] },
+  { question: "Can meditation change your life?", options: [{ text: "Yes", percentage: 72 }, { text: "No", percentage: 28 }] },
+  { question: "Is solitude necessary for creativity?", options: [{ text: "Yes", percentage: 67 }, { text: "No", percentage: 33 }] },
+  { question: "Do you trust your intuition?", options: [{ text: "Yes", percentage: 74 }, { text: "No", percentage: 26 }] },
+  { question: "Should you always follow your passion?", options: [{ text: "Yes", percentage: 58 }, { text: "No", percentage: 42 }] },
+  { question: "Is failure a better teacher than success?", options: [{ text: "Yes", percentage: 76 }, { text: "No", percentage: 24 }] },
+  { question: "Do you practice gratitude daily?", options: [{ text: "Yes", percentage: 61 }, { text: "No", percentage: 39 }] },
+  { question: "Can habits define your destiny?", options: [{ text: "Yes", percentage: 83 }, { text: "No", percentage: 17 }] },
+  { question: "Is empathy a skill you can develop?", options: [{ text: "Yes", percentage: 88 }, { text: "No", percentage: 12 }] },
+  { question: "Do you believe luck plays a role in success?", options: [{ text: "Yes", percentage: 54 }, { text: "No", percentage: 46 }] },
 ];
 
 const tomorrowQuestions: PollItem[] = [
-  { question: "Do you believe in setting boundaries?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
-  { question: "Can meditation change your life?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
-  { question: "Is solitude necessary for creativity?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
-  { question: "Do you trust your intuition?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
-  { question: "Should you always follow your passion?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
-  { question: "Is failure a better teacher than success?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
-  { question: "Do you practice gratitude daily?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
-  { question: "Can habits define your destiny?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Is perfectionism holding you back?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Do you value experiences over things?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Can you change your personality?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Is self-discipline more important than motivation?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Do you believe in second chances?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Is authenticity the key to happiness?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Can reading books transform your mindset?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
+  { question: "Do you believe age is just a number?", options: [{ text: "Yes", percentage: 0 }, { text: "No", percentage: 0 }] },
 ];
 
 interface AnswerHistoryItem {
@@ -85,6 +103,18 @@ const PollSection = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [tokenBalance, setTokenBalance] = useState(() => {
+    const saved = localStorage.getItem('poll-tokens');
+    return saved ? parseInt(saved, 10) : 50; // Start with 50 tokens
+  });
+
+  const [bonusUnlocks, setBonusUnlocks] = useState(() => {
+    const saved = localStorage.getItem(getUnlocksKey());
+    return saved ? parseInt(saved, 10) : 0;
+  });
+
+  const dailyCap = BASE_DAILY_CAP + (bonusUnlocks * UNLOCK_BONUS);
+
   useEffect(() => {
     localStorage.setItem(getTodayKey(), String(dailyCount));
   }, [dailyCount]);
@@ -96,6 +126,14 @@ const PollSection = () => {
   useEffect(() => {
     localStorage.setItem(getHistoryKey(), JSON.stringify(answerHistory));
   }, [answerHistory]);
+
+  useEffect(() => {
+    localStorage.setItem('poll-tokens', String(tokenBalance));
+  }, [tokenBalance]);
+
+  useEffect(() => {
+    localStorage.setItem(getUnlocksKey(), String(bonusUnlocks));
+  }, [bonusUnlocks]);
 
   const handleVote = (optionIndex?: number) => {
     const currentPoll = pollData[currentIndex];
@@ -113,28 +151,44 @@ const PollSection = () => {
     }
   };
 
-  const isAtCap = dailyCount >= DAILY_CAP;
+  const handleUnlockMore = () => {
+    if (tokenBalance >= UNLOCK_COST) {
+      setTokenBalance(prev => prev - UNLOCK_COST);
+      setBonusUnlocks(prev => prev + 1);
+    }
+  };
+
+  const isAtCap = dailyCount >= dailyCap;
+  const canUnlock = tokenBalance >= UNLOCK_COST;
   const currentPoll = pollData[currentIndex];
+  const hasMorePollsAvailable = currentIndex < pollData.length - 1;
 
   return (
     <div className="flex flex-col h-full w-full">
       {/* Top bar */}
       <div className="flex items-center justify-between px-1 mb-3">
         <span className="text-xs text-muted-foreground">{currentIndex + 1}/{pollData.length}</span>
-        <a
-          href="https://instagram.com/thecumulativemind"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground/5 hover:bg-foreground/10 transition-all active:scale-95"
-        >
-          <Instagram className="w-3.5 h-3.5 text-foreground" />
-          <span className="text-[10px] font-medium text-foreground">@thecumulativemind</span>
-        </a>
+        <div className="flex items-center gap-2">
+          {/* Token balance */}
+          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 border border-primary/20">
+            <Coins className="w-3 h-3 text-primary" />
+            <span className="text-[10px] font-semibold text-primary">{tokenBalance}</span>
+          </div>
+          <a
+            href="https://instagram.com/thecumulativemind"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-foreground/5 hover:bg-foreground/10 transition-all active:scale-95"
+          >
+            <Instagram className="w-3.5 h-3.5 text-foreground" />
+            <span className="text-[10px] font-medium text-foreground">@thecumulativemind</span>
+          </a>
+        </div>
       </div>
 
       {/* Progress dots */}
       <div className="flex items-center justify-center gap-1.5 mb-4">
-        {pollData.map((_, i) => (
+        {pollData.slice(0, dailyCap).map((_, i) => (
           <div
             key={i}
             className={cn(
@@ -148,10 +202,34 @@ const PollSection = () => {
       {/* Card area */}
       <div className="flex-1 flex items-center justify-center min-h-0">
         {isAtCap ? (
-          <div className="text-center space-y-3 animate-fade-in">
+          <div className="text-center space-y-4 animate-fade-in px-6">
             <Lock className="w-10 h-10 text-muted-foreground mx-auto" />
             <p className="text-lg font-semibold text-foreground">Daily limit reached</p>
             <p className="text-sm text-muted-foreground">Come back tomorrow for more questions!</p>
+            
+            {/* Unlock with tokens */}
+            {hasMorePollsAvailable && (
+              <div className="pt-2 space-y-2">
+                <div className="h-px bg-border/50 w-full" />
+                <p className="text-xs text-muted-foreground">Or use tokens to unlock more</p>
+                <button
+                  onClick={handleUnlockMore}
+                  disabled={!canUnlock}
+                  className={cn(
+                    'w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.97]',
+                    canUnlock
+                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                      : 'bg-muted text-muted-foreground cursor-not-allowed'
+                  )}
+                >
+                  <Coins className="w-4 h-4" />
+                  <span>Unlock {UNLOCK_BONUS} questions for {UNLOCK_COST} tokens</span>
+                </button>
+                {!canUnlock && (
+                  <p className="text-[10px] text-destructive">Not enough tokens ({tokenBalance}/{UNLOCK_COST})</p>
+                )}
+              </div>
+            )}
           </div>
         ) : currentPoll ? (
           <SwipeablePollCard
@@ -177,8 +255,8 @@ const PollSection = () => {
           className="w-full flex items-center justify-between px-3 py-2.5"
         >
           <div className="flex items-center gap-3">
-            <span className="text-xs font-medium text-foreground">{dailyCount}/{DAILY_CAP} today</span>
-            <Progress value={(dailyCount / DAILY_CAP) * 100} className="h-1.5 w-20" />
+            <span className="text-xs font-medium text-foreground">{dailyCount}/{dailyCap} today</span>
+            <Progress value={(dailyCount / dailyCap) * 100} className="h-1.5 w-20" />
           </div>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <span>{totalCount} total</span>
