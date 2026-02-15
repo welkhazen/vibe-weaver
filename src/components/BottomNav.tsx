@@ -1,5 +1,6 @@
-import { Home, Search, User, Brain, Trophy } from "lucide-react";
+import { Home, Search, User, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 interface NavItem {
   id: string;
@@ -8,20 +9,50 @@ interface NavItem {
   useThemeColor?: boolean;
 }
 
-const navItems: NavItem[] = [
-  { id: "home", label: "Home", icon: <Home className="w-5 h-5" strokeWidth={2.5} /> },
-  { id: "search", label: "Explore", icon: <Search className="w-5 h-5" strokeWidth={2.5} /> },
-  { id: "tcm", label: "", icon: <Brain className="w-5 h-5" strokeWidth={2.5} />, useThemeColor: true },
-  { id: "challenges", label: "Challenges", icon: <Trophy className="w-5 h-5" strokeWidth={2.5} /> },
-  { id: "profile", label: "Profile", icon: <User className="w-5 h-5" strokeWidth={2.5} /> },
-];
-
 interface BottomNavProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
 }
 
 const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
+  const [themeHue, setThemeHue] = useState(45);
+
+  useEffect(() => {
+    const readHue = () => {
+      const h = getComputedStyle(document.documentElement).getPropertyValue('--gold-h').trim();
+      if (h) setThemeHue(parseFloat(h));
+    };
+    readHue();
+    const observer = new MutationObserver(readHue);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+    return () => observer.disconnect();
+  }, []);
+
+  // Original video blue is ~210° hue; rotate to match theme
+  const hueRotation = themeHue - 210;
+
+  const navItems: NavItem[] = [
+    { id: "home", label: "Home", icon: <Home className="w-5 h-5" strokeWidth={2.5} /> },
+    { id: "search", label: "Explore", icon: <Search className="w-5 h-5" strokeWidth={2.5} /> },
+    {
+      id: "tcm", label: "", useThemeColor: true,
+      icon: (
+        <video
+          autoPlay loop muted playsInline
+          className="w-9 h-9"
+          style={{
+            background: 'transparent',
+            filter: `drop-shadow(0 0 1px white) brightness(1.2) hue-rotate(${hueRotation}deg)`,
+          }}
+        >
+          <source src="/assets/brain-logo.webm" type="video/webm" />
+        </video>
+      ),
+    },
+    { id: "challenges", label: "Challenges", icon: <Trophy className="w-5 h-5" strokeWidth={2.5} /> },
+    { id: "profile", label: "Profile", icon: <User className="w-5 h-5" strokeWidth={2.5} /> },
+  ];
+
   return (
     <>
       <style>{`
@@ -35,7 +66,6 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
         }
       `}</style>
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-xl border-t border-border safe-area-bottom">
-        {/* Unified nav container - same max-width as content */}
         <div className="flex justify-around items-center h-16 w-full max-w-lg mx-auto px-4 sm:px-6">
           {navItems.map((item) => (
             <button
@@ -56,7 +86,7 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
                     ? {
                         color: `hsl(var(--gold-h, 45), var(--gold-s, 90%), var(--gold-l, 55%))`,
                         animation: "brainGlow 5s ease-in-out infinite",
-                        borderRadius: "18px",
+                        borderRadius: "12px",
                       }
                     : undefined
                 }
