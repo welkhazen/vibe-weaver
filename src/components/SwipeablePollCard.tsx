@@ -17,7 +17,7 @@ interface Comment {
 interface SwipeablePollCardProps {
   question: string;
   options: PollOption[];
-  onVote: (optionIndex: number) => void;
+  onVote: (optionIndex?: number) => void;
   onNext: () => void;
   isLocked: boolean;
 }
