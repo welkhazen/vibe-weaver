@@ -1,13 +1,9 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
-import { X } from 'lucide-react';
-import {
-  categories,
-  getSubcategoriesByCategory,
-  getCategoryById } from
-'@/data/categories';
-import mentalHealthIcon from '@/assets/mental-health-icon.png';
+import { useState, useMemo, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
+import { categories, getSubcategoriesByCategory, getCategoryById } from "@/data/categories";
+import mentalHealthIcon from "@/assets/mental-health-icon.png";
 
 const OrbitalCategorySelector = () => {
   const navigate = useNavigate();
@@ -21,11 +17,9 @@ const OrbitalCategorySelector = () => {
   const orbitalRef = useRef<HTMLDivElement>(null);
   const categoryButtonRefs = useRef<Map<string, HTMLElement>>(new Map());
 
-  const currentSubcategories = selectedCategory ?
-  getSubcategoriesByCategory(selectedCategory) :
-  [];
+  const currentSubcategories = selectedCategory ? getSubcategoriesByCategory(selectedCategory) : [];
 
-  const selectedCategoryData = getCategoryById(selectedCategory || '');
+  const selectedCategoryData = getCategoryById(selectedCategory || "");
 
   const closeOrbital = () => {
     if (selectedCategory && !isClosing && !isSwitching) {
@@ -56,7 +50,13 @@ const OrbitalCategorySelector = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (selectedCategory && !isClosing && !isSwitching && orbitalRef.current && !orbitalRef.current.contains(event.target as Node)) {
+      if (
+        selectedCategory &&
+        !isClosing &&
+        !isSwitching &&
+        orbitalRef.current &&
+        !orbitalRef.current.contains(event.target as Node)
+      ) {
         for (const [, el] of categoryButtonRefs.current) {
           if (el.contains(event.target as Node)) return;
         }
@@ -64,8 +64,8 @@ const OrbitalCategorySelector = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [selectedCategory, isClosing, isSwitching]);
 
   const handleCategoryClick = (categoryId: string, event: React.MouseEvent) => {
@@ -101,22 +101,22 @@ const OrbitalCategorySelector = () => {
       const radius = 110;
       return {
         x: Math.cos(angle) * radius,
-        y: Math.sin(angle) * radius
+        y: Math.sin(angle) * radius,
       };
     });
   }, [currentSubcategories.length]);
 
   // Determine the orbital card animation class
   const getCardAnimationClass = () => {
-    if (isClosing) return 'animate-orbital-close';
-    if (hasOpened) return 'animate-orbital-open';
-    return 'animate-orbital-open';
+    if (isClosing) return "animate-orbital-close";
+    if (hasOpened) return "animate-orbital-open";
+    return "animate-orbital-open";
   };
 
   // Determine inner content animation class
   const getContentAnimationClass = () => {
-    if (isSwitching) return 'animate-content-fade-out';
-    return 'animate-content-fade-in';
+    if (isSwitching) return "animate-content-fade-out";
+    return "animate-content-fade-in";
   };
 
   return (
@@ -133,53 +133,44 @@ const OrbitalCategorySelector = () => {
               key={category.id}
               className={cn(
                 "col-span-2 metallic-card theme-glow-box p-4 relative overflow-hidden",
-                getCardAnimationClass()
-              )}>
-
+                getCardAnimationClass(),
+              )}
+            >
               <button
                 onClick={() => closeOrbital()}
-                className="absolute top-3 right-3 z-20 p-2 rounded-full bg-accent/50 hover:bg-accent transition-colors duration-150">
-
+                className="absolute top-3 right-3 z-20 p-2 rounded-full bg-accent/50 hover:bg-accent transition-colors duration-150"
+              >
                 <X className="w-4 h-4 text-foreground" />
               </button>
 
               {/* Inner content with crossfade */}
               <div
                 key={selectedCategory}
-                className={cn(
-                  "relative w-full h-[280px] mx-auto max-w-[300px]",
-                  getContentAnimationClass()
-                )}>
-
+                className={cn("relative w-full h-[280px] mx-auto max-w-[300px]", getContentAnimationClass())}
+              >
                 <div
                   className="absolute inset-[20%] rounded-full border border-border/30 opacity-0"
-                  style={{ animation: 'orbital-ring-in 400ms ease-out forwards' }} />
+                  style={{ animation: "orbital-ring-in 400ms ease-out forwards" }}
+                />
 
-
-                <div
-                  className="absolute top-1/2 left-1/2 z-10"
-                  style={{ transform: 'translate(-50%, -50%)' }}>
-
+                <div className="absolute top-1/2 left-1/2 z-10" style={{ transform: "translate(-50%, -50%)" }}>
                   <div
                     className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/40 flex items-center justify-center opacity-0"
-                    style={{ animation: 'center-pop-in 350ms ease-out 100ms forwards' }}>
-
-                    {selectedCategoryData &&
-                    <selectedCategoryData.icon className="w-7 h-7 text-foreground" strokeWidth={1.5} />
-                    }
+                    style={{ animation: "center-pop-in 350ms ease-out 100ms forwards" }}
+                  >
+                    {selectedCategoryData && (
+                      <selectedCategoryData.icon className="w-7 h-7 text-foreground" strokeWidth={1.5} />
+                    )}
                   </div>
                   <p
                     className="text-[10px] text-muted-foreground text-center mt-1.5 opacity-0"
-                    style={{ animation: 'fade-in-up 300ms ease-out 200ms forwards' }}>
-
+                    style={{ animation: "fade-in-up 300ms ease-out 200ms forwards" }}
+                  >
                     {selectedCategoryData?.label}
                   </p>
                 </div>
 
-                <div
-                  className="absolute inset-0"
-                  style={{ animation: 'orbital-rotate 120s linear infinite' }}>
-
+                <div className="absolute inset-0" style={{ animation: "orbital-rotate 120s linear infinite" }}>
                   {currentSubcategories.map((sub, index) => {
                     const pos = orbitalPositions[index];
                     const SubIconComponent = sub.icon;
@@ -190,31 +181,35 @@ const OrbitalCategorySelector = () => {
                         key={sub.id}
                         onClick={() => handleSubcategoryClick(sub.id)}
                         className="absolute top-1/2 left-1/2 group"
-                        style={{
-                          '--orbital-x': `${pos.x}px`,
-                          '--orbital-y': `${pos.y}px`,
-                          animation: `orbital-item-in 380ms ease-out ${delay}ms forwards`
-                        } as React.CSSProperties}>
-
+                        style={
+                          {
+                            "--orbital-x": `${pos.x}px`,
+                            "--orbital-y": `${pos.y}px`,
+                            animation: `orbital-item-in 380ms ease-out ${delay}ms forwards`,
+                          } as React.CSSProperties
+                        }
+                      >
                         <div
                           className="flex flex-col items-center"
-                          style={{ animation: 'orbital-counter-rotate 120s linear infinite' }}>
-
-                          <div className={cn(
-                            'w-11 h-11 rounded-full flex items-center justify-center transition-all duration-150',
-                            'bg-accent/60 border border-border/50 group-hover:bg-accent group-hover:scale-105'
-                          )}>
+                          style={{ animation: "orbital-counter-rotate 120s linear infinite" }}
+                        >
+                          <div
+                            className={cn(
+                              "w-11 h-11 rounded-full flex items-center justify-center transition-all duration-150",
+                              "bg-accent/60 border border-border/50 group-hover:bg-accent group-hover:scale-105",
+                            )}
+                          >
                             <SubIconComponent
                               className="w-5 h-5 transition-colors duration-150 text-foreground"
-                              strokeWidth={1.5} />
-
+                              strokeWidth={1.5}
+                            />
                           </div>
                           <p className="text-[9px] text-center mt-1 max-w-[56px] leading-tight transition-colors duration-150 text-muted-foreground">
                             {sub.label}
                           </p>
                         </div>
-                      </button>);
-
+                      </button>
+                    );
                   })}
                 </div>
               </div>
@@ -283,41 +278,37 @@ const OrbitalCategorySelector = () => {
                   animation: spring-return 650ms cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
                 }
               `}</style>
-            </div>);
-
+            </div>
+          );
         }
 
         return (
           <button
             key={category.id}
             ref={(el) => {
-              if (el) categoryButtonRefs.current.set(category.id, el);else
-              categoryButtonRefs.current.delete(category.id);
+              if (el) categoryButtonRefs.current.set(category.id, el);
+              else categoryButtonRefs.current.delete(category.id);
             }}
             onClick={(e) => handleCategoryClick(category.id, e)}
-            className={cn("metallic-card theme-glow-box p-5 flex flex-col items-center gap-3 transition-all duration-400 ease-out hover:scale-[1.02] active:scale-[0.98] group my-[10px]",
+            className={cn(
+              "metallic-card theme-glow-box p-5 flex flex-col items-center gap-3 transition-all duration-400 ease-out hover:scale-[1.02] active:scale-[0.98] group my-[10px]",
 
-
-
-
-            hasSelection && 'opacity-40 scale-95',
-            isReturning && !hasSelection && 'transition-all duration-700 ease-out'
+              hasSelection && "opacity-40 scale-95",
+              isReturning && !hasSelection && "transition-all duration-700 ease-out",
             )}
-            style={{ transitionDuration: '400ms' }}>
-
-            {category.id === 'mental-health' ? (
-              <img src={mentalHealthIcon} alt="Mental Health" className="w-10 h-10 icon-glow dark:invert-0 invert-0" />
+            style={{ transitionDuration: "400ms" }}
+          >
+            {category.id === "mental-health" ? (
+              <img src={mentalHealthIcon} alt="Mental Health" className="w-10 h-10 icon-glow dark:invert-0 invert-1" />
             ) : (
               <IconComponent className="w-10 h-10 text-foreground icon-glow" strokeWidth={1.5} />
             )}
-            <span className="text-sm font-medium text-foreground text-center leading-tight">
-              {category.label}
-            </span>
-          </button>);
-
+            <span className="text-sm font-medium text-foreground text-center leading-tight">{category.label}</span>
+          </button>
+        );
       })}
-    </div>);
-
+    </div>
+  );
 };
 
 export default OrbitalCategorySelector;
