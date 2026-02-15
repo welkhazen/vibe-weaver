@@ -138,7 +138,7 @@ const ChallengesPage = () => {
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Your Balance</p>
               <div className="flex items-center gap-2 mt-1">
-                <Flame className="w-6 h-6 text-yellow-400 icon-glow" />
+                <Flame className="w-6 h-6 icon-glow text-[#58d082]" />
                 <span className="text-3xl font-bold text-foreground">{userTokens}</span>
                 <span className="text-sm text-muted-foreground">tokens</span>
               </div>
@@ -159,7 +159,7 @@ const ChallengesPage = () => {
         <div className="grid grid-cols-2 gap-3">
           <button className="metallic-card theme-glow-box p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]">
             <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Gift className="w-5 h-5 text-black" />
+              <Gift className="w-5 h-5 text-primary" />
             </div>
             <div className="text-left">
               <p className="text-sm font-medium text-foreground">Redeem</p>
@@ -168,7 +168,7 @@ const ChallengesPage = () => {
           </button>
           <button className="metallic-card theme-glow-box p-3 flex items-center gap-3 transition-all duration-300 hover:border-primary/30 active:scale-[0.98]">
             <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Trophy className="w-5 h-5 text-black" />
+              <Trophy className="w-5 h-5 text-primary icon-glow" />
             </div>
             <div className="text-left">
               <p className="text-sm font-medium text-foreground">Leaderboard</p>
@@ -188,8 +188,8 @@ const ChallengesPage = () => {
             className={cn(
               'px-4 py-2 rounded-full text-sm font-medium transition-all duration-300',
               filter === tab ?
-              'bg-primary text-black' :
-              'bg-accent text-black/60 hover:text-black'
+              'bg-primary text-primary-foreground' :
+              'bg-accent text-muted-foreground hover:text-foreground'
             )}>
 
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -284,7 +284,7 @@ const ChallengesPage = () => {
                   {challenge.completed &&
                 <button
                   onClick={() => handleClaimReward(challenge)}
-                  className="mt-3 w-full py-2 rounded-lg bg-green-500/20 text-green-400 text-sm font-medium transition-all duration-300 hover:bg-green-500/30 active:scale-[0.98]">
+                  className="mt-3 w-full py-2 rounded-lg bg-green-500/20 text-sm font-medium transition-all duration-300 hover:bg-green-500/30 active:scale-[0.98] text-popover-foreground">
 
                       Claim Reward
                     </button>
