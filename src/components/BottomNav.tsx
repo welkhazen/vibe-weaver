@@ -1,5 +1,6 @@
-import { Home, Search, User, Brain, Trophy } from 'lucide-react';
+import { Home, Search, User, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import brainLogo from '@/assets/brain-logo.gif';
 
 interface NavItem {
   id: string;
@@ -11,7 +12,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: 'home', label: 'Home', icon: <Home className="w-5 h-5" strokeWidth={2.5} /> },
   { id: 'search', label: 'Explore', icon: <Search className="w-5 h-5" strokeWidth={2.5} /> },
-  { id: 'tcm', label: 'raW', icon: <Brain className="w-5 h-5" strokeWidth={2.5} />, useThemeColor: true },
+  { id: 'tcm', label: 'raW', icon: <img src={brainLogo} alt="raW" className="w-6 h-6" />, useThemeColor: true },
   { id: 'challenges', label: 'Challenges', icon: <Trophy className="w-5 h-5" strokeWidth={2.5} /> },
   { id: 'profile', label: 'Profile', icon: <User className="w-5 h-5" strokeWidth={2.5} /> },
 ];
