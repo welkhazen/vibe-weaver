@@ -154,7 +154,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
   '';
 
   return (
-    <div className="relative w-full flex-1 flex flex-col items-center justify-center my-0 gap-0 border-4">
+    <div className="relative w-full flex-1 flex flex-col items-center justify-center my-0 gap-0 border-0">
       {/* Card */}
       <div
         className={cn("relative w-full max-w-sm aspect-[2/4] rounded-3xl border border-border/50 bg-background shadow-lg overflow-hidden select-none transition-transform duration-300 ease-out",
