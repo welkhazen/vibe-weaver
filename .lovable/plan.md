@@ -1,28 +1,62 @@
 
-
-## Spring Animation for Category Cards Returning to Normal
+## Poll System Upgrade: Themed Buttons, Stats Tracking, and Unlockable Tests
 
 ### What Changes
-When the orbital panel closes, the non-selected category cards currently transition from `opacity-40 scale-95` back to their normal state using a simple CSS `transition-all duration-400 ease-out`. This produces a linear, mechanical feel. We'll replace this with a spring-like overshoot effect so the cards "bounce" slightly past their resting scale before settling.
 
-### Technical Approach
+1. **Yes/No Button Colors**
+   - "Yes" button uses the theme accent color (from `--gold-h`/`--gold-s`/`--gold-l` CSS variables) as its background
+   - "No" button uses the inverse of the current mode: in dark mode it uses a white/light color, in light mode it uses a dark/black color
+   - Both buttons become large, prominent tap targets styled like action buttons (not just text options)
 
-**`src/components/OrbitalCategorySelector.tsx`:**
+2. **Post-Answer Stats Section**
+   - After answering a poll, a stats card appears below the result showing:
+     - Total questions answered today (e.g., "4/11 answered today")
+     - Daily cap of 11 questions enforced -- once reached, remaining polls are locked with a message
+     - Progress towards unlocking personality/psychological tests with progress bars:
+       - "Answer 25 more to unlock: Myers-Briggs Personality Type"
+       - "Answer 50 more to unlock: Big Five Personality Profile"
+       - "Answer 75 more to unlock: Emotional Intelligence Assessment"
+       - "Answer 100 more to unlock: Shadow Self Analysis"
+       - "Answer 150 more to unlock: Attachment Style Profile"
+     - A "Coming Soon" label on locked tests
 
-1. Add a new `isReturning` state that becomes `true` when the orbital closes and the cards start returning to normal.
+3. **Daily Cap System**
+   - Track answers in localStorage with a date key (resets daily)
+   - After 11 answers in a day, show "Daily limit reached -- come back tomorrow!" 
+   - Remaining poll cards show a lock overlay
 
-2. In `closeOrbital`, set `isReturning = true` at Phase 2 (when `isClosing` starts). After the close animation finishes and state resets, keep `isReturning = true` briefly (~500ms) so the spring plays out, then set it to `false`.
+### Technical Details
 
-3. On non-selected category buttons, when `isReturning` is true and `hasSelection` is false, apply a CSS animation class `animate-spring-return` instead of relying on the plain CSS transition.
+**Modified: `src/components/PollCard.tsx`**
+- Restyle the Yes/No option buttons:
+  - "Yes": `background: hsl(var(--gold-h), var(--gold-s), var(--gold-l))` with white text
+  - "No": `bg-foreground text-background` (automatically inverts with dark/light mode)
+- Make buttons full-width, rounded, stacked vertically with clear labels
+- After voting, show the result percentages, then render a `<PollStats />` component below
 
-4. Add a new `@keyframes spring-return` in the inline style block:
-   - 0%: `opacity: 0.4; transform: scale(0.95)`
-   - 50%: `opacity: 1; transform: scale(1.04)`
-   - 75%: `opacity: 1; transform: scale(0.99)`
-   - 100%: `opacity: 1; transform: scale(1)`
-   - Duration: ~450ms with ease-out timing
+**New: `src/components/PollStats.tsx`**
+- Displays:
+  - Daily answer count with progress bar (X/11)
+  - List of unlockable tests with their required answer thresholds
+  - Each test shows a progress bar and lock/unlock icon
+- Reads/writes answer count from localStorage (`poll-answers-{YYYY-MM-DD}` key for daily reset, `poll-answers-total` for cumulative)
 
-5. The `.animate-spring-return` class applies this keyframe with `forwards` fill mode.
+**Modified: `src/components/PollSection.tsx`**
+- Pass daily answer count state down to PollCards
+- Enforce the 11-question daily cap: disable voting on cards beyond the limit
+- Show a summary stats banner at the top showing daily progress
 
-This gives the cards a subtle overshoot when they pop back into place, making the return feel organic and polished.
+**Modified: `src/pages/TCMPage.tsx`**
+- Minor: add a note about "Questions updated regularly" placeholder text
 
+**Unlockable Tests (milestone thresholds):**
+| Answers Required | Test Name |
+|---|---|
+| 25 | Myers-Briggs Personality Type |
+| 50 | Big Five Personality Profile |
+| 75 | Emotional Intelligence Assessment |
+| 100 | Shadow Self Analysis |
+| 150 | Attachment Style Profile |
+| 200 | Cognitive Bias Mapping |
+
+All stored client-side for now (localStorage). When questions are uploaded to the database later, this system will be ready to connect.
