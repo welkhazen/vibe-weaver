@@ -119,21 +119,21 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
           }
         }
       `}</style>
-      <nav className="fixed bottom-0 left-0 right-0 z-50 backdrop-blur-xl border-t safe-area-bottom" style={{ background: 'hsla(0, 0%, 7%, 0.9)', borderColor: 'hsla(0, 0%, 20%, 1)' }}>
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-xl border-t border-border safe-area-bottom">
         <div className="flex justify-around items-center h-16 w-full max-w-lg mx-auto px-4 sm:px-6">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
               className={cn(
-                "flex flex-col items-center justify-center w-16 h-full transition-all duration-300 ease-out text-white",
-                activeTab === item.id ? "" : "opacity-70 hover:opacity-100",
+                "flex flex-col items-center justify-center w-16 h-full transition-all duration-300 ease-out",
+                activeTab === item.id ? "text-foreground" : "text-foreground/70 hover:text-foreground",
               )}
             >
               <div
                 className={cn(
                   "p-2 rounded-xl transition-all duration-300 ease-out",
-                  activeTab === item.id ? "bg-white/10 scale-110" : "hover:scale-105 active:scale-95",
+                  activeTab === item.id ? "bg-primary/20 glow-primary scale-110" : "hover:scale-105 active:scale-95",
                 )}
                 style={
                   item.useThemeColor
