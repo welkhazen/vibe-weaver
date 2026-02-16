@@ -123,6 +123,12 @@ const PollSection = () => {
     }
   };
 
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+    }
+  };
+
   const handleUnlockMore = () => {
     if (tokenBalance >= UNLOCK_COST) {
       setTokenBalance((prev) => prev - UNLOCK_COST);
@@ -228,6 +234,8 @@ const PollSection = () => {
             options={currentPoll.options}
             onVote={handleVote}
             onNext={handleNext}
+            onPrev={handlePrev}
+            canGoBack={currentIndex > 0}
             isLocked={isAtCap}
           />
         ) : (
