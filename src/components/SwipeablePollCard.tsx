@@ -1,6 +1,7 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { Check, MessageCircle, ChevronDown, Send, ArrowUp, CornerDownRight } from 'lucide-react';
+import LockedProfileModal from './LockedProfileModal';
 
 interface PollOption {
   text: string;
@@ -24,9 +25,24 @@ interface SwipeablePollCardProps {
   isLocked: boolean;
 }
 
+const RANDOM_USERNAMES = [
+  'cosmic_drift', 'neon_sage', 'pixel_fox', 'lunar_echo', 'zen_spark',
+  'wave_rider', 'shadow_mint', 'blaze_nova', 'frost_bloom', 'dusk_whisper',
+  'ember_sky', 'iron_lotus', 'velvet_haze', 'storm_byte', 'jade_pulse'
+];
+
+const getRandomUsername = (seed: string) => {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+    hash |= 0;
+  }
+  return RANDOM_USERNAMES[Math.abs(hash) % RANDOM_USERNAMES.length];
+};
+
 const mockComments: Comment[] = [
-{ id: '1', author: 'Alex M.', text: 'This really made me think about my daily habits.', time: '2h ago', upvotes: 5, replies: [] },
-{ id: '2', author: 'Jordan K.', text: 'Interesting perspective!', time: '5h ago', upvotes: 2, replies: [] }];
+{ id: '1', author: getRandomUsername('1'), text: 'This really made me think about my daily habits.', time: '2h ago', upvotes: 5, replies: [] },
+{ id: '2', author: getRandomUsername('2'), text: 'Interesting perspective!', time: '5h ago', upvotes: 2, replies: [] }];
 
 
 const SWIPE_THRESHOLD = 100;
@@ -43,6 +59,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [upvotedIds, setUpvotedIds] = useState<Set<string>>(new Set());
+  const [profileModalUser, setProfileModalUser] = useState<string | null>(null);
 
   const startX = useRef(0);
   const hasVoted = selectedOption !== null;
@@ -96,7 +113,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
 
   const handleAddComment = () => {
     if (newComment.trim()) {
-      setComments((prev) => [{ id: Date.now().toString(), author: 'You', text: newComment.trim(), time: 'Just now', upvotes: 0, replies: [] }, ...prev]);
+      setComments((prev) => [{ id: Date.now().toString(), author: getRandomUsername(Date.now().toString()), text: newComment.trim(), time: 'Just now', upvotes: 0, replies: [] }, ...prev]);
       setNewComment('');
     }
   };
@@ -106,7 +123,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
     setComments((prev) =>
     prev.map((c) =>
     c.id === parentId ?
-    { ...c, replies: [...c.replies, { id: Date.now().toString(), author: 'You', text: replyText.trim(), time: 'Just now', upvotes: 0, replies: [] }] } :
+    { ...c, replies: [...c.replies, { id: Date.now().toString(), author: getRandomUsername(Date.now().toString() + 'r'), text: replyText.trim(), time: 'Just now', upvotes: 0, replies: [] }] } :
     c
     )
     );
@@ -278,12 +295,13 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
                 <div className="space-y-1.5">
                   {visibleComments.map((c) =>
                 <div key={c.id} className="space-y-1">
-                      <div className="p-2 rounded-lg my-[4px] bg-primary-foreground border-solid border-[#9952e0] mx-0 px-[25px] opacity-100 border">
+                      <div className="p-1.5 rounded-lg my-[4px] bg-primary-foreground border-primary/40 mx-0 px-[20px] opacity-100 border">
+                        <p className="text-[9px] text-foreground mb-0.5">{c.text}</p>
                         <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-[10px] text-foreground font-semibold">{c.author}</span>
-                          <span className="text-[9px] text-muted-foreground">{c.time}</span>
+                          <button onClick={() => setProfileModalUser(c.author)} className="text-[8px] text-primary font-normal hover:underline cursor-pointer transition-colors">@{c.author}</button>
+                          <span className="text-[8px] text-muted-foreground">{c.time}</span>
                         </div>
-                        <p className="text-[10px] text-muted-foreground mb-1">{c.text}</p>
+                        <p className="text-[9px] text-muted-foreground mb-1 hidden">{c.text}</p>
                         <div className="flex items-center gap-3">
                           <button
                         onClick={() => handleUpvote(c.id)}
@@ -333,12 +351,12 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
 
                       {/* Replies */}
                       {c.replies.map((r) =>
-                  <div key={r.id} className="ml-4 p-1.5 rounded-lg bg-accent/30 border border-border/20">
+                  <div key={r.id} className="ml-4 p-1.5 rounded-lg bg-accent/30 border border-primary/20">
+                          <p className="text-[8px] text-foreground mb-0.5">{r.text}</p>
                           <div className="flex items-center justify-between mb-0.5">
-                            <span className="text-[9px] font-medium text-foreground">{r.author}</span>
-                            <span className="text-[8px] text-muted-foreground">{r.time}</span>
+                            <button onClick={() => setProfileModalUser(r.author)} className="text-[8px] text-primary font-normal hover:underline cursor-pointer transition-colors">@{r.author}</button>
+                            <span className="text-[7px] text-muted-foreground">{r.time}</span>
                           </div>
-                          <p className="text-[9px] text-muted-foreground mb-0.5">{r.text}</p>
                           <button
                       onClick={() => handleUpvote(r.id, true, c.id)}
                       className={cn(
@@ -380,6 +398,12 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
         </div>
       </div>
 
+      {/* Locked Profile Modal */}
+      <LockedProfileModal
+        open={!!profileModalUser}
+        onClose={() => setProfileModalUser(null)}
+        username={profileModalUser || ''}
+      />
     </div>);
 
 };
