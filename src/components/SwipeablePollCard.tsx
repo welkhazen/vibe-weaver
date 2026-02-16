@@ -295,7 +295,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
                 <div className="space-y-1.5">
                   {visibleComments.map((c) =>
                 <div key={c.id} className="space-y-1">
-                      <div className="p-1.5 rounded-lg my-[4px] bg-primary-foreground border-primary/40 mx-0 px-[20px] opacity-100 border">
+                      <div className="p-1.5 rounded-lg my-[4px] bg-primary-foreground border-primary mx-0 px-[20px] opacity-100 border">
                         <p className="text-[9px] text-foreground mb-0.5">{c.text}</p>
                         <div className="flex items-center justify-between mb-0.5">
                           <button onClick={() => setProfileModalUser(c.author)} className="text-[8px] text-primary font-normal hover:underline cursor-pointer transition-colors">@{c.author}</button>
