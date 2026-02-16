@@ -174,6 +174,26 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBac
 
   return (
     <div className="relative w-full flex-1 flex flex-col items-center justify-center py-4">
+      {/* Left arrow - outside card */}
+      <button
+        onClick={onPrev}
+        disabled={!canGoBack}
+        className={cn(
+          'absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center transition-all active:scale-[0.9] z-10',
+          canGoBack ? 'bg-foreground/10 text-foreground hover:bg-foreground/20' : 'bg-foreground/5 text-muted-foreground/30 cursor-not-allowed'
+        )}
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+
+      {/* Right arrow - outside card */}
+      <button
+        onClick={onNext}
+        className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 active:scale-[0.9] transition-all z-10"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </button>
+
       {/* Card */}
       <div
         className={cn(
@@ -388,25 +408,6 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBac
               }
               </div>
 
-              {/* Navigation arrows */}
-              <div className="flex items-center justify-between pt-2">
-                <button
-                  onClick={onPrev}
-                  disabled={!canGoBack}
-                  className={cn(
-                    'w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-[0.9]',
-                    canGoBack ? 'bg-foreground/10 text-foreground hover:bg-foreground/20' : 'bg-foreground/5 text-muted-foreground/30 cursor-not-allowed'
-                  )}
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={onNext}
-                  className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 active:scale-[0.9] transition-all"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
             </div>
           }
         </div>
