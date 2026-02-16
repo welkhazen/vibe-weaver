@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { Check, MessageCircle, ChevronDown, Send, ArrowUp, CornerDownRight } from 'lucide-react';
+import { Check, MessageCircle, ChevronDown, ChevronLeft, ChevronRight, Send, ArrowUp, CornerDownRight } from 'lucide-react';
 import LockedProfileModal from './LockedProfileModal';
 
 interface PollOption {
@@ -22,6 +22,8 @@ interface SwipeablePollCardProps {
   options: PollOption[];
   onVote: (optionIndex?: number) => void;
   onNext: () => void;
+  onPrev: () => void;
+  canGoBack: boolean;
   isLocked: boolean;
 }
 
@@ -47,7 +49,7 @@ const mockComments: Comment[] = [
 
 const SWIPE_THRESHOLD = 100;
 
-const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: SwipeablePollCardProps) => {
+const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBack, isLocked }: SwipeablePollCardProps) => {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -386,13 +388,25 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
               }
               </div>
 
-              {/* Next button */}
-              <button
-              onClick={onNext}
-              className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 active:scale-[0.97] transition-all">
-
-                Next Question →
-              </button>
+              {/* Navigation arrows */}
+              <div className="flex items-center justify-between pt-2">
+                <button
+                  onClick={onPrev}
+                  disabled={!canGoBack}
+                  className={cn(
+                    'w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-[0.9]',
+                    canGoBack ? 'bg-foreground/10 text-foreground hover:bg-foreground/20' : 'bg-foreground/5 text-muted-foreground/30 cursor-not-allowed'
+                  )}
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={onNext}
+                  className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 active:scale-[0.9] transition-all"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           }
         </div>
