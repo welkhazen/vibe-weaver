@@ -194,7 +194,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
         {/* Card Content */}
         <div className="flex flex-col h-full p-5 overflow-y-auto">
           {!hasVoted ?
-          <div className="flex flex-col items-center justify-center flex-1">
+          <div className="flex-col flex-1 flex items-center justify-center">
               <p className="text-xl font-bold text-foreground text-center leading-relaxed">
                 {question}
               </p>
