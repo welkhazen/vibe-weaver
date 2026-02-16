@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function UserIcon({ className = "w-6 h-6 flex-shrink-0" }) {
+export default function LinkIcon({ className = "w-6 h-6 flex-shrink-0" }) {
   return (
     <svg
       className={className}
@@ -14,12 +14,12 @@ export default function UserIcon({ className = "w-6 h-6 flex-shrink-0" }) {
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"
+        d="M13.828 10.172a4 4 0 015.657 5.656l-3.535 3.535a4 4 0 01-5.657-5.656l1.414-1.415"
       />
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M4 20v-1a4 4 0 014-4h8a4 4 0 014 4v1"
+        d="M10.172 13.828a4 4 0 01-5.657-5.656l3.535-3.535a4 4 0 015.657 5.656l-1.414 1.415"
       />
     </svg>
   );
