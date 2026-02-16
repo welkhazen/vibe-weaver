@@ -278,12 +278,12 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
                 <div className="space-y-1.5">
                   {visibleComments.map((c) =>
                 <div key={c.id} className="space-y-1">
-                      <div className="p-1.5 rounded-md bg-primary-foreground border border-primary/40 mx-0 px-3">
-                        <p className="text-[9px] text-foreground mb-0.5">{c.text}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-[8px] text-muted-foreground font-normal">{c.author}</span>
-                          <span className="text-[8px] text-muted-foreground">{c.time}</span>
+                      <div className="p-2 rounded-lg my-[4px] bg-primary-foreground border-solid border-[#9952e0] mx-0 px-[25px] opacity-100 border">
+                        <div className="flex items-center justify-between mb-0.5">
+                          <span className="text-[10px] text-foreground font-semibold">{c.author}</span>
+                          <span className="text-[9px] text-muted-foreground">{c.time}</span>
                         </div>
+                        <p className="text-[10px] text-muted-foreground mb-1">{c.text}</p>
                         <div className="flex items-center gap-3">
                           <button
                         onClick={() => handleUpvote(c.id)}
@@ -333,12 +333,12 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
 
                       {/* Replies */}
                       {c.replies.map((r) =>
-                  <div key={r.id} className="ml-4 p-1.5 rounded-md bg-accent/30 border border-primary/20">
-                          <p className="text-[8px] text-foreground mb-0.5">{r.text}</p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-[7px] text-muted-foreground font-normal">{r.author}</span>
-                            <span className="text-[7px] text-muted-foreground">{r.time}</span>
+                  <div key={r.id} className="ml-4 p-1.5 rounded-lg bg-accent/30 border border-border/20">
+                          <div className="flex items-center justify-between mb-0.5">
+                            <span className="text-[9px] font-medium text-foreground">{r.author}</span>
+                            <span className="text-[8px] text-muted-foreground">{r.time}</span>
                           </div>
+                          <p className="text-[9px] text-muted-foreground mb-0.5">{r.text}</p>
                           <button
                       onClick={() => handleUpvote(r.id, true, c.id)}
                       className={cn(
