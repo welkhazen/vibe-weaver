@@ -8,7 +8,7 @@ const MatrixBackground = () => {
   const [animationKey, setAnimationKey] = useState(0);
   const speedRef = useRef(15);
   const targetSpeedRef = useRef(50);
-  const startTimeRef = useRef(Date.now());
+  const startTimeRef = useRef(performance.now());
   const slowdownDuration = 5000;
   const fadeStartTime = 4000;
   const fadeDuration = 5000;
@@ -30,7 +30,7 @@ const MatrixBackground = () => {
         themeColorRef.current = { h: hue, s: saturation, l: lightness };
         isDarkRef.current = isDark;
 
-        startTimeRef.current = Date.now();
+        startTimeRef.current = performance.now();
         speedRef.current = 15;
         setAnimationKey(k => k + 1);
       }
@@ -45,7 +45,7 @@ const MatrixBackground = () => {
     if (!canvas) return;
 
     // Reset timing for fresh animation
-    startTimeRef.current = Date.now();
+    startTimeRef.current = performance.now();
     speedRef.current = 15;
 
     const ctx = canvas.getContext('2d');
@@ -75,84 +75,62 @@ const MatrixBackground = () => {
 
     // Initial theme values are already set via refs or will be updated by the first event
 
-    // Get matrix color based on theme accent
-    const getMatrixColor = () => {
-      const { h, s, l } = themeColorRef.current;
-      if (isDarkRef.current) {
-        return `hsl(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%)`;
-      } else {
-        return `hsl(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%)`;
-      }
-    };
-
-    // Get background fade color based on theme
-    const getFadeColor = () => {
-      if (isDarkRef.current) {
-        return 'rgba(0, 0, 0, 0.05)';
-      } else {
-        return 'rgba(255, 255, 255, 0.08)';
-      }
-    };
+    // BOLT OPTIMIZATION: Pre-calculate colors and values to avoid redundant work in the animation loop
+    const { h, s, l } = themeColorRef.current;
+    const isDark = isDarkRef.current;
     
+    const matrixColor = isDark
+      ? `hsl(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%)`
+      : `hsl(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%)`;
+
+    const fadeColor = isDark ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.08)';
+    const baseOpacity = isDark ? 0.3 : 0.2;
+    const charArrayLength = charArray.length;
+
     // Calculate fade opacity based on elapsed time
-    const calculateOpacity = () => {
-      const elapsed = Date.now() - startTimeRef.current;
+    const calculateOpacity = (now: number) => {
+      const elapsed = now - startTimeRef.current;
       
       if (elapsed < fadeStartTime) {
-        // Full opacity during initial animation
-        return isDarkRef.current ? 0.3 : 0.2;
+        return baseOpacity;
       } else if (elapsed < fadeStartTime + fadeDuration) {
-        // Gradually fade out from 4s to 9s
         const fadeProgress = (elapsed - fadeStartTime) / fadeDuration;
-        const easeOut = 1 - Math.pow(fadeProgress, 2); // Ease-out for smooth fade
-        const baseOpacity = isDarkRef.current ? 0.3 : 0.2;
+        const easeOut = 1 - Math.pow(fadeProgress, 2);
         return baseOpacity * easeOut;
       } else {
-        // Fully faded after 9s
         return 0;
       }
     };
     
-    // Update canvas opacity
-    const updateCanvasOpacity = () => {
-      const newOpacity = calculateOpacity();
+    // Update canvas opacity - BOLT: Consistently called once per frame
+    const updateCanvasOpacity = (now: number) => {
+      const newOpacity = calculateOpacity(now);
       canvas.style.opacity = String(newOpacity);
       return newOpacity > 0;
     };
-    updateCanvasOpacity();
 
     // Calculate current speed based on elapsed time
-    const getCurrentInterval = () => {
-      const elapsed = Date.now() - startTimeRef.current;
+    const getCurrentInterval = (now: number) => {
+      const elapsed = now - startTimeRef.current;
       const progress = Math.min(elapsed / slowdownDuration, 1);
-      
-      // Ease-out function for smooth deceleration
       const easeOut = 1 - Math.pow(1 - progress, 3);
-      
-      // Interpolate from fast (15ms) to slow (50ms)
       return speedRef.current + (targetSpeedRef.current - speedRef.current) * easeOut;
     };
 
     const draw = () => {
-      // Update opacity on each frame for smooth transitions
-      updateCanvasOpacity();
-      
-      // Semi-transparent fade to create trail effect
-      ctx.fillStyle = getFadeColor();
+      // BOLT: Use pre-calculated fade color
+      ctx.fillStyle = fadeColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const matrixColor = getMatrixColor();
+      // BOLT: Use pre-calculated matrix color
       ctx.fillStyle = matrixColor;
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
-        // Random character
-        const char = charArray[Math.floor(Math.random() * charArray.length)];
-        
-        // Draw the character
+        // BOLT: Use cached charArrayLength
+        const char = charArray[Math.floor(Math.random() * charArrayLength)];
         ctx.fillText(char, i * fontSize, drops[i] * fontSize);
 
-        // Reset drop randomly after reaching bottom
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
@@ -160,29 +138,33 @@ const MatrixBackground = () => {
       }
     };
 
-    // Use dynamic timing with setTimeout instead of setInterval
-    let timeoutId: number;
+    // BOLT OPTIMIZATION: Use requestAnimationFrame for smoother performance and better power efficiency
+    let requestId: number;
     let isRunning = true;
+    let lastDrawTime = performance.now();
     
-    const loop = () => {
+    const loop = (now: number) => {
       if (!isRunning) return;
       
-      const shouldContinue = updateCanvasOpacity();
+      const shouldContinue = updateCanvasOpacity(now);
       if (!shouldContinue) {
-        // Stop the animation once fully faded
         return;
       }
       
-      draw();
-      const currentInterval = getCurrentInterval();
-      timeoutId = window.setTimeout(loop, currentInterval);
+      const interval = getCurrentInterval(now);
+      if (now - lastDrawTime >= interval) {
+        draw();
+        lastDrawTime = now;
+      }
+
+      requestId = window.requestAnimationFrame(loop);
     };
     
-    loop();
+    requestId = window.requestAnimationFrame(loop);
 
     return () => {
       isRunning = false;
-      clearTimeout(timeoutId);
+      window.cancelAnimationFrame(requestId);
       window.removeEventListener('resize', resizeCanvas);
     };
   }, [animationKey]);
