@@ -159,7 +159,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
       <div
         className={cn(
           'relative rounded-3xl border border-border/50 bg-background shadow-lg overflow-hidden select-none',
-          'w-[280px] h-[380px]',
+          'w-[280px] min-h-[380px]',
           'transition-transform duration-300 ease-out',
           isDragging && '!transition-none',
           isExiting && 'transition-all duration-300 ease-in opacity-0'
@@ -193,7 +193,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
         </div>
 
         {/* Card Content */}
-        <div className="flex flex-col h-full p-5 overflow-y-auto">
+        <div className="flex flex-col h-full p-5">
           {!hasVoted ?
           <div className="flex-col flex-1 flex items-center justify-center">
               <p className="text-xl font-bold text-foreground text-center leading-relaxed">
@@ -275,7 +275,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, isLocked }: Swip
                 </div>
 
                 {/* Comments list - always shown, sorted by upvotes */}
-                <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                <div className="space-y-1.5">
                   {visibleComments.map((c) =>
                 <div key={c.id} className="space-y-1">
                       <div className="p-2 rounded-lg my-[4px] bg-primary-foreground border-solid border-2 border-[#9952e0] mx-0 px-[25px] opacity-100">
