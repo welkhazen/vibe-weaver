@@ -5,3 +5,7 @@
 ## 2025-05-15 - Event-Driven Theme Sync for Canvas
 **Learning:** For components that cannot rely solely on CSS (like Canvas-based animations), using a custom `window` event to broadcast theme changes is significantly more efficient than using `MutationObserver` on the root element. `MutationObserver` triggers on every attribute change and requires `getComputedStyle`, which can cause layout thrashing.
 **Action:** Centralize theme change broadcasting in the primary theme-switching component (e.g., `Header`) and subscribe via window events in performance-critical visual components.
+
+## 2026-02-18 - Optimizing Canvas Animation Loops
+**Learning:** High-frequency canvas loops (like Matrix rain) suffer from per-frame string allocations and redundant state changes. Caching derived values (HSL strings, array lengths) and moving constant state assignments (like `ctx.font`) out of the loop measurably reduces CPU pressure and GC churn. Using `performance.now()` provides more stable timing than `Date.now()` for smooth decelerations.
+**Action:** Always pre-calculate derived visual strings and cache lengths in hot loops. Minimize canvas context state mutations (font, fillStyle) when they don't change between frames.
