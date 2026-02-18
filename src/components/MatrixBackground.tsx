@@ -8,7 +8,7 @@ const MatrixBackground = () => {
   const [animationKey, setAnimationKey] = useState(0);
   const speedRef = useRef(15);
   const targetSpeedRef = useRef(50);
-  const startTimeRef = useRef(Date.now());
+  const startTimeRef = useRef(performance.now());
   const slowdownDuration = 5000;
   const fadeStartTime = 4000;
   const fadeDuration = 5000;
@@ -30,7 +30,7 @@ const MatrixBackground = () => {
         themeColorRef.current = { h: hue, s: saturation, l: lightness };
         isDarkRef.current = isDark;
 
-        startTimeRef.current = Date.now();
+        startTimeRef.current = performance.now();
         speedRef.current = 15;
         setAnimationKey(k => k + 1);
       }
@@ -45,11 +45,25 @@ const MatrixBackground = () => {
     if (!canvas) return;
 
     // Reset timing for fresh animation
-    startTimeRef.current = Date.now();
+    startTimeRef.current = performance.now();
     speedRef.current = 15;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    const fontSize = 14;
+
+    // Pre-calculate colors and set constant canvas state
+    const { h, s, l } = themeColorRef.current;
+    const matrixColor = isDarkRef.current
+      ? `hsl(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%)`
+      : `hsl(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%)`;
+
+    const fadeColor = isDarkRef.current
+      ? 'rgba(0, 0, 0, 0.05)'
+      : 'rgba(255, 255, 255, 0.08)';
+
+    ctx.font = `${fontSize}px monospace`;
 
     // Clear canvas for fresh start
     const resizeCanvas = () => {
@@ -64,8 +78,6 @@ const MatrixBackground = () => {
     // Matrix characters
     const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
     const charArray = chars.split('');
-
-    const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
     
     const drops: number[] = Array(columns).fill(1);
@@ -73,30 +85,9 @@ const MatrixBackground = () => {
       drops[i] = Math.floor(Math.random() * (canvas.height / fontSize));
     }
 
-    // Initial theme values are already set via refs or will be updated by the first event
-
-    // Get matrix color based on theme accent
-    const getMatrixColor = () => {
-      const { h, s, l } = themeColorRef.current;
-      if (isDarkRef.current) {
-        return `hsl(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%)`;
-      } else {
-        return `hsl(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%)`;
-      }
-    };
-
-    // Get background fade color based on theme
-    const getFadeColor = () => {
-      if (isDarkRef.current) {
-        return 'rgba(0, 0, 0, 0.05)';
-      } else {
-        return 'rgba(255, 255, 255, 0.08)';
-      }
-    };
-    
     // Calculate fade opacity based on elapsed time
     const calculateOpacity = () => {
-      const elapsed = Date.now() - startTimeRef.current;
+      const elapsed = performance.now() - startTimeRef.current;
       
       if (elapsed < fadeStartTime) {
         // Full opacity during initial animation
@@ -123,7 +114,7 @@ const MatrixBackground = () => {
 
     // Calculate current speed based on elapsed time
     const getCurrentInterval = () => {
-      const elapsed = Date.now() - startTimeRef.current;
+      const elapsed = performance.now() - startTimeRef.current;
       const progress = Math.min(elapsed / slowdownDuration, 1);
       
       // Ease-out function for smooth deceleration
@@ -136,18 +127,19 @@ const MatrixBackground = () => {
     const draw = () => {
       // Update opacity on each frame for smooth transitions
       updateCanvasOpacity();
-      
+
       // Semi-transparent fade to create trail effect
-      ctx.fillStyle = getFadeColor();
+      ctx.fillStyle = fadeColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const matrixColor = getMatrixColor();
       ctx.fillStyle = matrixColor;
-      ctx.font = `${fontSize}px monospace`;
 
-      for (let i = 0; i < drops.length; i++) {
+      const charLen = charArray.length;
+      const dropsLen = drops.length;
+
+      for (let i = 0; i < dropsLen; i++) {
         // Random character
-        const char = charArray[Math.floor(Math.random() * charArray.length)];
+        const char = charArray[Math.floor(Math.random() * charLen)];
         
         // Draw the character
         ctx.fillText(char, i * fontSize, drops[i] * fontSize);
