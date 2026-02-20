@@ -1,26 +1,131 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { EVENT_THEME_CHANGED } from '@/constants/theme';
 import { ThemeChangedEventDetail } from '@/lib/theme';
 
 // Matrix rain animation - restarts on theme color change
+const SLOWDOWN_DURATION = 5000;
+const FADE_START_TIME = 4000;
+const FADE_DURATION = 5000;
+const FONT_SIZE = 14;
+const INITIAL_SPEED = 15;
+const TARGET_SPEED = 50;
+
+// Matrix characters - pre-calculate array once
+const CHARS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
+const CHAR_ARRAY = CHARS.split('');
+const CHAR_ARRAY_LENGTH = CHAR_ARRAY.length;
+
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [animationKey, setAnimationKey] = useState(0);
-  const speedRef = useRef(15);
-  const targetSpeedRef = useRef(50);
-  const startTimeRef = useRef(Date.now());
-  const slowdownDuration = 5000;
-  const fadeStartTime = 4000;
-  const fadeDuration = 5000;
+  const startTimeRef = useRef(performance.now());
+  const isLoopingRef = useRef(false);
+  const animationFrameIdRef = useRef<number>();
   
   const isDarkRef = useRef(
     document.documentElement.classList.contains('dark') || 
     !document.documentElement.classList.contains('light')
   );
   const themeColorRef = useRef({ h: 45, s: 90, l: 55 });
+  const matrixColorRef = useRef('');
+  const fadeColorRef = useRef('');
+
+  // Helper to get matrix color based on theme accent
+  const getMatrixColor = useCallback(() => {
+    const { h, s, l } = themeColorRef.current;
+    if (isDarkRef.current) {
+      return `hsl(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%)`;
+    } else {
+      return `hsl(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%)`;
+    }
+  }, []);
+
+  // Helper to get background fade color based on theme
+  const getFadeColor = useCallback(() => {
+    if (isDarkRef.current) {
+      return 'rgba(0, 0, 0, 0.05)';
+    } else {
+      return 'rgba(255, 255, 255, 0.08)';
+    }
+  }, []);
+
+  // Animation logic moved to a stable function that uses refs
+  const startAnimation = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.font = `${FONT_SIZE}px monospace`;
+
+    // Reset drops array if needed or use existing
+    const columns = Math.floor(canvas.width / FONT_SIZE);
+    const drops: number[] = Array(columns).fill(1);
+    for (let i = 0; i < drops.length; i++) {
+      drops[i] = Math.floor(Math.random() * (canvas.height / FONT_SIZE));
+    }
+
+    let lastDrawTime = performance.now();
+
+    const loop = (currentTime: number) => {
+      if (!isLoopingRef.current) return;
+
+      const elapsed = currentTime - startTimeRef.current;
+      const progress = Math.min(elapsed / SLOWDOWN_DURATION, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const currentInterval = INITIAL_SPEED + (TARGET_SPEED - INITIAL_SPEED) * easeOut;
+
+      const deltaTime = currentTime - lastDrawTime;
+
+      if (deltaTime >= currentInterval) {
+        // Calculate and update opacity
+        let opacity = 0;
+        if (elapsed < FADE_START_TIME) {
+          opacity = isDarkRef.current ? 0.3 : 0.2;
+        } else if (elapsed < FADE_START_TIME + FADE_DURATION) {
+          const fadeProgress = (elapsed - FADE_START_TIME) / FADE_DURATION;
+          const fadeEaseOut = 1 - Math.pow(fadeProgress, 2);
+          const baseOpacity = isDarkRef.current ? 0.3 : 0.2;
+          opacity = baseOpacity * fadeEaseOut;
+        }
+
+        canvas.style.opacity = String(opacity);
+
+        if (opacity <= 0) {
+          isLoopingRef.current = false;
+          return;
+        }
+
+        // Draw frame
+        ctx.fillStyle = fadeColorRef.current;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = matrixColorRef.current;
+
+        const canvasHeight = canvas.height;
+        for (let i = 0; i < drops.length; i++) {
+          const char = CHAR_ARRAY[Math.floor(Math.random() * CHAR_ARRAY_LENGTH)];
+          const y = drops[i] * FONT_SIZE;
+          ctx.fillText(char, i * FONT_SIZE, y);
+
+          if (y > canvasHeight && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+
+        lastDrawTime = currentTime;
+      }
+
+      animationFrameIdRef.current = requestAnimationFrame(loop);
+    };
+
+    if (isLoopingRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current!);
+    }
+    isLoopingRef.current = true;
+    animationFrameIdRef.current = requestAnimationFrame(loop);
+  }, []);
 
   // Watch for theme color changes and dark/light mode toggle to restart animation
-  // Optimized: Using custom event instead of MutationObserver/getComputedStyle
   useEffect(() => {
     const handleThemeChange = (e: Event) => {
       const customEvent = e as CustomEvent<ThemeChangedEventDetail>;
@@ -30,23 +135,31 @@ const MatrixBackground = () => {
         themeColorRef.current = { h: hue, s: saturation, l: lightness };
         isDarkRef.current = isDark;
 
-        startTimeRef.current = Date.now();
-        speedRef.current = 15;
-        setAnimationKey(k => k + 1);
+        // Update cached colors
+        matrixColorRef.current = getMatrixColor();
+        fadeColorRef.current = getFadeColor();
+
+        startTimeRef.current = performance.now();
+
+        // Restart animation
+        startAnimation();
       }
     };
 
     window.addEventListener(EVENT_THEME_CHANGED, handleThemeChange);
     return () => window.removeEventListener(EVENT_THEME_CHANGED, handleThemeChange);
-  }, []);
+  }, [startAnimation]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Initialize cached colors on mount
+    matrixColorRef.current = getMatrixColor();
+    fadeColorRef.current = getFadeColor();
+
     // Reset timing for fresh animation
-    startTimeRef.current = Date.now();
-    speedRef.current = 15;
+    startTimeRef.current = performance.now();
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -55,137 +168,24 @@ const MatrixBackground = () => {
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      // Restart animation on resize to adjust columns
+      startAnimation();
     };
     resizeCanvas();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.style.opacity = '0.3';
     window.addEventListener('resize', resizeCanvas);
 
-    // Matrix characters
-    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
-    const charArray = chars.split('');
-
-    const fontSize = 14;
-    const columns = Math.floor(canvas.width / fontSize);
-    
-    const drops: number[] = Array(columns).fill(1);
-    for (let i = 0; i < drops.length; i++) {
-      drops[i] = Math.floor(Math.random() * (canvas.height / fontSize));
-    }
-
-    // Initial theme values are already set via refs or will be updated by the first event
-
-    // Get matrix color based on theme accent
-    const getMatrixColor = () => {
-      const { h, s, l } = themeColorRef.current;
-      if (isDarkRef.current) {
-        return `hsl(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%)`;
-      } else {
-        return `hsl(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%)`;
-      }
-    };
-
-    // Get background fade color based on theme
-    const getFadeColor = () => {
-      if (isDarkRef.current) {
-        return 'rgba(0, 0, 0, 0.05)';
-      } else {
-        return 'rgba(255, 255, 255, 0.08)';
-      }
-    };
-    
-    // Calculate fade opacity based on elapsed time
-    const calculateOpacity = () => {
-      const elapsed = Date.now() - startTimeRef.current;
-      
-      if (elapsed < fadeStartTime) {
-        // Full opacity during initial animation
-        return isDarkRef.current ? 0.3 : 0.2;
-      } else if (elapsed < fadeStartTime + fadeDuration) {
-        // Gradually fade out from 4s to 9s
-        const fadeProgress = (elapsed - fadeStartTime) / fadeDuration;
-        const easeOut = 1 - Math.pow(fadeProgress, 2); // Ease-out for smooth fade
-        const baseOpacity = isDarkRef.current ? 0.3 : 0.2;
-        return baseOpacity * easeOut;
-      } else {
-        // Fully faded after 9s
-        return 0;
-      }
-    };
-    
-    // Update canvas opacity
-    const updateCanvasOpacity = () => {
-      const newOpacity = calculateOpacity();
-      canvas.style.opacity = String(newOpacity);
-      return newOpacity > 0;
-    };
-    updateCanvasOpacity();
-
-    // Calculate current speed based on elapsed time
-    const getCurrentInterval = () => {
-      const elapsed = Date.now() - startTimeRef.current;
-      const progress = Math.min(elapsed / slowdownDuration, 1);
-      
-      // Ease-out function for smooth deceleration
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      
-      // Interpolate from fast (15ms) to slow (50ms)
-      return speedRef.current + (targetSpeedRef.current - speedRef.current) * easeOut;
-    };
-
-    const draw = () => {
-      // Update opacity on each frame for smooth transitions
-      updateCanvasOpacity();
-      
-      // Semi-transparent fade to create trail effect
-      ctx.fillStyle = getFadeColor();
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const matrixColor = getMatrixColor();
-      ctx.fillStyle = matrixColor;
-      ctx.font = `${fontSize}px monospace`;
-
-      for (let i = 0; i < drops.length; i++) {
-        // Random character
-        const char = charArray[Math.floor(Math.random() * charArray.length)];
-        
-        // Draw the character
-        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
-
-        // Reset drop randomly after reaching bottom
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
-    };
-
-    // Use dynamic timing with setTimeout instead of setInterval
-    let timeoutId: number;
-    let isRunning = true;
-    
-    const loop = () => {
-      if (!isRunning) return;
-      
-      const shouldContinue = updateCanvasOpacity();
-      if (!shouldContinue) {
-        // Stop the animation once fully faded
-        return;
-      }
-      
-      draw();
-      const currentInterval = getCurrentInterval();
-      timeoutId = window.setTimeout(loop, currentInterval);
-    };
-    
-    loop();
+    startAnimation();
 
     return () => {
-      isRunning = false;
-      clearTimeout(timeoutId);
+      isLoopingRef.current = false;
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, [animationKey]);
+  }, [startAnimation]);
 
   return (
     <canvas
