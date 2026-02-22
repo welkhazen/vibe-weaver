@@ -1,4 +1,4 @@
-import { Home, Search, User, Trophy } from "lucide-react";
+import { Home, Users, User, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
@@ -100,7 +100,7 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
 
   const navItems: NavItem[] = [
     { id: "home", label: "Home", icon: <Home className="w-5 h-5" strokeWidth={2.5} /> },
-    { id: "search", label: "Explore", icon: <Search className="w-5 h-5" strokeWidth={2.5} /> },
+    { id: "search", label: "Communities", icon: <Users className="w-5 h-5" strokeWidth={2.5} /> },
     {
       id: "tcm", label: "", useThemeColor: true,
       icon: <BrainIcon themeColor={themeColor} />,
