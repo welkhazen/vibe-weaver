@@ -5,3 +5,7 @@
 ## 2025-05-15 - Event-Driven Theme Sync for Canvas
 **Learning:** For components that cannot rely solely on CSS (like Canvas-based animations), using a custom `window` event to broadcast theme changes is significantly more efficient than using `MutationObserver` on the root element. `MutationObserver` triggers on every attribute change and requires `getComputedStyle`, which can cause layout thrashing.
 **Action:** Centralize theme change broadcasting in the primary theme-switching component (e.g., `Header`) and subscribe via window events in performance-critical visual components.
+
+## 2025-05-16 - Threshold-based Style Updates for Animations
+**Learning:** Updating DOM style properties (like `opacity`) every frame during an animation can cause significant layout/style recalculation overhead, even if the change is negligible to the human eye. Combining `requestAnimationFrame` with a threshold check for style updates minimizes this thrashing.
+**Action:** Implement delta-based thresholding (e.g., `0.005`) when updating visual DOM properties in animation loops. Only push updates to the DOM when the change exceeds the threshold or reaches a terminal state (like 0).
