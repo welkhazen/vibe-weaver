@@ -2,13 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { EVENT_THEME_CHANGED } from '@/constants/theme';
 import { ThemeChangedEventDetail } from '@/lib/theme';
 
+// Matrix characters - hoisted to avoid recreation on re-renders
+const MATRIX_CHARS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
+const CHAR_ARRAY = MATRIX_CHARS.split('');
+
 // Matrix rain animation - restarts on theme color change
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [animationKey, setAnimationKey] = useState(0);
   const speedRef = useRef(15);
   const targetSpeedRef = useRef(50);
-  const startTimeRef = useRef(Date.now());
+  const startTimeRef = useRef(performance.now());
   const slowdownDuration = 5000;
   const fadeStartTime = 4000;
   const fadeDuration = 5000;
@@ -30,7 +34,7 @@ const MatrixBackground = () => {
         themeColorRef.current = { h: hue, s: saturation, l: lightness };
         isDarkRef.current = isDark;
 
-        startTimeRef.current = Date.now();
+        startTimeRef.current = performance.now();
         speedRef.current = 15;
         setAnimationKey(k => k + 1);
       }
@@ -45,7 +49,7 @@ const MatrixBackground = () => {
     if (!canvas) return;
 
     // Reset timing for fresh animation
-    startTimeRef.current = Date.now();
+    startTimeRef.current = performance.now();
     speedRef.current = 15;
 
     const ctx = canvas.getContext('2d');
@@ -60,10 +64,6 @@ const MatrixBackground = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.style.opacity = '0.3';
     window.addEventListener('resize', resizeCanvas);
-
-    // Matrix characters
-    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
-    const charArray = chars.split('');
 
     const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
@@ -93,10 +93,14 @@ const MatrixBackground = () => {
         return 'rgba(255, 255, 255, 0.08)';
       }
     };
+
+    // Cache theme colors to avoid recalculation in the loop
+    const themeMatrixColor = getMatrixColor();
+    const themeFadeColor = getFadeColor();
     
     // Calculate fade opacity based on elapsed time
-    const calculateOpacity = () => {
-      const elapsed = Date.now() - startTimeRef.current;
+    const calculateOpacity = (currentTime: number) => {
+      const elapsed = currentTime - startTimeRef.current;
       
       if (elapsed < fadeStartTime) {
         // Full opacity during initial animation
@@ -113,17 +117,27 @@ const MatrixBackground = () => {
       }
     };
     
-    // Update canvas opacity
-    const updateCanvasOpacity = () => {
-      const newOpacity = calculateOpacity();
-      canvas.style.opacity = String(newOpacity);
+    // Track current opacity to avoid redundant DOM updates (layout thrashing)
+    let currentOpacity = isDarkRef.current ? 0.3 : 0.2;
+    canvas.style.opacity = String(currentOpacity);
+
+    // Update canvas opacity with threshold check
+    const updateCanvasOpacity = (currentTime: number) => {
+      const newOpacity = calculateOpacity(currentTime);
+
+      // Only update DOM if the change is significant enough (> 0.005) or reaches 0
+      if (Math.abs(newOpacity - currentOpacity) > 0.005 || (newOpacity === 0 && currentOpacity !== 0)) {
+        canvas.style.opacity = String(newOpacity);
+        currentOpacity = newOpacity;
+      }
+
       return newOpacity > 0;
     };
-    updateCanvasOpacity();
+    updateCanvasOpacity(performance.now());
 
     // Calculate current speed based on elapsed time
-    const getCurrentInterval = () => {
-      const elapsed = Date.now() - startTimeRef.current;
+    const getCurrentInterval = (currentTime: number) => {
+      const elapsed = currentTime - startTimeRef.current;
       const progress = Math.min(elapsed / slowdownDuration, 1);
       
       // Ease-out function for smooth deceleration
@@ -133,21 +147,22 @@ const MatrixBackground = () => {
       return speedRef.current + (targetSpeedRef.current - speedRef.current) * easeOut;
     };
 
+    // Use requestAnimationFrame for smoother performance
+    let rafId: number;
+    let isRunning = true;
+    let lastDrawTime = 0;
+
     const draw = () => {
-      // Update opacity on each frame for smooth transitions
-      updateCanvasOpacity();
-      
       // Semi-transparent fade to create trail effect
-      ctx.fillStyle = getFadeColor();
+      ctx.fillStyle = themeFadeColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const matrixColor = getMatrixColor();
-      ctx.fillStyle = matrixColor;
+      ctx.fillStyle = themeMatrixColor;
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
         // Random character
-        const char = charArray[Math.floor(Math.random() * charArray.length)];
+        const char = CHAR_ARRAY[Math.floor(Math.random() * CHAR_ARRAY.length)];
         
         // Draw the character
         ctx.fillText(char, i * fontSize, drops[i] * fontSize);
@@ -160,29 +175,29 @@ const MatrixBackground = () => {
       }
     };
 
-    // Use dynamic timing with setTimeout instead of setInterval
-    let timeoutId: number;
-    let isRunning = true;
-    
-    const loop = () => {
+    const loop = (currentTime: number) => {
       if (!isRunning) return;
       
-      const shouldContinue = updateCanvasOpacity();
+      const shouldContinue = updateCanvasOpacity(currentTime);
       if (!shouldContinue) {
         // Stop the animation once fully faded
         return;
       }
       
-      draw();
-      const currentInterval = getCurrentInterval();
-      timeoutId = window.setTimeout(loop, currentInterval);
+      const interval = getCurrentInterval(currentTime);
+      if (currentTime - lastDrawTime >= interval) {
+        draw();
+        lastDrawTime = currentTime;
+      }
+
+      rafId = window.requestAnimationFrame(loop);
     };
     
-    loop();
+    rafId = window.requestAnimationFrame(loop);
 
     return () => {
       isRunning = false;
-      clearTimeout(timeoutId);
+      window.cancelAnimationFrame(rafId);
       window.removeEventListener('resize', resizeCanvas);
     };
   }, [animationKey]);
