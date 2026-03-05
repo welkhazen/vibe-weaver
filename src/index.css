@@ -76,57 +76,57 @@
   .light {
     --primary-h: 0;
     --primary-s: 0%;
-    --primary-l: 15%;
+    --primary-l: 12%;
 
     --background: 0 0% 88%;
-    --foreground: 0 0% 3%;
+    --foreground: 0 0% 2%;
 
-    --card: 0 0% 96%;
-    --card-foreground: 0 0% 3%;
+    --card: 0 0% 94%;
+    --card-foreground: 0 0% 2%;
 
-    --popover: 0 0% 96%;
-    --popover-foreground: 0 0% 3%;
+    --popover: 0 0% 94%;
+    --popover-foreground: 0 0% 2%;
 
     --primary: var(--primary-h) var(--primary-s) var(--primary-l);
-    --primary-foreground: 0 0% 96%;
+    --primary-foreground: 0 0% 94%;
 
-    --secondary: 0 0% 82%;
-    --secondary-foreground: 0 0% 5%;
+    --secondary: 0 0% 78%;
+    --secondary-foreground: 0 0% 3%;
 
-    --muted: 0 0% 84%;
-    --muted-foreground: 0 0% 28%;
+    --muted: 0 0% 80%;
+    --muted-foreground: 0 0% 22%;
 
-    --accent: 0 0% 82%;
-    --accent-foreground: 0 0% 5%;
+    --accent: 0 0% 78%;
+    --accent-foreground: 0 0% 3%;
 
-    --destructive: 0 60% 40%;
-    --destructive-foreground: 0 0% 96%;
+    --destructive: 0 60% 38%;
+    --destructive-foreground: 0 0% 94%;
 
-    --border: 0 0% 72%;
-    --input: 0 0% 80%;
+    --border: 0 0% 62%;
+    --input: 0 0% 75%;
     --ring: var(--primary-h) var(--primary-s) var(--primary-l);
 
-    --sidebar-background: 0 0% 85%;
-    --sidebar-foreground: 0 0% 5%;
+    --sidebar-background: 0 0% 82%;
+    --sidebar-foreground: 0 0% 3%;
     --sidebar-primary: var(--primary-h) var(--primary-s) var(--primary-l);
-    --sidebar-primary-foreground: 0 0% 96%;
-    --sidebar-accent: 0 0% 78%;
-    --sidebar-accent-foreground: 0 0% 5%;
-    --sidebar-border: 0 0% 72%;
+    --sidebar-primary-foreground: 0 0% 94%;
+    --sidebar-accent: 0 0% 72%;
+    --sidebar-accent-foreground: 0 0% 3%;
+    --sidebar-border: 0 0% 62%;
     --sidebar-ring: var(--primary-h) var(--primary-s) var(--primary-l);
 
-    --metallic-light: 0 0% 88%;
-    --metallic-mid: 0 0% 55%;
-    --metallic-dark: 0 0% 30%;
+    --metallic-light: 0 0% 82%;
+    --metallic-mid: 0 0% 45%;
+    --metallic-dark: 0 0% 22%;
 
     --gold-h: 45;
-    --gold-s: 80%;
-    --gold-l: 35%;
+    --gold-s: 85%;
+    --gold-l: 32%;
     --gold: var(--gold-h) var(--gold-s) var(--gold-l);
-    --gold-light: 45 75% 45%;
-    --gold-dark: 40 70% 25%;
+    --gold-light: 45 80% 42%;
+    --gold-dark: 40 75% 22%;
 
-    --matrix-color: hsl(0 0% 25%);
+    --matrix-color: hsl(0 0% 20%);
   }
 
   .dark {
@@ -242,13 +242,13 @@
 .light .metallic-card {
   background: linear-gradient(
     145deg,
-    hsl(0 0% 100%) 0%,
-    hsl(0 0% 96%) 100%
+    hsl(0 0% 96%) 0%,
+    hsl(0 0% 90%) 100%
   );
   box-shadow: 
-    inset 0 1px 0 0 hsl(0 0% 100%),
-    0 4px 16px hsl(0 0% 0% / 0.08);
-  @apply border-black/5;
+    inset 0 1px 0 0 hsl(0 0% 98%),
+    0 4px 16px hsl(0 0% 0% / 0.12);
+  @apply border-black/10;
 }
 
 .metallic-card:hover {
