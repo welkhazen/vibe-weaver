@@ -76,57 +76,57 @@
   .light {
     --primary-h: 0;
     --primary-s: 0%;
-    --primary-l: 25%;
+    --primary-l: 20%;
 
-    --background: 0 0% 98%;
-    --foreground: 0 0% 8%;
+    --background: 0 0% 93%;
+    --foreground: 0 0% 5%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 8%;
+    --card: 0 0% 97%;
+    --card-foreground: 0 0% 5%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 8%;
+    --popover: 0 0% 97%;
+    --popover-foreground: 0 0% 5%;
 
     --primary: var(--primary-h) var(--primary-s) var(--primary-l);
-    --primary-foreground: 0 0% 98%;
+    --primary-foreground: 0 0% 97%;
 
-    --secondary: 0 0% 92%;
-    --secondary-foreground: 0 0% 15%;
+    --secondary: 0 0% 88%;
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 0 0% 95%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 38%;
 
-    --accent: 0 0% 92%;
-    --accent-foreground: 0 0% 15%;
+    --accent: 0 0% 88%;
+    --accent-foreground: 0 0% 10%;
 
     --destructive: 0 60% 45%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 0 0% 97%;
 
-    --border: 0 0% 85%;
-    --input: 0 0% 92%;
+    --border: 0 0% 80%;
+    --input: 0 0% 88%;
     --ring: var(--primary-h) var(--primary-s) var(--primary-l);
 
-    --sidebar-background: 0 0% 96%;
-    --sidebar-foreground: 0 0% 15%;
+    --sidebar-background: 0 0% 91%;
+    --sidebar-foreground: 0 0% 10%;
     --sidebar-primary: var(--primary-h) var(--primary-s) var(--primary-l);
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 0 0% 90%;
-    --sidebar-accent-foreground: 0 0% 15%;
-    --sidebar-border: 0 0% 85%;
+    --sidebar-primary-foreground: 0 0% 97%;
+    --sidebar-accent: 0 0% 85%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 80%;
     --sidebar-ring: var(--primary-h) var(--primary-s) var(--primary-l);
 
-    --metallic-light: 0 0% 98%;
-    --metallic-mid: 0 0% 75%;
-    --metallic-dark: 0 0% 45%;
+    --metallic-light: 0 0% 95%;
+    --metallic-mid: 0 0% 68%;
+    --metallic-dark: 0 0% 40%;
 
     --gold-h: 45;
     --gold-s: 80%;
-    --gold-l: 40%;
+    --gold-l: 38%;
     --gold: var(--gold-h) var(--gold-s) var(--gold-l);
-    --gold-light: 45 75% 55%;
-    --gold-dark: 40 70% 30%;
+    --gold-light: 45 75% 50%;
+    --gold-dark: 40 70% 28%;
 
-    --matrix-color: hsl(0 0% 35%);
+    --matrix-color: hsl(0 0% 30%);
   }
 
   .dark {
