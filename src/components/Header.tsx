@@ -33,16 +33,25 @@ const Header = ({ title = 'The Art of Raw', onNavigate }: HeaderProps) => {
     const preset = colorPresets.find((p) => p.hue === hue) || colorPresets[0];
     const { saturation, lightness } = preset;
 
+    const isLightMode = root.classList.contains('light');
+    const primarySaturation = isLightMode
+      ? Math.max(Math.min(saturation, 72), 35)
+      : Math.min(saturation, 60);
+    const primaryLightness = isLightMode
+      ? Math.max(lightness - 22, 18)
+      : Math.min(lightness + 20, 82);
+
     root.style.setProperty('--gold-h', hue.toString());
     root.style.setProperty('--gold-s', `${saturation}%`);
     root.style.setProperty('--gold-l', `${lightness}%`);
 
     root.style.setProperty('--primary-h', hue.toString());
-    root.style.setProperty('--primary-s', `${Math.min(saturation, 60)}%`);
-    root.style.setProperty('--primary-l', `${lightness + 20}%`);
+    root.style.setProperty('--primary-s', `${primarySaturation}%`);
+    root.style.setProperty('--primary-l', `${primaryLightness}%`);
 
     return preset;
   }, []);
+
 
   useEffect(() => {
     const root = document.documentElement;

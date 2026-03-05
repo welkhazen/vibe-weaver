@@ -65,8 +65,8 @@ const ExplorePage = () => {
     const isJoined = joinedIds.has(community.id);
     if (isJoined) {
       return (
-        <div className="flex items-center gap-1 text-xs text-primary font-medium">
-          <Check className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-1 text-xs text-foreground font-semibold">
+          <Check className="w-3.5 h-3.5" strokeWidth={2.2} />
           Joined
         </div>
       );
@@ -74,23 +74,23 @@ const ExplorePage = () => {
     if (community.status === 'flames') {
       const canAfford = userFlames >= (community.flamesCost || 0);
       return (
-        <div className={cn('flex items-center gap-1 text-xs font-medium', canAfford ? 'text-destructive' : 'text-muted-foreground')}>
-          <Flame className="w-3.5 h-3.5" />
-          {community.flamesCost}
+        <div className="flex items-center gap-1 text-xs font-semibold text-foreground">
+          <Flame className={cn('w-3.5 h-3.5', canAfford ? 'text-destructive' : 'text-foreground')} strokeWidth={2.2} />
+          <span className={cn(canAfford ? 'text-foreground' : 'text-foreground/80')}>{community.flamesCost}</span>
         </div>
       );
     }
     if (community.status === 'level') {
       const meetsLevel = userLevel >= (community.levelRequired || 0);
       return (
-        <div className={cn('flex items-center gap-1 text-xs font-medium', meetsLevel ? 'text-primary' : 'text-muted-foreground')}>
-          <Lock className="w-3.5 h-3.5" />
-          Lvl {community.levelRequired}
+        <div className="flex items-center gap-1 text-xs font-semibold text-foreground">
+          <Lock className={cn('w-3.5 h-3.5', meetsLevel ? 'text-foreground' : 'text-foreground/80')} strokeWidth={2.2} />
+          <span className={cn(meetsLevel ? 'text-foreground' : 'text-foreground/80')}>Lvl {community.levelRequired}</span>
         </div>
       );
     }
     return (
-      <div className="text-xs text-muted-foreground font-medium">Open</div>
+      <div className="text-xs text-foreground/80 font-semibold">Open</div>
     );
   };
 
@@ -105,9 +105,9 @@ const ExplorePage = () => {
     <div className="px-4 py-4 animate-fade-in pb-24">
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
-        <Users className="w-5 h-5 text-primary" />
+        <Users className="w-5 h-5 text-foreground" strokeWidth={2.2} />
         <h2 className="text-lg font-bold text-foreground">Communities</h2>
-        <span className="ml-auto text-xs text-muted-foreground">{communities.length} communities</span>
+        <span className="ml-auto text-xs text-foreground/70">{communities.length} communities</span>
       </div>
 
       {/* Filters */}
@@ -117,10 +117,10 @@ const ExplorePage = () => {
             key={f}
             onClick={() => setActiveFilter(f)}
             className={cn(
-              'px-4 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
+              'px-4 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap border border-border/70',
               activeFilter === f
                 ? 'bg-primary text-primary-foreground'
-                : 'bg-accent text-muted-foreground hover:text-foreground'
+                : 'bg-accent text-foreground/80 hover:text-foreground'
             )}
           >
             {f}
@@ -140,46 +140,46 @@ const ExplorePage = () => {
               key={community.id}
               onClick={() => handleJoin(community)}
               disabled={locked}
-              className={cn(
-                'w-full metallic-card theme-glow-box p-3.5 flex items-center gap-3 transition-all duration-300 group text-left',
-                locked ? 'opacity-50 cursor-not-allowed' : 'hover:border-primary/30 active:scale-[0.98]',
-                joined && 'border-primary/20'
-              )}
-            >
-              {/* Icon */}
-              <div className={cn(
-                'w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300',
-                joined ? 'bg-primary/15' : 'bg-accent',
-                !locked && 'group-hover:bg-primary/20'
-              )}>
-                {locked ? (
-                  <Lock className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
-                ) : (
-                  <Icon className={cn('w-5 h-5 transition-colors', joined ? 'text-primary' : 'text-foreground group-hover:text-primary')} strokeWidth={1.5} />
-                )}
-              </div>
+               className={cn(
+                 'w-full metallic-card theme-glow-box p-3.5 flex items-center gap-3 transition-all duration-300 group text-left',
+                 locked ? 'bg-muted/60 border-border cursor-not-allowed' : 'hover:border-primary/30 active:scale-[0.98]',
+                 joined && 'border-primary/30'
+               )}
+             >
+               {/* Icon */}
+               <div className={cn(
+                 'w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 border',
+                 joined ? 'bg-primary/20 border-primary/30' : 'bg-secondary border-border/70',
+                 !locked && 'group-hover:border-primary/40'
+               )}>
+                 {locked ? (
+                   <Lock className="w-5 h-5 text-foreground/80" strokeWidth={2.2} />
+                 ) : (
+                   <Icon className={cn('w-5 h-5 transition-colors', joined ? 'text-primary' : 'text-foreground')} strokeWidth={2.2} />
+                 )}
+               </div>
 
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-foreground text-sm truncate">{community.name}</span>
-                  {community.tag && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-accent text-muted-foreground shrink-0">
-                      {community.tag}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-muted-foreground mt-0.5 truncate">{community.description}</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-[10px] text-muted-foreground">{community.members.toLocaleString()} members</span>
-                </div>
-              </div>
+               {/* Content */}
+               <div className="flex-1 min-w-0">
+                 <div className="flex items-center gap-2">
+                   <span className="font-semibold text-foreground text-sm truncate">{community.name}</span>
+                   {community.tag && (
+                     <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-secondary text-foreground/80 border border-border/60 shrink-0">
+                       {community.tag}
+                     </span>
+                   )}
+                 </div>
+                 <p className="text-xs text-foreground/80 mt-0.5 truncate">{community.description}</p>
+                 <div className="flex items-center gap-2 mt-1">
+                   <span className="text-[10px] text-foreground/70">{community.members.toLocaleString()} members</span>
+                 </div>
+               </div>
 
-              {/* Status / Action */}
-              <div className="shrink-0 flex items-center gap-1">
-                {getStatusUI(community)}
-                {!locked && !joined && <ChevronRight className="w-4 h-4 text-muted-foreground" />}
-              </div>
+               {/* Status / Action */}
+               <div className="shrink-0 flex items-center gap-1">
+                 {getStatusUI(community)}
+                 {!locked && !joined && <ChevronRight className="w-4 h-4 text-foreground/70" strokeWidth={2.2} />}
+               </div>
             </button>
           );
         })}
