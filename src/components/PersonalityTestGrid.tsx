@@ -9,10 +9,10 @@ interface PersonalityTest {
 }
 
 const personalityTests: PersonalityTest[] = [
-  { name: 'Myers-Briggs', description: 'Discover your personality type across 4 key dimensions of how you see the world.', threshold: 25, icon: <Brain className="w-5 h-5" /> },
-  { name: 'Big Five Profile', description: 'Measure your openness, conscientiousness, extraversion, agreeableness & neuroticism.', threshold: 50, icon: <Heart className="w-5 h-5" /> },
-  { name: 'Emotional Intelligence', description: 'Assess your ability to perceive, understand, and manage emotions effectively.', threshold: 75, icon: <Eye className="w-5 h-5" /> },
-  { name: 'Shadow Self', description: 'Explore the hidden aspects of your psyche that influence your behavior unconsciously.', threshold: 100, icon: <Ghost className="w-5 h-5" /> },
+  { name: 'Myers-Briggs', description: 'Discover your personality type across 4 key dimensions of how you see the world.', threshold: 0, icon: <Brain className="w-5 h-5" /> },
+  { name: 'Big Five Profile', description: 'Measure your openness, conscientiousness, extraversion, agreeableness & neuroticism.', threshold: 0, icon: <Heart className="w-5 h-5" /> },
+  { name: 'Emotional Intelligence', description: 'Assess your ability to perceive, understand, and manage emotions effectively.', threshold: 0, icon: <Eye className="w-5 h-5" /> },
+  { name: 'Shadow Self', description: 'Explore the hidden aspects of your psyche that influence your behavior unconsciously.', threshold: 0, icon: <Ghost className="w-5 h-5" /> },
   { name: 'Attachment Style', description: 'Understand your patterns in relationships and emotional bonding with others.', threshold: 150, icon: <Link2 className="w-5 h-5" /> },
   { name: 'Cognitive Bias Map', description: 'Identify the mental shortcuts and biases that shape your decisions and thinking.', threshold: 200, icon: <Map className="w-5 h-5" /> },
 ];
