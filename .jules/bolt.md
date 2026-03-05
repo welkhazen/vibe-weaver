@@ -5,3 +5,7 @@
 ## 2025-05-15 - Event-Driven Theme Sync for Canvas
 **Learning:** For components that cannot rely solely on CSS (like Canvas-based animations), using a custom `window` event to broadcast theme changes is significantly more efficient than using `MutationObserver` on the root element. `MutationObserver` triggers on every attribute change and requires `getComputedStyle`, which can cause layout thrashing.
 **Action:** Centralize theme change broadcasting in the primary theme-switching component (e.g., `Header`) and subscribe via window events in performance-critical visual components.
+
+## 2025-05-16 - Lockfile Integrity and Environment Setup
+**Learning:** Running `npm install` to fix a broken environment (e.g., missing dev dependencies) can cause significant churn in `package-lock.json`, which should be avoided in performance-focused PRs to minimize noise and prevent unintended dependency changes.
+**Action:** Always verify if environment-fixing commands like `npm install` modified lockfiles and restore them if those changes are unrelated to the performance optimization.
