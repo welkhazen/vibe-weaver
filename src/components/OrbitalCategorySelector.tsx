@@ -299,7 +299,7 @@ const OrbitalCategorySelector = () => {
             style={{ transitionDuration: "400ms" }}
           >
             {category.id === "mental-health" ? (
-              <img src={mentalHealthIcon} alt="Mental Health" className="w-10 h-10 icon-glow brightness-0 invert" />
+              <img src={mentalHealthIcon} alt="Mental Health" className="w-10 h-10 icon-glow dark:brightness-0 dark:invert" />
             ) : (
               <IconComponent className="w-10 h-10 text-foreground icon-glow" strokeWidth={1.5} />
             )}
