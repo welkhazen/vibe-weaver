@@ -5,3 +5,7 @@
 ## 2025-05-15 - Event-Driven Theme Sync for Canvas
 **Learning:** For components that cannot rely solely on CSS (like Canvas-based animations), using a custom `window` event to broadcast theme changes is significantly more efficient than using `MutationObserver` on the root element. `MutationObserver` triggers on every attribute change and requires `getComputedStyle`, which can cause layout thrashing.
 **Action:** Centralize theme change broadcasting in the primary theme-switching component (e.g., `Header`) and subscribe via window events in performance-critical visual components.
+
+## 2025-05-16 - Declarative Theme Reactivity in SVGs
+**Learning:** Using a `MutationObserver` with `getComputedStyle` to synchronize React state with CSS variables for SVG styling is a performance anti-pattern. It causes redundant React re-renders and potential layout thrashing.
+**Action:** Use CSS variables directly in SVG `fill` and `stroke` attributes (`hsl(var(--name))`). This offloads reactivity to the browser's style engine and eliminates JS-driven re-renders.
