@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
@@ -17,11 +17,15 @@ const OrbitalCategorySelector = () => {
   const orbitalRef = useRef<HTMLDivElement>(null);
   const categoryButtonRefs = useRef<Map<string, HTMLElement>>(new Map());
 
-  const currentSubcategories = selectedCategory ? getSubcategoriesByCategory(selectedCategory) : [];
+  const currentSubcategories = useMemo(() =>
+    selectedCategory ? getSubcategoriesByCategory(selectedCategory) : []
+  , [selectedCategory]);
 
-  const selectedCategoryData = getCategoryById(selectedCategory || "");
+  const selectedCategoryData = useMemo(() =>
+    getCategoryById(selectedCategory || "")
+  , [selectedCategory]);
 
-  const closeOrbital = () => {
+  const closeOrbital = useCallback(() => {
     if (selectedCategory && !isClosing && !isSwitching) {
       // Phase 1: fade out inner content
       setIsSwitching(true);
@@ -39,7 +43,7 @@ const OrbitalCategorySelector = () => {
         }, 550);
       }, 300);
     }
-  };
+  }, [selectedCategory, isClosing, isSwitching]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -66,7 +70,7 @@ const OrbitalCategorySelector = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [selectedCategory, isClosing, isSwitching]);
+  }, [selectedCategory, isClosing, isSwitching, closeOrbital]);
 
   const handleCategoryClick = (categoryId: string, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -104,7 +108,7 @@ const OrbitalCategorySelector = () => {
         y: Math.sin(angle) * radius,
       };
     });
-  }, [currentSubcategories.length]);
+  }, [currentSubcategories]);
 
   // Determine the orbital card animation class
   const getCardAnimationClass = () => {
