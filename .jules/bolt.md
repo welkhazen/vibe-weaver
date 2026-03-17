@@ -9,3 +9,7 @@
 ## 2025-05-16 - SVG Reactivity via CSS Variables
 **Learning:** Complexity in syncing SVG styles with app themes can be entirely avoided by using native CSS variables directly in SVG `fill` and `stroke` attributes. This eliminates the need for `MutationObserver` and `getComputedStyle` loops entirely for UI icons.
 **Action:** Prefer `fill="hsl(var(--gold))"` or similar over JS-based prop drilling or polling for theme-reactive icons.
+
+## 2025-05-17 - Environment-Induced Lockfile Pollution
+**Learning:** Running `npm install` in this sandbox environment can cause massive, unintended changes to `package-lock.json`, such as removing `"dev": true` flags from development dependencies. This pollutes the pull request and risks treating dev dependencies as production ones.
+**Action:** Always check `git status` after environment setup. If `package-lock.json` is modified without explicit intent, revert it using `git restore --staged package-lock.json && git checkout package-lock.json` before staging final changes.
