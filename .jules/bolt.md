@@ -9,3 +9,7 @@
 ## 2025-05-16 - SVG Reactivity via CSS Variables
 **Learning:** Complexity in syncing SVG styles with app themes can be entirely avoided by using native CSS variables directly in SVG `fill` and `stroke` attributes. This eliminates the need for `MutationObserver` and `getComputedStyle` loops entirely for UI icons.
 **Action:** Prefer `fill="hsl(var(--gold))"` or similar over JS-based prop drilling or polling for theme-reactive icons.
+
+## 2025-05-17 - Layout Thrashing in Animation Loops
+**Learning:** Frequent DOM style updates (like `canvas.style.opacity`) during high-frequency animation loops (60fps) can cause layout thrashing and consume significant main-thread resources, even if the change is imperceptible.
+**Action:** Implement threshold-based checks for DOM style updates (e.g., only update if delta > 0.005) and ensure the final state (e.g., opacity: 0) is explicitly set and the loop terminated to prevent "ghost" CPU usage.
