@@ -1,4 +1,6 @@
-const PerforatedBackground = () => {
+import { memo } from 'react';
+
+const PerforatedBackground = memo(() => {
   return (
     <>
       <style>{`
@@ -82,6 +84,8 @@ const PerforatedBackground = () => {
       />
     </>
   );
-};
+});
+
+PerforatedBackground.displayName = 'PerforatedBackground';
 
 export default PerforatedBackground;
