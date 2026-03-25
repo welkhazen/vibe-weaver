@@ -2,13 +2,25 @@ import { useEffect, useRef, useState } from 'react';
 import { EVENT_THEME_CHANGED } from '@/constants/theme';
 import { ThemeChangedEventDetail } from '@/lib/theme';
 
-// Matrix rain animation - restarts on theme color change
+// Matrix characters hoisted to avoid re-allocation
+const CHARS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
+const CHAR_ARRAY = CHARS.split('');
+
+/**
+ * MatrixBackground optimization:
+ * 1. Hoisted static constants (CHARS, CHAR_ARRAY) to prevent redundant memory allocation.
+ * 2. Switched to performance.now() for more precise animation timing.
+ * 3. Pre-calculated theme-derived color strings outside the drawing loop to reduce string concatenation.
+ * 4. Moved ctx.font assignment outside the drawing loop (expensive browser operation).
+ * 5. Added a threshold check (0.005) for canvas.style.opacity updates to reduce layout thrashing.
+ * 6. Optimized loop to ensure final state is rendered before termination.
+ */
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [animationKey, setAnimationKey] = useState(0);
   const speedRef = useRef(15);
   const targetSpeedRef = useRef(50);
-  const startTimeRef = useRef(Date.now());
+  const startTimeRef = useRef(performance.now());
   const slowdownDuration = 5000;
   const fadeStartTime = 4000;
   const fadeDuration = 5000;
@@ -30,7 +42,7 @@ const MatrixBackground = () => {
         themeColorRef.current = { h: hue, s: saturation, l: lightness };
         isDarkRef.current = isDark;
 
-        startTimeRef.current = Date.now();
+        startTimeRef.current = performance.now();
         speedRef.current = 15;
         setAnimationKey(k => k + 1);
       }
@@ -45,27 +57,26 @@ const MatrixBackground = () => {
     if (!canvas) return;
 
     // Reset timing for fresh animation
-    startTimeRef.current = Date.now();
+    startTimeRef.current = performance.now();
     speedRef.current = 15;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    const fontSize = 14;
+
     // Clear canvas for fresh start
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      // Context properties like font are reset on resize, must re-apply
+      ctx.font = `${fontSize}px monospace`;
     };
     resizeCanvas();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     canvas.style.opacity = '0.3';
     window.addEventListener('resize', resizeCanvas);
 
-    // Matrix characters
-    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
-    const charArray = chars.split('');
-
-    const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
     
     const drops: number[] = Array(columns).fill(1);
@@ -73,9 +84,7 @@ const MatrixBackground = () => {
       drops[i] = Math.floor(Math.random() * (canvas.height / fontSize));
     }
 
-    // Initial theme values are already set via refs or will be updated by the first event
-
-    // Get matrix color based on theme accent
+    // Pre-calculate colors outside the loop
     const getMatrixColor = () => {
       const { h, s, l } = themeColorRef.current;
       if (isDarkRef.current) {
@@ -85,18 +94,17 @@ const MatrixBackground = () => {
       }
     };
 
-    // Get background fade color based on theme
     const getFadeColor = () => {
-      if (isDarkRef.current) {
-        return 'rgba(0, 0, 0, 0.05)';
-      } else {
-        return 'rgba(255, 255, 255, 0.08)';
-      }
+      return isDarkRef.current ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.08)';
     };
+
+    const matrixColor = getMatrixColor();
+    const fadeColor = getFadeColor();
+    let lastAppliedOpacity = -1;
     
     // Calculate fade opacity based on elapsed time
     const calculateOpacity = () => {
-      const elapsed = Date.now() - startTimeRef.current;
+      const elapsed = performance.now() - startTimeRef.current;
       
       if (elapsed < fadeStartTime) {
         // Full opacity during initial animation
@@ -113,17 +121,21 @@ const MatrixBackground = () => {
       }
     };
     
-    // Update canvas opacity
+    // Update canvas opacity with threshold check
     const updateCanvasOpacity = () => {
       const newOpacity = calculateOpacity();
-      canvas.style.opacity = String(newOpacity);
+      // Optimization: Only update DOM if change is significant (> 0.005) or hitting 0
+      if (Math.abs(newOpacity - lastAppliedOpacity) > 0.005 || (newOpacity === 0 && lastAppliedOpacity !== 0)) {
+        canvas.style.opacity = String(newOpacity);
+        lastAppliedOpacity = newOpacity;
+      }
       return newOpacity > 0;
     };
     updateCanvasOpacity();
 
     // Calculate current speed based on elapsed time
     const getCurrentInterval = () => {
-      const elapsed = Date.now() - startTimeRef.current;
+      const elapsed = performance.now() - startTimeRef.current;
       const progress = Math.min(elapsed / slowdownDuration, 1);
       
       // Ease-out function for smooth deceleration
@@ -134,20 +146,16 @@ const MatrixBackground = () => {
     };
 
     const draw = () => {
-      // Update opacity on each frame for smooth transitions
-      updateCanvasOpacity();
-      
       // Semi-transparent fade to create trail effect
-      ctx.fillStyle = getFadeColor();
+      ctx.fillStyle = fadeColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const matrixColor = getMatrixColor();
       ctx.fillStyle = matrixColor;
-      ctx.font = `${fontSize}px monospace`;
+      // ctx.font is already set and preserved unless resize occurs
 
       for (let i = 0; i < drops.length; i++) {
-        // Random character
-        const char = charArray[Math.floor(Math.random() * charArray.length)];
+        // Random character from hoisted array
+        const char = CHAR_ARRAY[Math.floor(Math.random() * CHAR_ARRAY.length)];
         
         // Draw the character
         ctx.fillText(char, i * fontSize, drops[i] * fontSize);
@@ -167,17 +175,21 @@ const MatrixBackground = () => {
     const loop = () => {
       if (!isRunning) return;
       
+      // Perform draw first so we render the final frame before potential stop
+      draw();
+
       const shouldContinue = updateCanvasOpacity();
       if (!shouldContinue) {
-        // Stop the animation once fully faded
+        // Ensure final opacity is exactly 0 and stop the loop
+        canvas.style.opacity = '0';
         return;
       }
       
-      draw();
       const currentInterval = getCurrentInterval();
       timeoutId = window.setTimeout(loop, currentInterval);
     };
     
+    // Start loop
     loop();
 
     return () => {
