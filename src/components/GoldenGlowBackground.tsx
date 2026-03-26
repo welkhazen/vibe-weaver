@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 
 /**
  * GoldenGlowBackground optimization:
@@ -6,10 +6,11 @@ import { useMemo } from 'react';
  * 2. Replaced manual DOM manipulation with React-based rendering for better performance.
  * 3. Utilized native CSS variables for theme reactivity, allowing the browser to handle
  *    color updates without JS intervention or React re-renders.
+ * 4. Wrapped in React.memo() to prevent unnecessary re-renders when parent state changes.
  *
  * Note: --gold-s and --gold-l CSS variables already include the '%' unit.
  */
-const GoldenGlowBackground = () => {
+const GoldenGlowBackground = memo(() => {
   // Generate orb properties once on mount to avoid churn
   const orbs = useMemo(() => {
     return Array.from({ length: 5 }).map((_, i) => ({
@@ -134,6 +135,8 @@ const GoldenGlowBackground = () => {
       </div>
     </>
   );
-};
+});
+
+GoldenGlowBackground.displayName = 'GoldenGlowBackground';
 
 export default GoldenGlowBackground;
