@@ -13,6 +13,11 @@
 ## 2025-05-17 - Memoization for Shared Layout Decorators
 **Learning:** Background visual components used across multiple routes or tabs often re-render or reset state on every navigation if they are not memoized. This causes expensive canvas re-initialization and "flicker" during tab transitions.
 **Action:** Use `React.memo()` for background visual components and refactor high-frequency animation loops from `setTimeout` to `requestAnimationFrame` to ensure frame synchronization and reduce CPU overhead.
+
+## 2025-05-18 - Memoizing Derived Data in Interaction-Heavy Components
+**Learning:** In components that handle both high-frequency interactions (e.g., swiping with `dragX` state) and data processing (e.g., sorting/slicing lists), recalculating derived data (like sorted arrays) on every frame (60fps) causes significant CPU churn.
+**Action:** Always wrap expensive array operations (sorting, filtering, slicing) in `useMemo` when they are part of a component that frequently re-renders due to local interaction state.
+
 ## 2025-05-17 - Redundant DOM Writes in Animation Loops
 **Learning:** Updating DOM properties (like `canvas.style.opacity`) or context properties (like `ctx.font`) inside a 60FPS animation loop is expensive and can cause layout thrashing. Even if the value hasn't changed, the browser may still perform unnecessary work.
 **Action:** Implement threshold-based checks (e.g., `delta > 0.001`) before updating non-critical style properties and move context setup (like `ctx.font`) out of the draw loop into initialization or resize handlers. Cache theme-derived color strings to avoid per-frame string concatenation.
