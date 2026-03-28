@@ -157,9 +157,11 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBac
   };
 
   // Sort comments by upvotes (most upvoted first)
-  const sortedComments = [...comments].sort((a, b) => b.upvotes - a.upvotes);
-  const visibleComments = showAllComments ? sortedComments : sortedComments.slice(0, 3);
-  const hasMoreComments = sortedComments.length > 3;
+  // Optimization: Memoize sorted and visible comments to prevent expensive array operations
+  // from running during high-frequency drag/swipe animation frames.
+  const sortedComments = useMemo(() => [...comments].sort((a, b) => b.upvotes - a.upvotes), [comments]);
+  const visibleComments = useMemo(() => showAllComments ? sortedComments : sortedComments.slice(0, 3), [showAllComments, sortedComments]);
+  const hasMoreComments = useMemo(() => sortedComments.length > 3, [sortedComments]);
 
   const rotation = isDragging ? dragX * 0.08 : 0;
   const opacity = isDragging ? Math.max(0.5, 1 - Math.abs(dragX) / 400) : 1;
