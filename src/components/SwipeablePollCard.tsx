@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo } from 'react';
+import { useState, useRef, useCallback, useMemo, memo } from 'react';
 import { cn } from '@/lib/utils';
 import { Check, MessageCircle, ChevronDown, ChevronLeft, ChevronRight, Send, ArrowUp, CornerDownRight } from 'lucide-react';
 import LockedProfileModal from './LockedProfileModal';
@@ -49,7 +49,16 @@ const mockComments: Comment[] = [
 
 const SWIPE_THRESHOLD = 100;
 
-const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBack, isLocked }: SwipeablePollCardProps) => {
+/**
+ * SwipeablePollCard optimization:
+ * 1. Memoized sortedComments and visibleComments with useMemo to prevent expensive
+ *    array operations (sorting/slicing) from executing on every frame of a drag/swipe interaction.
+ * 2. Wrapped in React.memo() to prevent unnecessary re-renders when parent state changes.
+ * 3. Added useCallback for event handlers to maintain referential stability.
+ *
+ * Performance impact: Reduces CPU overhead during high-frequency animations (60FPS).
+ */
+const SwipeablePollCard = memo(({ question, options, onVote, onNext, onPrev, canGoBack, isLocked }: SwipeablePollCardProps) => {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -99,7 +108,7 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBac
     }
   }, [isDragging, dragX, onVote]);
 
-  const handleTapVote = (optionIndex: number) => {
+  const handleTapVote = useCallback((optionIndex: number) => {
     if (hasVoted || isLocked) return;
     const direction = optionIndex === 0 ? 'right' : 'left';
     setExitDirection(direction);
@@ -111,16 +120,16 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBac
       setIsExiting(false);
       setExitDirection(null);
     }, 300);
-  };
+  }, [hasVoted, isLocked, onVote]);
 
-  const handleAddComment = () => {
+  const handleAddComment = useCallback(() => {
     if (newComment.trim()) {
       setComments((prev) => [{ id: Date.now().toString(), author: getRandomUsername(Date.now().toString()), text: newComment.trim(), time: 'Just now', upvotes: 0, replies: [] }, ...prev]);
       setNewComment('');
     }
-  };
+  }, [newComment]);
 
-  const handleReply = (parentId: string) => {
+  const handleReply = useCallback((parentId: string) => {
     if (!replyText.trim()) return;
     setComments((prev) =>
     prev.map((c) =>
@@ -131,34 +140,46 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBac
     );
     setReplyText('');
     setReplyingTo(null);
-  };
+  }, [replyText]);
 
-  const handleUpvote = (commentId: string, isReply?: boolean, parentId?: string) => {
+  const handleUpvote = useCallback((commentId: string, isReply?: boolean, parentId?: string) => {
     const key = `${parentId || ''}-${commentId}`;
-    const alreadyUpvoted = upvotedIds.has(key);
     setUpvotedIds((prev) => {
       const next = new Set(prev);
-      if (alreadyUpvoted) next.delete(key);else next.add(key);
+      const alreadyUpvoted = next.has(key);
+      if (alreadyUpvoted) next.delete(key); else next.add(key);
+
+      const delta = alreadyUpvoted ? -1 : 1;
+
+      if (isReply && parentId) {
+        setComments((prevComments) =>
+          prevComments.map((c) =>
+            c.id === parentId ?
+            { ...c, replies: c.replies.map((r) => r.id === commentId ? { ...r, upvotes: r.upvotes + delta } : r) } :
+            c
+          )
+        );
+      } else {
+        setComments((prevComments) =>
+          prevComments.map((c) => c.id === commentId ? { ...c, upvotes: c.upvotes + delta } : c)
+        );
+      }
+
       return next;
     });
-    if (isReply && parentId) {
-      setComments((prev) =>
-      prev.map((c) =>
-      c.id === parentId ?
-      { ...c, replies: c.replies.map((r) => r.id === commentId ? { ...r, upvotes: r.upvotes + (alreadyUpvoted ? -1 : 1) } : r) } :
-      c
-      )
-      );
-    } else {
-      setComments((prev) =>
-      prev.map((c) => c.id === commentId ? { ...c, upvotes: c.upvotes + (alreadyUpvoted ? -1 : 1) } : c)
-      );
-    }
-  };
+  }, []);
 
   // Sort comments by upvotes (most upvoted first)
-  const sortedComments = [...comments].sort((a, b) => b.upvotes - a.upvotes);
-  const visibleComments = showAllComments ? sortedComments : sortedComments.slice(0, 3);
+  const sortedComments = useMemo(() =>
+    [...comments].sort((a, b) => b.upvotes - a.upvotes),
+    [comments]
+  );
+
+  const visibleComments = useMemo(() =>
+    showAllComments ? sortedComments : sortedComments.slice(0, 3),
+    [sortedComments, showAllComments]
+  );
+
   const hasMoreComments = sortedComments.length > 3;
 
   const rotation = isDragging ? dragX * 0.08 : 0;
@@ -421,6 +442,8 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBac
       />
     </div>);
 
-};
+});
+
+SwipeablePollCard.displayName = 'SwipeablePollCard';
 
 export default SwipeablePollCard;
