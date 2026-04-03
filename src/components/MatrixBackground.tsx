@@ -73,7 +73,7 @@ const MatrixBackground = memo(() => {
 
     // Reset timing for fresh animation
     startTimeRef.current = performance.now();
-    lastDrawTimeRef.current = 0;
+    lastDrawTimeRef.current = performance.now();
     speedRef.current = 15;
     currentOpacityRef.current = -1;
 
@@ -85,19 +85,6 @@ const MatrixBackground = memo(() => {
       canvas.height = window.innerHeight;
       // Re-apply font after resize as context is reset
       ctx.font = `${FONT_SIZE}px monospace`;
-    // Matrix characters
-    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>{}[]|/\\';
-    const charArray = chars.split('');
-    const charCount = charArray.length;
-
-    const fontSize = 14;
-
-    // Clear canvas for fresh start
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      // Re-apply font as it's reset on resize
-      ctx.font = `${fontSize}px monospace`;
     };
 
     resizeCanvas();
@@ -124,37 +111,11 @@ const MatrixBackground = memo(() => {
     
     const calculateOpacity = (now: number) => {
       const elapsed = now - startTimeRef.current;
-    canvas.style.opacity = '0.3';
-    const lastAppliedOpacity = { current: 0.3 };
-
-    window.addEventListener('resize', resizeCanvas);
-
-    const columns = Math.floor(canvas.width / fontSize);
-    const drops: number[] = Array(columns).fill(1);
-    const dropCount = drops.length;
-    for (let i = 0; i < dropCount; i++) {
-      drops[i] = Math.floor(Math.random() * (canvas.height / fontSize));
-    }
-
-    // Pre-calculate theme colors for the current animation cycle
-    const { h, s, l } = themeColorRef.current;
-    const matrixColor = isDarkRef.current
-      ? `hsl(${h}, ${Math.min(s, 70)}%, ${Math.min(l + 15, 80)}%)`
-      : `hsl(${h}, ${Math.min(s, 60)}%, ${Math.max(l - 15, 35)}%)`;
-
-    const fadeColor = isDarkRef.current
-      ? 'rgba(0, 0, 0, 0.05)'
-      : 'rgba(255, 255, 255, 0.08)';
-    
-    // Calculate fade opacity based on elapsed time
-    const calculateOpacity = () => {
-      const elapsed = performance.now() - startTimeRef.current;
       
       if (elapsed < fadeStartTime) {
         return isDarkRef.current ? 0.3 : 0.2;
       } else if (elapsed < fadeStartTime + fadeDuration) {
         const fadeProgress = (elapsed - fadeStartTime) / fadeDuration;
-        const easeOut = 1 - (fadeProgress * fadeProgress);
         const easeOut = 1 - Math.pow(fadeProgress, 2);
         const baseOpacity = isDarkRef.current ? 0.3 : 0.2;
         return baseOpacity * easeOut;
@@ -169,21 +130,12 @@ const MatrixBackground = memo(() => {
       if (Math.abs(newOpacity - currentOpacityRef.current) > 0.005 || newOpacity === 0) {
         canvas.style.opacity = String(newOpacity);
         currentOpacityRef.current = newOpacity;
-    // Update canvas opacity with threshold check to avoid layout thrashing
-    const updateCanvasOpacity = () => {
-      const newOpacity = calculateOpacity();
-      if (Math.abs(newOpacity - lastAppliedOpacity.current) > 0.001) {
-        canvas.style.opacity = String(newOpacity);
-        lastAppliedOpacity.current = newOpacity;
       }
       return newOpacity > 0;
     };
 
     const getCurrentInterval = (now: number) => {
       const elapsed = now - startTimeRef.current;
-    // Calculate current speed based on elapsed time
-    const getCurrentInterval = () => {
-      const elapsed = performance.now() - startTimeRef.current;
       const progress = Math.min(elapsed / slowdownDuration, 1);
       const easeOut = 1 - Math.pow(1 - progress, 3);
       return speedRef.current + (targetSpeedRef.current - speedRef.current) * easeOut;
@@ -202,13 +154,6 @@ const MatrixBackground = memo(() => {
         ctx.fillText(char, i * FONT_SIZE, drops[i] * FONT_SIZE);
 
         if (drops[i] * FONT_SIZE > canvas.height && Math.random() > 0.975) {
-      // ctx.font is already set in resizeCanvas or initialization
-
-      for (let i = 0; i < dropCount; i++) {
-        const char = charArray[Math.floor(Math.random() * charCount)];
-        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
         drops[i]++;
@@ -235,11 +180,6 @@ const MatrixBackground = memo(() => {
       }
 
       rafId = window.requestAnimationFrame(loop);
-      const shouldContinue = updateCanvasOpacity();
-      if (!shouldContinue) return;
-      
-      draw();
-      timeoutId = window.setTimeout(loop, getCurrentInterval());
     };
     
     rafId = window.requestAnimationFrame(loop);
