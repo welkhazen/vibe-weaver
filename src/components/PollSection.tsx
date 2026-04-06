@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Instagram, Lock, Clock, CalendarDays, Flame } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import SwipeablePollCard from './SwipeablePollCard';
 import AnswerHistoryCard from './AnswerHistoryCard';
@@ -107,7 +106,7 @@ const PollSection = () => {
   useEffect(() => { localStorage.setItem('poll-tokens', String(tokenBalance)); }, [tokenBalance]);
   useEffect(() => { localStorage.setItem(getUnlocksKey(), String(bonusUnlocks)); }, [bonusUnlocks]);
 
-  const handleVote = (optionIndex?: number) => {
+  const handleVote = useCallback((optionIndex?: number) => {
     const currentPoll = pollData[currentIndex];
     if (currentPoll) {
       const answer = optionIndex !== undefined ? currentPoll.options[optionIndex]?.text || 'Yes' : 'Yes';
@@ -115,19 +114,19 @@ const PollSection = () => {
     }
     setDailyCount((prev) => prev + 1);
     setTotalCount((prev) => prev + 1);
-  };
+  }, [currentIndex]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentIndex < pollData.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     }
-  };
+  }, [currentIndex]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (currentIndex > 0) {
       setCurrentIndex((prev) => prev - 1);
     }
-  };
+  }, [currentIndex]);
 
   const handleUnlockMore = () => {
     if (tokenBalance >= UNLOCK_COST) {
