@@ -16,3 +16,7 @@
 ## 2025-05-17 - Redundant DOM Writes in Animation Loops
 **Learning:** Updating DOM properties (like `canvas.style.opacity`) or context properties (like `ctx.font`) inside a 60FPS animation loop is expensive and can cause layout thrashing. Even if the value hasn't changed, the browser may still perform unnecessary work.
 **Action:** Implement threshold-based checks (e.g., `delta > 0.001`) before updating non-critical style properties and move context setup (like `ctx.font`) out of the draw loop into initialization or resize handlers. Cache theme-derived color strings to avoid per-frame string concatenation.
+
+## 2026-04-07 - Memoizing High-Frequency Gesture Components
+**Learning:** Components that handle high-frequency gestures (like swiping or dragging) can trigger expensive re-renders and re-computations on every frame if they are not properly memoized. This is especially true for components that derive state (like sorted lists) from props or internal state.
+**Action:** Wrap gesture-intensive components in `React.memo()`, memoize derived data with `useMemo()`, and wrap event handlers in `useCallback()` to maintain stable references and minimize main-thread work during interactions.
