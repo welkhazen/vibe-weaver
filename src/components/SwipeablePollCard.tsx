@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo } from 'react';
+import { useState, useRef, useCallback, useMemo, memo } from 'react';
 import { cn } from '@/lib/utils';
 import { Check, MessageCircle, ChevronDown, ChevronLeft, ChevronRight, Send, ArrowUp, CornerDownRight } from 'lucide-react';
 import LockedProfileModal from './LockedProfileModal';
@@ -156,10 +156,20 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBac
     }
   };
 
-  // Sort comments by upvotes (most upvoted first)
-  const sortedComments = [...comments].sort((a, b) => b.upvotes - a.upvotes);
-  const visibleComments = showAllComments ? sortedComments : sortedComments.slice(0, 3);
-  const hasMoreComments = sortedComments.length > 3;
+  /**
+   * Performance optimization:
+   * Memoize sorted comments to prevent re-sorting on every high-frequency drag state update.
+   * This ensures that while dragging (dragX changes), we don't perform O(N log N) sorting.
+   */
+  const sortedComments = useMemo(() => {
+    return [...comments].sort((a, b) => b.upvotes - a.upvotes);
+  }, [comments]);
+
+  const { visibleComments, hasMoreComments } = useMemo(() => {
+    const visible = showAllComments ? sortedComments : sortedComments.slice(0, 3);
+    const hasMore = sortedComments.length > 3;
+    return { visibleComments: visible, hasMoreComments: hasMore };
+  }, [sortedComments, showAllComments]);
 
   const rotation = isDragging ? dragX * 0.08 : 0;
   const opacity = isDragging ? Math.max(0.5, 1 - Math.abs(dragX) / 400) : 1;
@@ -423,4 +433,9 @@ const SwipeablePollCard = ({ question, options, onVote, onNext, onPrev, canGoBac
 
 };
 
-export default SwipeablePollCard;
+/**
+ * SwipeablePollCard optimization:
+ * Wrapped in React.memo to prevent unnecessary re-renders from parent components
+ * unless props actually change.
+ */
+export default memo(SwipeablePollCard);
